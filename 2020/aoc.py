@@ -1,7 +1,5 @@
 # Based on template from https://github.com/scout719/adventOfCode/
 # -*- coding: utf-8 -*-
-# pylint: disable=import-error
-# pylint: disable=wrong-import-position
 import functools
 import math
 import os
@@ -14,7 +12,7 @@ print(FILE_DIR)
 sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
-from utils import read_input, main, clear  # NOQA: E402
+from common.utils import read_input, main, clear  # NOQA: E402
 
 def day1_1(data):
     return data
