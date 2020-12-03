@@ -81,6 +81,30 @@ def day2_2(data):
 
     return validPasswords
 
+def day3Aux(data, initR, initD):
+    right = initR
+    down = initD
+    deltaD = initD
+    deltaR = initR
+    trees = 0
+   
+    while down != len(data):
+        if str(data[down][right]) == '#':
+            trees += 1
+        down += deltaD
+        right += deltaR
+        right = right%31 
+
+        if down > len(data):
+            break
+    return trees 
+
+def day3_1(data):
+    return day3Aux(data, 3, 1)
+    
+def day3_2(data):
+    return day3Aux(data, 3, 1) * day3Aux(data, 1, 1) * day3Aux(data, 5, 1) * day3Aux(data, 7, 1) * day3Aux(data, 1, 2)  
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
