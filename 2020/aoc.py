@@ -136,7 +136,10 @@ def day4_1(data):
         elif line != '': #passport            
             addFields(line, passportFields) 
 
-    return valid #missing one
+    #check last passport
+    if isPassportValid(fields, passportFields):
+                valid += 1
+    return valid
 
 def addValidFields(line, passportFields):
     pairs = line.split(" ")            
@@ -157,11 +160,10 @@ def isFieldValid(key, val):
         num = int(val)
         return len(val) == 4 and num >= 2020 and num <= 2030
     elif key == 'hgt':
-      
-        if val[:-2] == '' or val[-2:] == '':
+        try:
+            height = int(val[:-2])
+        except:
             return False
-
-        height = int(val[:-2])
         metric = val[-2:]
         if metric == 'in':
             return height >= 59 and height <= 76
@@ -175,7 +177,8 @@ def isFieldValid(key, val):
                 num+=1
         return val[0] == '#' and num == len(val)-1
     elif key == 'ecl':
-        return val == 'amb' or val == 'blu' or val == 'brn' or val == 'gry' or val == 'grn' or val == 'hzl' or val == 'oth'
+        validEyeColours = {'amb', 'blu', 'brn', 'gry' ,'grn' , 'hzl', 'oth'}
+        return val in validEyeColours
     elif key == 'pid':
         try:
             int(val)
@@ -198,7 +201,10 @@ def day4_2(data):
         elif line != '': #passport            
             addValidFields(line, passportFields) 
 
-    return valid #missing one
+    #check last passport
+    if isPassportValid(fields, passportFields):
+                valid += 1
+    return valid
 
 
 if __name__ == "__main__":
