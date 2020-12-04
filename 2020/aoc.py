@@ -105,6 +105,101 @@ def day3_1(data):
 def day3_2(data):
     return day3Aux(data, 3, 1) * day3Aux(data, 1, 1) * day3Aux(data, 5, 1) * day3Aux(data, 7, 1) * day3Aux(data, 1, 2)  
 
+# Day 4 methods
+
+def addFields(line, passportFields):
+    pairs = line.split(" ")            
+    for field in pairs:
+        passportFields.append(field.split(":")[0]) 
+
+def isPassportValid(fields, passportFields):
+    numFields = 0
+    for p in passportFields:
+        if p in fields:
+            numFields+=1
+
+    return numFields >= 7
+        
+
+def day4_1(data):
+    fields = {'byr','iyr','eyr','hgt','hcl','ecl','pid'}
+    valid = 0
+    
+    passportFields = []
+
+    for line in data:
+        if line == '':         
+            if isPassportValid(fields, passportFields):
+                valid += 1
+            passportFields = []
+
+        elif line != '': #passport            
+            addFields(line, passportFields) 
+
+    return valid #missing one
+
+def addValidFields(line, passportFields):
+    pairs = line.split(" ")            
+    for field in pairs:
+        key = field.split(":")[0]
+        val = field.split(":")[1]
+        if isFieldValid(key, val):
+            passportFields.append(key) 
+
+def isFieldValid(key, val):
+    if key == 'byr':
+        num = int(val)
+        return len(val) == 4 and num >= 1920 and num <= 2002
+    elif key == 'iyr':
+        num = int(val)
+        return len(val) == 4 and num >= 2010 and num <= 2020
+    elif key == 'eyr':
+        num = int(val)
+        return len(val) == 4 and num >= 2020 and num <= 2030
+    elif key == 'hgt':
+      
+        if val[:-2] == '' or val[-2:] == '':
+            return False
+
+        height = int(val[:-2])
+        metric = val[-2:]
+        if metric == 'in':
+            return height >= 59 and height <= 76
+        elif metric == 'cm':
+            return height >= 150 and height <= 193
+    elif key == 'hcl': 
+        validChars = {'a','b','c','d','e','f','0','1','2','3','4','5','6','7','8','9'}
+        num = 0
+        for v in val:
+            if v in validChars:
+                num+=1
+        return val[0] == '#' and num == len(val)-1
+    elif key == 'ecl':
+        return val == 'amb' or val == 'blu' or val == 'brn' or val == 'gry' or val == 'grn' or val == 'hzl' or val == 'oth'
+    elif key == 'pid':
+        try:
+            int(val)
+            return len(val) == 9
+        except:
+            return False
+
+def day4_2(data):
+    fields = {'byr','iyr','eyr','hgt','hcl','ecl','pid'}
+    valid = 0
+    
+    passportFields = []
+
+    for line in data:
+        if line == '':         
+            if isPassportValid(fields, passportFields):
+                valid += 1
+            passportFields = []
+
+        elif line != '': #passport            
+            addValidFields(line, passportFields) 
+
+    return valid #missing one
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
