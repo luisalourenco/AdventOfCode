@@ -114,11 +114,12 @@ def addFields(line, passportFields):
 
 def isPassportValid(fields, passportFields):
     numFields = 0
-    for p in passportFields:
-        if p in fields:
-            numFields+=1
+    return fields.issubset(passportFields)
+    #for p in passportFields:
+    #    if p in fields:
+    #        numFields+=1
 
-    return numFields >= 7
+    #return numFields >= 7
         
 
 def day4_1(data):
@@ -128,7 +129,7 @@ def day4_1(data):
     passportFields = []
 
     for line in data:
-        if line == '':         
+        if line == '':     
             if isPassportValid(fields, passportFields):
                 valid += 1
             passportFields = []
@@ -205,6 +206,74 @@ def day4_2(data):
     if isPassportValid(fields, passportFields):
                 valid += 1
     return valid
+
+
+def computeRow(input):
+    #print(input)
+    lower = 0
+    upper = 127
+
+    for d in input:
+        step = (upper - lower)/2
+        if d == 'F':
+            upper-= step
+        elif d == 'B':
+            lower+= step    
+    #print(math.ceil(lower))
+    #print(math.floor(upper))
+
+    return math.floor(upper)
+
+def computeColumn(input):
+    #print(input)
+    lower = 0
+    upper = 7
+
+    for d in input:
+        step = (upper - lower)/2
+        if d == 'L':
+            upper-= step
+        elif d == 'R':
+            lower+= step    
+    #print(math.ceil(lower))
+    #print(math.floor(upper))
+
+    return math.floor(upper)
+
+def day5_1(data):     
+    #data = read_input(2020, "51")
+    max = 0
+    for boardingPass in data:
+        row = computeRow(boardingPass[:-3])
+        column = computeColumn(boardingPass[-3:])
+        result = row*8+column
+        if result > max:
+            max = result
+    return max
+
+def day5_2(data):     
+    rows = list(range(128))
+    columns = list(range(8))
+    rows.remove(0)
+    rows.remove(127)
+    seats = []
+    results = []
+    for r in set(rows):
+       for c in set(columns):
+            seats.append(r*8+c)
+    
+    for boardingPass in data:
+        row = computeRow(boardingPass[:-3])
+        column = computeColumn(boardingPass[-3:])
+        result = row*8+column
+        results.append(result)
+
+    for seat in seats:
+        if seat-1 in results and seat+1 in results and seat not in results:
+            return seat
+        
+        
+
 
 
 if __name__ == "__main__":
