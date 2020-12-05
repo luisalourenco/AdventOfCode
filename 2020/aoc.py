@@ -13,6 +13,7 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 from common.utils import read_input, main, clear  # NOQA: E402
+from common.graphUtils import find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 
 class bcolors:
     HEADER = '\033[95m'
@@ -242,14 +243,14 @@ def computeColumn(input):
 
 def day5_1(data):     
     #data = read_input(2020, "51")
-    max = 0
+    maxSeatId = 0
     for boardingPass in data:
         row = computeRow(boardingPass[:-3])
         column = computeColumn(boardingPass[-3:])
-        result = row*8+column
-        if result > max:
-            max = result
-    return max
+        seatID = row*8+column
+        if seatID > maxSeatId:
+            maxSeatId = seatID
+    return maxSeatId
 
 def day5_2(data):     
     rows = list(range(128))
@@ -258,22 +259,23 @@ def day5_2(data):
     rows.remove(127)
     seats = []
     results = []
-    for r in set(rows):
-       for c in set(columns):
+    for r in rows:
+       for c in columns:
             seats.append(r*8+c)
     
     for boardingPass in data:
         row = computeRow(boardingPass[:-3])
         column = computeColumn(boardingPass[-3:])
-        result = row*8+column
-        results.append(result)
+        seatID = row*8+column
+        results.append(seatID)
 
     for seat in seats:
         if seat-1 in results and seat+1 in results and seat not in results:
             return seat
-        
-        
 
+def day6_1(data):     
+    #data = read_input(2020, "61")
+    return data
 
 
 if __name__ == "__main__":
