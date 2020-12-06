@@ -273,9 +273,61 @@ def day5_2(data):
         if seat-1 in results and seat+1 in results and seat not in results:
             return seat
 
+
 def day6_1(data):     
     #data = read_input(2020, "61")
-    return data
+    
+    sum = 0
+    answers = []
+    count = 0
+    
+    for answer in data:
+        if answer == '': # new group
+            sum+= count
+            answers = []   
+            count = 0        
+        else:
+            for q in answer:
+
+                try:
+                    if q not in answers:
+                        count += 1
+                        answers.append(q)
+                except:
+                    None
+    sum +=count
+
+    return sum
+
+def processUniqueAnswers(answers, groupSize):
+    count = 0
+    for k, v in answers.items():
+        if v == groupSize:
+            count+= 1
+    return count
+
+def day6_2(data):     
+    #data = read_input(2020, "61")
+    
+    sum = 0
+    answers = {}
+    groupSize = 0
+    for answer in data:        
+        if answer == '': # new group        
+            sum+= processUniqueAnswers(answers, groupSize)
+            answers = {}        
+            groupSize = 0
+        else:           
+            for q in answer:
+                if q not in answers:
+                    answers[q] = 1
+                else:
+                    answers[q] = answers[q] + 1
+            groupSize += 1
+
+    sum += processUniqueAnswers(answers, groupSize)
+
+    return sum
 
 
 if __name__ == "__main__":
