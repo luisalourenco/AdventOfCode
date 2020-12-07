@@ -20,6 +20,12 @@ gdict = { "a" : set(["b","c"]),
                 "e" : set(["a"])
                 }
 
+def printGraph(graph):
+    for k in graph:
+        nodes = graph.get(k)
+        if nodes != None:
+            print(str(k) + " => " + str(nodes))
+
 def find_path(graph, start, end, path=[]):
     path = path + [start]
     if start == end:
@@ -226,4 +232,6 @@ g.kruskal_algo()
 
 print(dfs(gdict,'a'))
 print(bfs(gdict,'a'))
+printGraph(gdict)
 """
+

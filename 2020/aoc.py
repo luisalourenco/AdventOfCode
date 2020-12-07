@@ -13,7 +13,8 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 from common.utils import read_input, main, clear  # NOQA: E402
-from common.graphUtils import find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
+from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
+from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 
 class bcolors:
     HEADER = '\033[95m'
@@ -398,6 +399,12 @@ def day7_2(data):
     
     contents = bags[target]
     return computeBags(bags, 0, contents)
+
+def day8_1(data):     
+    #data = read_input(2020, "81")
+ 
+    return data
+
 
 
 
