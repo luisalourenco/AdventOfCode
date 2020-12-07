@@ -329,6 +329,77 @@ def day6_2(data):
 
     return sum
 
+def printBags(bags):
+    for key, val in bags.items():
+        print(key," => ", val)
+
+def buildGraphForBags(data):
+    bags = {}
+    for line in data:
+        b = line.split("bags")
+        bag = b[0].strip()  
+        bags[bag] = [] 
+                
+        otherBags = line.split("contain")[1].split(",")
+        #print(otherBags)
+        for content in otherBags:
+            number = content.strip()[0]
+            bagType = content.strip()[1:].split("bag")[0].strip()
+            
+            if content.find('no other bags') == -1:
+                #print("number: ",number)
+                #print(bagType)
+                bags[bag].append( (bagType, number) )
+            else: 
+                bags[bag].append( ('END', 0) )
+    return bags   
+
+def find_bag(graph, start, end, path=[]):
+    path = path + [start]
+    if start == end:
+        return path
+    if start not in graph:
+        return None
+    for node, _ in graph[start]:
+        if node not in path:
+            newpath = find_bag(graph, node, end, path)
+            if newpath: 
+                return newpath
+    return None
+    
+
+def day7_1(data):     
+    #data = read_input(2020, "71")
+    bags = buildGraphForBags(data)
+    target = 'shiny gold'
+    #printBags(bags)
+
+    count = -1
+    for key in bags:
+        p = find_bag(bags, key, target)
+        if p != None:
+            count += 1
+    return count
+
+def computeBags(bags, total, contents):
+    for bag, val in contents:
+        if bag == 'END':
+            return 0
+        #print(val ,"+", computeBags(bags, total, bags[bag]), " * ", val)
+        total += int(val) + int(val) * computeBags(bags, 0, bags[bag])
+
+    return total
+        
+
+def day7_2(data):     
+    #data = read_input(2020, "72")
+    bags = buildGraphForBags(data)
+    target = 'shiny gold'
+    
+    contents = bags[target]
+    return computeBags(bags, 0, contents)
+
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
