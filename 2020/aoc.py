@@ -401,115 +401,96 @@ def day7_2(data):
     contents = bags[target]
     return computeBags(bags, 0, contents)
 
-def execute(data, acumulator):
-    instruction = data[0]
+
+def handheldMachine(program, pc, acumulator):
+    instruction = program[pc] 
     op = instruction[:3]
-    arg = int(instruction[3:])
-    visited = []
-    pc = 0
-
-    #print(data)
-
-    while True:      
+    arg = int(instruction[3:])   
                
-        if op == 'acc':
-            acumulator += arg
-            pc += 1
-        elif op == 'jmp':
-            pc += arg
-        elif op == 'nop':
-            pc += 1
+    if op == 'acc':
+        acumulator += arg
+        pc += 1
+    elif op == 'jmp':
+        pc += arg
+    elif op == 'nop':
+        pc += 1
 
-        
-        instruction = data[pc] 
-        op = instruction[:3]
-        arg = int(instruction[3:])
+    return (acumulator, pc)
 
-        #print(pc, " in ", visited,"?")
+def preventInfiniteLoop(data):
+    visited = set()
+    pc = 0
+    acumulator = 0
+
+    while True:  
+        acumulator, pc = handheldMachine(data, pc, acumulator) 
+
+        # if we reach this state it means we are in an infinite loop
         if pc in visited:
             break
         else:
-            visited.append(pc)
+            visited.add(pc)
 
     return acumulator
 
 def day8_1(data):    
     #data = read_input(2020, "81")
-    acumulator = execute(data, 0)
+    return preventInfiniteLoop(data)
 
-    return acumulator
-
-def executeFinite(data, acumulator, switchOp):
+def replaceOperation(program, pc):
+    instruction = program[pc]
+    op = instruction[:3]    
     
+    if op == 'jmp':
+       program[pc] = program[pc].replace('jmp','nop')
+    elif op == 'nop':
+       program[pc] = program[pc].replace('nop','jmp')
+    
+    return program
+
+def fixInfiniteLoop(data, switchOperations):    
     success = False
     targetPC = len(data)
-    #print(data)
 
     while not success:
-        instruction = data[0]
-        op = instruction[:3]
-        arg = int(instruction[3:])
-        visited = []
         pc = 0
+        visited = set()        
         acumulator = 0
-        #print("switchOp: ",switchOp)
-        #print("targetPC: ",targetPC)
+      
+        switchPC = switchOperations.pop(0)
+        program = replaceOperation(list(data), switchPC)
 
-        if len(switchOp) == 0:
-            break
-        switchPC = switchOp.pop(0)
+        while True:                                         
+            acumulator, pc = handheldMachine(program, pc, acumulator)
             
-        #print("Swithcing op: ",switchPC)
-        #print()
-        while True:      
-                        
-            #print(instruction, "with pc ", pc, "and acc: ", acumulator)
-            if op == 'acc':
-                acumulator += arg
-                pc += 1
-            elif op == 'jmp' and switchPC != pc:
-                pc += arg
-            elif op == 'nop' and switchPC != pc:
-                pc += 1
-            elif op == 'nop' and switchPC == pc:
-                pc += arg
-            elif op == 'jmp' and switchPC == pc:
-                pc += 1
-            
+            # if we reach the last intruction then we fixed the infinite loop!
             if pc == targetPC:
                 success = True
                 break
-            instruction = data[pc] 
-            op = instruction[:3]
-            arg = int(instruction[3:])
 
-            #print(pc, " in ", visited,"?")
+            # if we reach this state it means we are in an infinite loop :(
             if pc in visited:
                 break
             else:
-                visited.append(pc)
-            
+                visited.add(pc)            
 
     return acumulator
 
 def preprocess(data):
-    switchOp = []
+    switchOperations = []
     pc = 0
     for instruction in data:
-        if instruction[:3] == 'nop' or instruction[:3] == 'jmp':
-            switchOp.append(pc)
+        op = instruction[:3]
+        if op == 'nop' or op== 'jmp':
+            switchOperations.append(pc)
         pc += 1
-    return switchOp
+    return switchOperations
 
 def day8_2(data):    
     #data = read_input(2020, "81")
 
-    switchOp = preprocess(data)
-    acumulator = executeFinite(data, 0, switchOp)
-
-
-    return acumulator
-
+    switchOperations = preprocess(data)
+    return fixInfiniteLoop(data, switchOperations)
 
 
 
