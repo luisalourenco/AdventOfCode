@@ -6,6 +6,7 @@ import os
 import sys
 import time
 import copy
+import re
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -400,10 +401,114 @@ def day7_2(data):
     contents = bags[target]
     return computeBags(bags, 0, contents)
 
-def day8_1(data):     
+def execute(data, acumulator):
+    instruction = data[0]
+    op = instruction[:3]
+    arg = int(instruction[3:])
+    visited = []
+    pc = 0
+
+    #print(data)
+
+    while True:      
+               
+        if op == 'acc':
+            acumulator += arg
+            pc += 1
+        elif op == 'jmp':
+            pc += arg
+        elif op == 'nop':
+            pc += 1
+
+        
+        instruction = data[pc] 
+        op = instruction[:3]
+        arg = int(instruction[3:])
+
+        #print(pc, " in ", visited,"?")
+        if pc in visited:
+            break
+        else:
+            visited.append(pc)
+
+    return acumulator
+
+def day8_1(data):    
     #data = read_input(2020, "81")
- 
-    return data
+    acumulator = execute(data, 0)
+
+    return acumulator
+
+def executeFinite(data, acumulator, switchOp):
+    
+    success = False
+    targetPC = len(data)
+    #print(data)
+
+    while not success:
+        instruction = data[0]
+        op = instruction[:3]
+        arg = int(instruction[3:])
+        visited = []
+        pc = 0
+        acumulator = 0
+        #print("switchOp: ",switchOp)
+        #print("targetPC: ",targetPC)
+
+        if len(switchOp) == 0:
+            break
+        switchPC = switchOp.pop(0)
+            
+        #print("Swithcing op: ",switchPC)
+        #print()
+        while True:      
+                        
+            #print(instruction, "with pc ", pc, "and acc: ", acumulator)
+            if op == 'acc':
+                acumulator += arg
+                pc += 1
+            elif op == 'jmp' and switchPC != pc:
+                pc += arg
+            elif op == 'nop' and switchPC != pc:
+                pc += 1
+            elif op == 'nop' and switchPC == pc:
+                pc += arg
+            elif op == 'jmp' and switchPC == pc:
+                pc += 1
+            
+            if pc == targetPC:
+                success = True
+                break
+            instruction = data[pc] 
+            op = instruction[:3]
+            arg = int(instruction[3:])
+
+            #print(pc, " in ", visited,"?")
+            if pc in visited:
+                break
+            else:
+                visited.append(pc)
+            
+
+    return acumulator
+
+def preprocess(data):
+    switchOp = []
+    pc = 0
+    for instruction in data:
+        if instruction[:3] == 'nop' or instruction[:3] == 'jmp':
+            switchOp.append(pc)
+        pc += 1
+    return switchOp
+
+def day8_2(data):    
+    #data = read_input(2020, "81")
+
+    switchOp = preprocess(data)
+    acumulator = executeFinite(data, 0, switchOp)
+
+
+    return acumulator
 
 
 
