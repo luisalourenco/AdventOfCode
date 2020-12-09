@@ -493,6 +493,54 @@ def day8_2(data):
     return fixInfiniteLoop(data, switchOperations)
 
 
+def sumSearch(data, sum, preamble, preambleSize):    
+    data = sorted(data[preamble : preamble + preambleSize], key=int)
+    
+    for i in range(0, len(data)):       
+        elem1 = data[i]
+        for j in range(i, len(data)):
+            elem2 = data[j]
+           #print(data[i],"+",data[j],"=",elem1 + elem2)
+            if (elem1 + elem2 == sum):
+                return True
+
+    return False  
+
+def day9_1(data):    
+    #data = read_input(2020, "91")
+    data = [int(numeric_string) for numeric_string in data]
+    
+    preambleSize = 25
+    preamble = 0
+
+    for number in data[preambleSize:]:
+        valid = sumSearch(data, number, preamble, preambleSize)
+        preamble += 1
+        if not valid:
+            return number
+
+def breakXMAS(data, num, preambleSize):
+    max = len(data)
+    original = data
+    
+    for i in range(0, max):
+        for j in range(i + 2, i + preambleSize):
+            data = original[i:j]   
+            if sum(data) == num:
+                #print(i,",",j)
+                data = sorted(data, key=int)
+                return data[0] + data[len(data)-1]
+    return None
+
+def day9_2(data):    
+    #data = read_input(2020, "91")
+    data = [int(numeric_string) for numeric_string in data]
+    sum = 27911108
+    preambleSize = 25
+    #sum = 127
+    #preambleSize = 5
+    return breakXMAS(data, sum, preambleSize)
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
