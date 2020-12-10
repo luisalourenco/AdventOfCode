@@ -7,6 +7,8 @@ import sys
 import time
 import copy
 import re
+import itertools 
+import numpy as np
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -535,11 +537,121 @@ def breakXMAS(data, num, preambleSize):
 def day9_2(data):    
     #data = read_input(2020, "91")
     data = [int(numeric_string) for numeric_string in data]
+    
     sum = 27911108
     preambleSize = 25
     #sum = 127
     #preambleSize = 5
     return breakXMAS(data, sum, preambleSize)
+
+def checkAdapterArrangement(data, deviceJoltage):
+    jolt = 0
+    diff1 = 0
+    diff3 = 1
+    data = sorted(data, key=int)
+
+    data = [0] + data + [data[-1] + 3]
+    
+
+    deltaJoltage = 3
+    diffVoltages = list()
+
+    for adapter in data:        
+        if jolt <= adapter <= jolt + deltaJoltage:
+            dif = adapter - jolt
+            jolt = adapter
+            diffVoltages.append(dif)
+            #print(adapter,"with diff", dif)
+            if dif == 1:
+                diff1 +=1
+            elif dif == 3:
+                diff3 +=1
+           # else:
+            #    return False, 0
+
+    #print(diffVoltages)
+    return jolt + deltaJoltage >= deviceJoltage, diff1 * diff3, diffVoltages
+
+def day10_1(data):    
+    #data = read_input(2020, "102")
+    data = [int(numeric_string) for numeric_string in data]
+
+    deltaJoltage = 3
+    deviceJoltage = max(data) + deltaJoltage
+
+    isValid, result, _ = checkAdapterArrangement(data, deviceJoltage)
+    return result
+
+def buildGraphForVoltages(data):
+    jolt = 0
+    diff1 = 0
+    diff3 = 1
+    deltaJoltage = 3
+    deviceJoltage = max(data) + deltaJoltage    
+    data.append(deviceJoltage)
+    graph = {} 
+
+    while True:
+        graph[jolt] = set() #0
+        
+        for adapter in data:
+            if jolt <= adapter <= jolt + deltaJoltage:
+                    graph[jolt].add(adapter)
+            else:
+                jolt = data[0]
+                #print("updating jolt to",jolt)
+                
+                if jolt in data:
+                    data.remove(jolt)
+                break        
+        
+        if len(data) == 1 and data[0] == deviceJoltage:             
+            break
+
+    #printGraph(graph)
+    return graph
+
+# cleaner way of doing part2
+def cleanerWay(data):
+    data = list(sorted(data))
+    data = [0] + data + [data[-1] + 3]
+    # diff of joltages 
+    data = np.diff(data)
+
+    st = [str(int) for int in data] 
+    str_of_ints = "".join(st)  
+
+    s = (str_of_ints.replace("1111","A").replace("111","B").replace("11","C") )
+    return (7 ** s.count("A")) * (4 ** s.count("B")) * (2 ** s.count("C"))
+
+
+def day10_2(data):    
+    #data = read_input(2020, "102")
+    data = [int(numeric_string) for numeric_string in data]   
+    data = sorted(data, key=int) 
+    
+    # fail solution with graphs :(
+    #target = data[len(data)-1]
+    #g = buildGraphForVoltages(data)
+    #g[target] = set()
+    #res = len(find_all_paths(g, 0, target))
+
+    deltaJoltage = 3
+    deviceJoltage = max(data) + deltaJoltage   
+    isValid, result, diffVoltages = checkAdapterArrangement(data, deviceJoltage)    
+
+    string_ints = [str(int) for int in diffVoltages]    
+    str_of_ints = "".join(string_ints)
+    str_of_ints = (str_of_ints.replace("1111","A").replace("111","B").replace("11","C") )
+    result = (7 ** str_of_ints.count("A")) * (4 ** str_of_ints.count("B")) * (2 ** str_of_ints.count("C"))
+    
+    return result
+
+def day11_1(data):    
+    data = read_input(2020, "111")
+    #data = [int(numeric_string) for numeric_string in data]
+
+    return data
 
 
 if __name__ == "__main__":
