@@ -9,6 +9,7 @@ import copy
 import re
 import itertools 
 import numpy as np
+from functools import lru_cache
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -583,20 +584,19 @@ def day10_1(data):
     return result
 
 def buildGraphForVoltages(data):
+    data = data.copy()
     jolt = 0
-    diff1 = 0
-    diff3 = 1
     deltaJoltage = 3
     deviceJoltage = max(data) + deltaJoltage    
     data.append(deviceJoltage)
     graph = {} 
 
     while True:
-        graph[jolt] = set() #0
+        graph[jolt] = list() #0
         
         for adapter in data:
             if jolt <= adapter <= jolt + deltaJoltage:
-                    graph[jolt].add(adapter)
+                    graph[jolt].append(adapter)
             else:
                 jolt = data[0]
                 #print("updating jolt to",jolt)
@@ -626,19 +626,23 @@ def cleanerWay(data):
 
 
 def day10_2(data):    
-    #data = read_input(2020, "102")
+    data = read_input(2020, "102")
     data = [int(numeric_string) for numeric_string in data]   
-    data = sorted(data, key=int) 
-    
-    # fail solution with graphs :(
-    #target = data[len(data)-1]
-    #g = buildGraphForVoltages(data)
-    #g[target] = set()
-    #res = len(find_all_paths(g, 0, target))
+    data = sorted(data, key=int)   
 
     deltaJoltage = 3
-    deviceJoltage = max(data) + deltaJoltage   
-    isValid, result, diffVoltages = checkAdapterArrangement(data, deviceJoltage)    
+    deviceJoltage = max(data) + deltaJoltage          
+
+    # fail solution with graphs :(
+    target = data[len(data)-1]
+    g = buildGraphForVoltages(data)
+    g[target] = [deviceJoltage]
+    printGraph(g)
+    print(target)
+    print((find_all_paths(g, 0, target)))
+    
+    # solution based on patterns
+    isValid, result, diffVoltages = checkAdapterArrangement(data, deviceJoltage) 
 
     string_ints = [str(int) for int in diffVoltages]    
     str_of_ints = "".join(string_ints)

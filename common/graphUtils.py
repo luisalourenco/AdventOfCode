@@ -4,14 +4,82 @@ from collections import deque
 from timeit import default_timer as timer
 import sys
 import os
+from functools import lru_cache
+from functools import wraps
+from collections import namedtuple
+import json
+import six
+
+# taken from https://gist.github.com/harel/9ced5ed51b97a084dec71b9595565a71
+Serialized = namedtuple('Serialized', 'json')
+
+def hashable_lru(func):
+    cache = lru_cache(maxsize=2048)
+
+    def deserialise(value):
+        try:
+            return json.loads(value)
+        except Exception:
+            return value
+
+    def func_with_serialized_params(*args, **kwargs):
+        _args = tuple([deserialise(arg) for arg in args])
+        _kwargs = {k: deserialise(v) for k, v in kwargs.items()}
+        return func(*_args, **_kwargs)
+
+    cached_function = cache(func_with_serialized_params)
+
+    @wraps(func)
+    def lru_decorator(*args, **kwargs):
+        _args = tuple([json.dumps(arg, sort_keys=True) if type(arg) in (list, dict) else arg for arg in args])
+        _kwargs = {k: json.dumps(v, sort_keys=True) if type(v) in (list, dict) else v for k, v in kwargs.items()}
+        return cached_function(*_args, **_kwargs)
+    lru_decorator.cache_info = cached_function.cache_info
+    lru_decorator.cache_clear = cached_function.cache_clear
+    return lru_decorator
+
+def hashable_cache(cache):
+    def hashable_cache_internal(func):
+        def deserialize(value):
+            if isinstance(value, Serialized):
+                return json.loads(value.json)
+            else:
+                return value
+
+        def func_with_serialized_params(*args, **kwargs):
+            _args = tuple([deserialize(arg) for arg in args])
+            _kwargs = {k: deserialize(v) for k, v in six.viewitems(kwargs)}
+            return func(*_args, **_kwargs)
+
+        cached_func = cache(func_with_serialized_params)
+
+        @functools.wraps(func)
+        def hashable_cached_func(*args, **kwargs):
+            _args = tuple([
+                Serialized(json.dumps(arg, sort_keys=True))
+                if type(arg) in (list, dict) else arg
+                for arg in args
+            ])
+            _kwargs = {
+                k: Serialized(json.dumps(v, sort_keys=True))
+                if type(v) in (list, dict) else v
+                for k, v in kwargs.items()
+            }
+            return cached_func(*_args, **_kwargs)
+        hashable_cached_func.cache_info = cached_func.cache_info
+        hashable_cached_func.cache_clear = cached_func.cache_clear
+        return hashable_cached_func
+
+    return hashable_cache_internal
+
 
 # representation based on dictionary, each key is a node and each entry corresponds to the list nodes connected by a direct arc
-graphForTests = { 'A': set(['B', 'C']),
-        'B': set(['C', 'D']),
-        'C': set(['D']),
-        'D': set(['C']),
-        'E': set(['F']),
-        'F': set(['C']) }
+graphForTests = { 'A': list(['B', 'C']),
+        'B': list(['C', 'D']),
+        'C': list(['D']),
+        'D': list(['C']),
+        'E': list(['F']),
+        'F': list(['C']) }
 
 gdict = { "a" : set(["b","c"]),
                 "b" : set(["a", "d"]),
@@ -38,11 +106,16 @@ def find_path(graph, start, end, path=[]):
             if newpath: return newpath
     return None
 
+#@hashable_cache(lru_cache())
+@hashable_lru
 def find_all_paths(graph, start, end, path=[]):
+        print(start,"to",end)
+        print(graph)
         path = path + [start]
         if start == end:
             return [path]
         if start not in graph:
+            print("oops")
             return []
         paths = []
         for node in graph[start]:
@@ -195,7 +268,7 @@ class Graph:
         for u, v, weight in result:
             print("(%d - %d): %d" % (u, v, weight))
 
-
+#print(find_all_paths(graphForTests,'A','D'))
 """
 g = Graph(5)
 g.add_edge(0, 1, 5)
@@ -225,7 +298,7 @@ g.add_edge(5, 4, 3)
 g.kruskal_algo()
 
 #print(find_path(graphForTests,'A','D'))
-#print(find_all_paths(graphForTests,'A','D'))
+print(find_all_paths(graphForTests,'A','D'))
 #print(find_shortest_path(graphForTests,'A','D'))
 #print(find_shortest_pathOptimal(graphForTests,'A','D'))
 #print(dfs(gdict,'a'))
