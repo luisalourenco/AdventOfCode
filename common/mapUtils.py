@@ -3,6 +3,7 @@ import functools
 from timeit import default_timer as timer
 import sys
 import os
+import copy
 
 def buildGraphFromMap(map):
     graph = {}
@@ -34,16 +35,18 @@ def buildGraphFromMap(map):
 
 def printMap(map, fileMode = True):
     if fileMode:
-        file1 = open("MyFileAll.txt","w") 
+        file1 = open("MyFileAll.txt","a") 
     
         for l in map:
             for j in range(len(l)):
                 file1.write(l[j])
             file1.write("\n")
+        file1.write("\n")
+        file1.write("\n")
         file1.close() 
 
 def buildMapGrid(data):
-
+    data = copy.deepcopy(data)
     '''
     file_dir = os.path.dirname(os.path.realpath(__file__))
     with open("{0}/../common/teste.txt".format(file_dir, 2020, 7), "r") as fileReader:

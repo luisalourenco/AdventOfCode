@@ -626,7 +626,7 @@ def cleanerWay(data):
 
 
 def day10_2(data):    
-    data = read_input(2020, "102")
+    #data = read_input(2020, "102")
     data = [int(numeric_string) for numeric_string in data]   
     data = sorted(data, key=int)   
 
@@ -634,12 +634,12 @@ def day10_2(data):
     deviceJoltage = max(data) + deltaJoltage          
 
     # fail solution with graphs :(
-    target = data[len(data)-1]
-    g = buildGraphForVoltages(data)
-    g[target] = [deviceJoltage]
-    printGraph(g)
-    print(target)
-    print((find_all_paths(g, 0, target)))
+    #target = data[len(data)-1]
+    #g = buildGraphForVoltages(data)
+    #g[target] = [deviceJoltage]
+    #printGraph(g)
+    #even cache_lru doesnt help this lost cause :P
+    #print(len(find_all_paths(g, 0, target)))
     
     # solution based on patterns
     isValid, result, diffVoltages = checkAdapterArrangement(data, deviceJoltage) 
@@ -651,11 +651,149 @@ def day10_2(data):
     
     return result
 
-def day11_1(data):    
-    data = read_input(2020, "111")
-    #data = [int(numeric_string) for numeric_string in data]
 
-    return data
+
+def countOccurencesInDirection(map, x, y, xInc, yInc, seat, rows, columns):
+    x += xInc
+    y += yInc
+    
+    #print(x,y,"count for",seat,"is")
+    if 0 <= x < columns and 0 <= y < rows:        
+        return map[y][x].count(seat)
+    else:
+        return 0
+
+# factorized for part 2 to take an increment as parameter, turned out not to be necessaRY
+def countOccurences(map, x, y, seat, rows, columns, increment = 1):
+    
+    east = countOccurencesInDirection(map, x, y, increment, 0, seat, rows, columns)     
+    west = countOccurencesInDirection(map, x, y, -increment, 0, seat, rows, columns)
+    north = countOccurencesInDirection(map, x, y, 0, -increment, seat, rows, columns)     
+    south = countOccurencesInDirection(map, x, y, 0, increment, seat, rows, columns)     
+    northeast = countOccurencesInDirection(map, x, y, increment, -increment, seat, rows, columns)     
+    northwest = countOccurencesInDirection(map, x, y, -increment, -increment, seat, rows, columns)      
+    southeast = countOccurencesInDirection(map, x, y, increment, increment, seat, rows, columns)     
+    southwest = countOccurencesInDirection(map, x, y, -increment, increment, seat, rows, columns)     
+     
+    return (east + west + north + south + northeast + northwest + southeast + southwest)
+
+def applySeatRules(map):
+    newMap = buildMapGrid(map)
+    
+    rows = len(map)
+    columns = len(map[0])    
+    changed = False
+    
+    for y in range(rows):
+        for x in range(columns):                
+            seat = map[y][x]
+            occupiedSeats = countOccurences(map, x, y, "#", rows, columns)
+            
+            if seat == 'L' and occupiedSeats == 0:
+                newMap[y][x] = '#'
+                changed = True
+            elif seat == '#' and occupiedSeats >= 4:
+                newMap[y][x] = 'L'
+                changed = True
+
+    return (newMap, changed)
+
+# initial approach for part 1 was based on this until I figured I could determine stop condition while applying seat rules
+def shouldStop(oldMap, newMap):
+    rows = len(oldMap)
+    columns = len(oldMap[0]) 
+    shouldStop = True
+    count = 0
+
+    for y in range(0, rows):
+        for x in range(0,columns): 
+            if newMap[y][x] == '#':
+                count += 1
+            if oldMap[y][x] != newMap[y][x]:
+                shouldStop = False
+                break
+        if not shouldStop:
+            break
+
+    return shouldStop, count
+
+def day11_1(data):   
+    #data = read_input(2020, "111")
+    
+    newMap = data  
+    while True:
+        oldMap = newMap     
+        newMap, changed = applySeatRules(oldMap)
+        if not changed:              
+            count = sum( [ seatRow.count("#") for seatRow in newMap])
+            return count
+            #break
+        #printMap(m)
+        # initial approach until I changed applySeatRules
+        #stop, count = shouldStop(oldMap, newMap)        
+
+
+
+def applyNewSeatRules(map):
+    newMap = buildMapGrid(map)
+    
+    rows = len(map)
+    columns = len(map[0])    
+    changed = False
+
+    for y in range(rows):
+        for x in range(columns):                
+            seat = map[y][x]
+            
+            occupiedSeats = 0
+            # cycle through all directions 
+            for dx, dy in [(1,1), (1,0), (0,1), (-1,-1), (-1, 0), (0,-1), (1,-1), (-1,1)]:
+                newX = x + dx
+                newY = y + dy
+
+                # find first visible seat
+                iters = 0
+                while 0 <= newX < columns and 0 <= newY < rows and map[newY][newX] == '.': 
+                    newX += dx
+                    newY += dy
+                    iters+=1
+                    #if iters > 11:
+                    #    print("oops")
+                
+                #check if seat is occupied
+                if 0 <= newX < columns and 0 <= newY < rows:
+                    if map[newY][newX] == '#':
+                        occupiedSeats += 1
+
+            #fail approach, was based on a dictionary to determine whether a given direction had view blocked... already deleted structure and auxiliary functions :| 
+            #for inc in range(1, rows):                  
+                #count = countOccurences(map, x, y, "#", rows, columns, inc, blockedViews )
+                #occupiedSeats += count
+                
+            
+            if seat == 'L' and occupiedSeats == 0:
+                newMap[y][x] = '#'
+                changed = True
+            elif seat == '#' and occupiedSeats >= 5:
+                newMap[y][x] = 'L'
+                changed = True
+
+
+    return (newMap, changed)
+
+def day11_2(data):    
+    #data = read_input(2020, "111")
+ 
+    newMap = data 
+    count = 0
+    while True:
+        oldMap = newMap     
+        newMap, changed = applyNewSeatRules(oldMap)
+        printMap(newMap)
+
+        if not changed:              
+            return sum( [ seatRow.count("#") for seatRow in newMap])
+     
 
 
 if __name__ == "__main__":

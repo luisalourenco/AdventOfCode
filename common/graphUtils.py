@@ -109,16 +109,13 @@ def find_path(graph, start, end, path=[]):
 #@hashable_cache(lru_cache())
 @hashable_lru
 def find_all_paths(graph, start, end, path=[]):
-        print(start,"to",end)
-        print(graph)
         path = path + [start]
         if start == end:
             return [path]
-        if start not in graph:
-            print("oops")
+        if graph.get(str(start)) ==  None:
             return []
         paths = []
-        for node in graph[start]:
+        for node in graph[str(start)]:
             if node not in path:
                 newpaths = find_all_paths(graph, node, end, path)
                 for newpath in newpaths:
