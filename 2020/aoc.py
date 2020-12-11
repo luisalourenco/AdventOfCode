@@ -625,10 +625,24 @@ def cleanerWay(data):
     return (7 ** s.count("A")) * (4 ** s.count("B")) * (2 ** s.count("C"))
 
 
+# taken from https://www.reddit.com/r/adventofcode/comments/kb7qt0/2020_day_10_part_2_python_number_of_paths_by/
+def matrixAdjanciesBasedSolution(data):
+    n_lines = len(data)
+    f = lambda i, j: j > i and data[j] - data[i] <= 3
+    m = np.fromfunction(np.vectorize(f), (n_lines, n_lines), dtype=int).astype(int)
+    aux = np.identity(n_lines)    
+
+    sol_part_2 = 0
+    for _ in range(n_lines):
+        aux = aux @ m
+        sol_part_2 += aux[0, n_lines - 1]
+
+    return int(sol_part_2*2)
+
 def day10_2(data):    
     #data = read_input(2020, "102")
     data = [int(numeric_string) for numeric_string in data]   
-    data = sorted(data, key=int)   
+    data = sorted(data, key=int)       
 
     deltaJoltage = 3
     deviceJoltage = max(data) + deltaJoltage          
@@ -649,7 +663,10 @@ def day10_2(data):
     str_of_ints = (str_of_ints.replace("1111","A").replace("111","B").replace("11","C") )
     result = (7 ** str_of_ints.count("A")) * (4 ** str_of_ints.count("B")) * (2 ** str_of_ints.count("C"))
     
-    return result
+    #return result
+    print(result == matrixAdjanciesBasedSolution(data))
+
+    return matrixAdjanciesBasedSolution(data)
 
 
 
