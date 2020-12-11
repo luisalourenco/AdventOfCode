@@ -5,6 +5,7 @@ import sys
 import os
 import copy
 
+# might need some tweaks depending on the map
 def buildGraphFromMap(map):
     graph = {}
     sizeX = len(map[0])
@@ -32,10 +33,10 @@ def buildGraphFromMap(map):
             graph[(x,y)] = neighbours
     return graph
 
-
+# fileMode is an old parameter, idea was to have a print in console version as well
 def printMap(map, fileMode = True):
     if fileMode:
-        file1 = open("MyFileAll.txt","a") 
+        file1 = open("MyMap.txt","a") 
     
         for l in map:
             for j in range(len(l)):
@@ -44,6 +45,7 @@ def printMap(map, fileMode = True):
         file1.write("\n")
         file1.write("\n")
         file1.close() 
+
 
 def buildMapGrid(data):
     data = copy.deepcopy(data)
