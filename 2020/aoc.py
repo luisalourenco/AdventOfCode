@@ -626,7 +626,9 @@ def cleanerWay(data):
 
 
 # taken from https://www.reddit.com/r/adventofcode/comments/kb7qt0/2020_day_10_part_2_python_number_of_paths_by/
+# O(n3 log n), with DP solution we can get O(n) so this one is not optimal but is very nice nonetheless :)
 def matrixAdjanciesBasedSolution(data):
+    '''
     n_lines = len(data)
     f = lambda i, j: j > i and data[j] - data[i] <= 3
     m = np.fromfunction(np.vectorize(f), (n_lines, n_lines), dtype=int).astype(int)
@@ -636,8 +638,17 @@ def matrixAdjanciesBasedSolution(data):
     for _ in range(n_lines):
         aux = aux @ m
         sol_part_2 += aux[0, n_lines - 1]
+    '''
 
-    return int(sol_part_2*2)
+    n = len(data)
+    f = lambda i, j : j > i and data[j] - data[i] <= 3
+    m = np.fromfunction(np.vectorize(f), (n, n), dtype=np.int64).astype(np.int64)
+    m[n-1, n-1] = 1
+
+    aux = np.linalg.matrix_power(m, n)
+    ans = aux[0, n - 1]
+
+    return ans*2
 
 def day10_2(data):    
     #data = read_input(2020, "102")
@@ -884,49 +895,57 @@ def PASystem(data):
         elif action in ['L', 'R']:
             direction = changeDirection(direction, action, value)
         else:
-            if action == 'N':
-                y+=value
-            elif action == 'S':
-                y-= value
-            elif action == 'E':
-                x += value
-            elif action == 'W':
-                x -= value            
+            x,y = moveInDirection(action, value, x, y)  
 
     return abs(x) + abs(y)
 
 
 def day12_1(data):   
-    #data = read_input(2020, "121")     
-   
-    return PASystem(data)
+    #data = read_input(2020, "121")   
+    result = PASystem(data)
+    print(result == 1007)
+    return result
 
 def moveInDirection(action, value, waypointX, waypointY):    
+    # y axis
     if action == 'N':
-        waypointY+=value
+        waypointY += value
     elif action == 'S':
-        waypointY-= value
+        waypointY -= value
+    # x axis
     elif action == 'E':
         waypointX += value
     elif action == 'W':
         waypointX -= value  
+
     return waypointX, waypointY
 
-def moveForwardShip(direction, x, y, waypointX, waypointY, value):    
-    if direction == 'N':
-        y += waypointY * value
-    elif direction == 'S':
-         y += waypointY * value
-    elif direction == 'E':
-        x += waypointX * value
-    elif direction == 'W':
-        x += waypointX * value
+def changeDirectionPart2(waypointX, waypointY, action, value):
+    turns = value/90
+
+    if turns == 4:
+        return waypointX, waypointY
+    if turns == 2:
+        return -waypointX, -waypointY
+
+    if turns == 1:
+        if action == 'L':
+            return -waypointY, waypointX
+        else: 
+            return waypointY, -waypointX
+    if turns == 3:
+        if action == 'L':
+            return waypointY, -waypointX
+        else: 
+            return -waypointY, waypointX
+    
+
+def moveForwardShip(x, y, waypointX, waypointY, value):    
+    y += waypointY * value
+    x += waypointX * value
     return x , y
 
-def PASystemWithWaypoint(data):
-    directionX = 'E'
-    directionY = 'N'
-    
+def PASystemWithWaypoint(data):   
     waypointX = 10
     waypointY = 1
     x = 0
@@ -942,37 +961,11 @@ def PASystemWithWaypoint(data):
         #print(instruction)       
 
         # ship moves, waypoint stays inaltered
-        if action == 'F': # times value
-            x , y = moveForwardShip(directionX, x, y, waypointX, waypointY, value)
-            x , y = moveForwardShip(directionY, x, y, waypointX, waypointY, value)
-        
+        if action == 'F': 
+            x , y = moveForwardShip(x, y, waypointX, waypointY, value)        
         # rotates waypoint
-        elif action in ['L', 'R']:
-            # ensure we swap direction whenever the coordinates switch sign otherwise next step will computed wrong new direction
-            if (directionX == 'W' and waypointX > 0):
-                directionX = 'E'
-            if (directionX == 'E' and waypointX < 0): 
-                directionX = 'W'
-            if (directionY == 'S' and waypointY > 0): 
-                directionY = 'N'
-            if (directionY == 'N' and waypointY < 0): 
-                directionY = 'N'
-
-            directionX = changeDirection(directionX, action, value) 
-            directionY = changeDirection(directionY, action, value) 
-            
-            turns = int(value/90)
-            if turns%2 != 0:
-                # swap coordinates
-                waypointX, waypointY = waypointY, waypointX
-                directionX, directionY = directionY, directionX
-            
-            # ensure we swap coordinates whenever we swap direction and the coordinate signal is mismatched
-            if (directionX == 'W' and waypointX > 0) or (directionX == 'E' and waypointX < 0): 
-                waypointX = -waypointX
-            if (directionY == 'S' and waypointY > 0) or (directionY == 'N' and waypointY < 0): 
-                waypointY = -waypointY
-        
+        elif action in ['L', 'R']:    
+            waypointX, waypointY = changeDirectionPart2(waypointX, waypointY, action, value)         
         else:
             # move waypoint, ships stays the same
             waypointX, waypointY = moveInDirection(action, value, waypointX, waypointY)
@@ -983,8 +976,11 @@ def PASystemWithWaypoint(data):
 
     return abs(x) + abs(y)
 
+#Day 12, part 1: 1007 (0.004 secs)
+#Day 12, part 2: 41212 (0.003 secs)
+
 def day12_2(data):   
-    #data = read_input(2020, "122")
+    #data = read_input(2020, "121")
 
     # too low 15076
     # too high 123430
@@ -992,7 +988,10 @@ def day12_2(data):
     # high 462890
     # wrong 28766
     # wrong 34064
-    return PASystemWithWaypoint(data)
+    result = PASystemWithWaypoint(data)
+
+    print(result == 41212)
+    return result
     
 
 
