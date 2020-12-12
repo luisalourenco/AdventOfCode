@@ -16,9 +16,12 @@ print(FILE_DIR)
 sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
+
 from common.utils import read_input, main, clear  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
+from common.aocVM import HandheldMachine
+
 
 class bcolors:
     HEADER = '\033[95m'
@@ -405,37 +408,25 @@ def day7_2(data):
     return computeBags(bags, 0, contents)
 
 
-def handheldMachine(program, pc, acumulator):
-    instruction = program[pc] 
-    op = instruction[:3]
-    arg = int(instruction[3:])   
-               
-    if op == 'acc':
-        acumulator += arg
-        pc += 1
-    elif op == 'jmp':
-        pc += arg
-    elif op == 'nop':
-        pc += 1
-
-    return (acumulator, pc)
-
 def preventInfiniteLoop(data):
     visited = set()
-    pc = 0
-    acumulator = 0
+    machine = HandheldMachine(data)
+    machine.program_counter = 0
 
     while True:  
-        acumulator, pc = handheldMachine(data, pc, acumulator) 
+        #acumulator, pc = handheldMachine(data, pc, acumulator) 
+        machine.runInstruction(machine.program_counter)
 
         # if we reach this state it means we are in an infinite loop
-        if pc in visited:
+        if machine.program_counter in visited:
             break
         else:
-            visited.add(pc)
+            visited.add(machine.program_counter)
 
-    return acumulator
+    return machine.accumulator
 
+#Day 8, part 1: 1675 (0.002 secs)
+#Day 8, part 2: 1532 (0.019 secs)
 def day8_1(data):    
     #data = read_input(2020, "81")
     return preventInfiniteLoop(data)
@@ -451,28 +442,76 @@ def replaceOperation(program, pc):
     
     return program
 
+def handheldMachine(program, pc, acumulator):
+        instruction = program[pc] 
+        op = instruction[:3]
+        arg = int(instruction[3:])   
+                
+        if op == 'acc':
+            acumulator += arg
+            pc += 1
+        elif op == 'jmp':
+            pc += arg
+        elif op == 'nop':
+            pc += 1
+
+        return (acumulator, pc)
+
 def fixInfiniteLoop(data, switchOperations):    
     success = False
     targetPC = len(data)
 
-    while not success:
-        pc = 0
-        visited = set()        
-        acumulator = 0
-      
-        switchPC = switchOperations.pop(0)
-        program = replaceOperation(list(data), switchPC)
+    machine = HandheldMachine(data)
+    machine.program_counter = 0
 
-        while True:                                         
-            acumulator, pc = handheldMachine(program, pc, acumulator)
+    while not success:
+        visited = set()  
+        machine.reset()             
+        switchPC = switchOperations.pop(0)
+        machine.swapOperation(switchPC)
+        #program = replaceOperation(list(data), switchPC)
+
+        while True:           
+                                          
+            machine.runInstruction(machine.program_counter)
             
             # if we reach the last intruction then we fixed the infinite loop!
-            if pc == targetPC:
+            if machine.program_counter  == targetPC:
                 success = True
                 break
 
             # if we reach this state it means we are in an infinite loop :(
-            if pc in visited:
+            if machine.program_counter  in visited:
+                break
+            else:
+                visited.add(machine.program_counter)            
+
+    return machine.accumulator
+
+def fixInfiniteLoopOriginal(data, switchOperations):    
+    success = False
+    targetPC = len(data)
+
+    pc = 0
+
+    while not success:
+        visited = set()  
+        pc = 0
+        acumulator = 0            
+        switchPC = switchOperations.pop(0)
+        program = replaceOperation(list(data), switchPC)
+
+        while True:           
+                                          
+            acumulator, pc = handheldMachine(program, pc, acumulator)
+            
+            # if we reach the last intruction then we fixed the infinite loop!
+            if pc  == targetPC:
+                success = True
+                break
+
+            # if we reach this state it means we are in an infinite loop :(
+            if pc  in visited:
                 break
             else:
                 visited.add(pc)            
@@ -493,7 +532,7 @@ def day8_2(data):
     #data = read_input(2020, "81")
 
     switchOperations = preprocess(data)
-    return fixInfiniteLoop(data, switchOperations)
+    return fixInfiniteLoopOriginal(data, switchOperations)
 
 
 def sumSearch(data, sum, preamble, preambleSize):    
@@ -978,21 +1017,19 @@ def PASystemWithWaypoint(data):
 
 #Day 12, part 1: 1007 (0.004 secs)
 #Day 12, part 2: 41212 (0.003 secs)
-
 def day12_2(data):   
     #data = read_input(2020, "121")
-
-    # too low 15076
-    # too high 123430
-    # too high 57574
-    # high 462890
-    # wrong 28766
-    # wrong 34064
     result = PASystemWithWaypoint(data)
 
     print(result == 41212)
     return result
+
+def day13_1(data):   
+    data = read_input(2020, "131")   
+    #data = [int(numeric_string) for numeric_string in data]   
+    #data = sorted(data, key=int)  
     
+    return data
 
 
 if __name__ == "__main__":
