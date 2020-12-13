@@ -10,6 +10,7 @@ import re
 import itertools 
 import numpy as np
 from functools import lru_cache
+import operator
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -1024,12 +1025,100 @@ def day12_2(data):
     print(result == 41212)
     return result
 
+
+def readInput(data):
+    timestamp = int(data[0])
+    busIDs = []
+    for busID in data[1].split(','):
+        if busID != 'x':
+            busIDs.append(int(busID))
+
+    busIDs = sorted(busIDs, key=int) 
+    return timestamp, busIDs, data[1].split(',')
+
+
+def is_multiple(x, y):
+    return x % y == 0
+
 def day13_1(data):   
-    data = read_input(2020, "131")   
-    #data = [int(numeric_string) for numeric_string in data]   
-    #data = sorted(data, key=int)  
+    #data = read_input(2020, "136")   
+
+    timestamp, busIDs, _ = readInput(data)
     
-    return data
+    #print("Timestamp",timestamp)
+    #print(busIDs)
+
+    i = max(busIDs)
+    results = {}
+    for bus in busIDs:
+        #print("Schedule for bus", bus,":")
+
+        for k in range(timestamp, (timestamp-bus) + i*4):
+            if is_multiple(k, bus):
+                results[bus] = k
+                break
+    
+    bus = min(results.items(), key=operator.itemgetter(1))[0]
+
+    return bus * (results[bus] - timestamp)
+
+def computeMinimumTimestamp(schedule, i, step):
+    delta = sys.maxsize
+    init = i
+
+    #print("Searching starting in",init,"with step", step)
+    for tt in range(init, init + delta, step):    
+        t = 0
+        valid = True
+        for n in schedule:
+            if n != 'x':
+                if not is_multiple(tt + t, int(n)):
+                    valid = False
+            t += 1
+        if valid:
+            return tt
+        
+            
+
+def day13_2(data):   
+    #data = read_input(2020, "136")   
+
+    '''
+        7,13,x,x,59,x,31,19 is  1068788
+        17,x,13,19 is 3417.
+        67,7,59,61 first occurs at timestamp 754018.
+        67,x,7,59,61 first occurs at timestamp 779210.
+        67,7,x,59,61 first occurs at timestamp 1261476.
+        1789,37,47,1889 first occurs at timestamp 1202161486
+    '''
+
+    _, busIDs, schedule = readInput(data)
+    results = []
+    t = 0
+
+    for i in range(1, len(schedule)):
+        if schedule[i] != 'x':
+            factor = 1
+            for b  in schedule[0:i]:
+                if b != 'x':
+                    factor *= int(b)
+
+            #print("factor",factor)
+            #print("init",t)
+            t = computeMinimumTimestamp(schedule[0:i+1], t, factor)
+            #print("T for schedule",schedule[0:i],"is",t)
+            results.append(t)
+
+    return t
+    #return t + math.gcd(results[0], results[1])
+    
+    '''
+    print(is_multiple(1068781 + 0, 7))
+    print(is_multiple(1068781 + 1, 13))
+    print(is_multiple(1068781 + 4, 59))
+    print(is_multiple(1068781 + 6, 31))
+    print(is_multiple(1068781 + 7, 19))
+    '''  
 
 
 if __name__ == "__main__":
