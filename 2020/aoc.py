@@ -1067,14 +1067,21 @@ def computeMinimumTimestamp(schedule, i, step):
     init = i
 
     #print("Searching starting in",init,"with step", step)
+    # limit search ranged based on previous schedule iteration
     for tt in range(init, init + delta, step):    
         t = 0
         valid = True
+
+        # check buses in schedule
         for n in schedule:
             if n != 'x':
+                # compute (timestamp + offset mod busId)
+                # if timestamp + offset is not a multiple of the busId then we can stop
                 if not is_multiple(tt + t, int(n)):
                     valid = False
             t += 1
+
+        # after checking all the buses IDs if all were valid we got our timestamp!
         if valid:
             return tt
         
@@ -1096,9 +1103,12 @@ def day13_2(data):
     results = []
     t = 0
 
+    # compute partial results based on subsets of the schedule to optimize final search (reduce search space)
     for i in range(1, len(schedule)):
+        
         if schedule[i] != 'x':
             factor = 1
+            # we can do this because all buses IDs are coprimes, meaning all buses IDs will share the same gcd
             for b  in schedule[0:i]:
                 if b != 'x':
                     factor *= int(b)
