@@ -28,6 +28,8 @@ from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
 
+#from aocd import get_data #, lines, numbers
+
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
 
@@ -1140,7 +1142,8 @@ def day13_2(data):
     #return t + math.gcd(results[0], results[1])
     
 def day14_1(data):    
-    data = read_input(2020, "141")
+    data = []
+    #data = read_input(2020, "141")
     #data = [int(numeric_string) for numeric_string in data]   
     #data = sorted(data, key=int)  
 
