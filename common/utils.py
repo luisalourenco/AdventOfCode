@@ -67,6 +67,9 @@ def read_input(year, day):
     with open("{0}/../{1}/input/day{2}".format(file_dir, year, day), "r") as fileReader:
         return [line.rstrip('\n') for line in fileReader]
 
+def AssertExpectedResult(expected, result, part):
+    print("( Part",part,") Correct result:", expected == result)
+
 def main(argv_, globals_, year):
     start_day = None
     if len(argv_) > 1:

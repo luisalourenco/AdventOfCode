@@ -1,5 +1,10 @@
 # Based on template from https://github.com/scout719/adventOfCode/
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*
+# pylint: disable=import-error
+# pylint: disable=unused-import
+# pylint: disable=wildcard-import
+# pylint: disable=wrong-import-position
+# pylint: disable=consider-using-enumerate-
 import functools
 import math
 import os
@@ -18,11 +23,13 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
-from common.utils import read_input, main, clear  # NOQA: E402
+from common.utils import read_input, main, clear, AssertExpectedResult  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
 
+# pylint: enable=import-error
+# pylint: enable=wrong-import-position
 
 class bcolors:
     HEADER = '\033[95m'
@@ -39,16 +46,22 @@ WHITE_CIRCLE = "•"
 BLUE_CIRCLE = f"{bcolors.OKBLUE}{bcolors.BOLD}•{bcolors.ENDC}"
 RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
 
+#Day 1, part 1: 1006875 (0.001 secs)
+#Day 1, part 2: 165026160 (0.323 secs)
 def day1_1(data):
     sum = 2020
     data = sorted(data, key=int)
-
+    result = 0
     for i in range(0, len(data)):
         elem1 = int(data[i])
         for j in range(i, len(data)):
             elem2 = int(data[j])
             if (elem1 + elem2 == sum):
-                 return elem1 * elem2
+                result = elem1 * elem2
+                break
+    
+    AssertExpectedResult(1006875, result, 1)
+    return result
 
 def day1_2(data):
     sum = 2020
@@ -62,8 +75,12 @@ def day1_2(data):
                 elem3 = int(data[k])
                 if (elem1 + elem2 + elem3 == sum):
                     result = elem1 * elem2 * elem3
+    
+    AssertExpectedResult(165026160, result, 2)
     return result
 
+#Day 2, part 1: 424 (0.002 secs)
+#Day 2, part 2: 747 (0.002 secs)
 def day2_1(data):
     validPasswords = 0
     for inputLine in data:
@@ -76,6 +93,7 @@ def day2_1(data):
         if occurrences <= max and occurrences >= min:
             validPasswords += 1
 
+    AssertExpectedResult(424, validPasswords, 1)
     return validPasswords        
 
 def day2_2(data):
@@ -89,6 +107,7 @@ def day2_2(data):
         if bool(input[2][pos1] == letter) ^ bool(input[2][pos2] == letter):
             validPasswords += 1
 
+    AssertExpectedResult(747, validPasswords, 2)
     return validPasswords
 
 def day3Aux(data, initR, initD):
@@ -107,13 +126,20 @@ def day3Aux(data, initR, initD):
 
         if down > len(data):
             break
+
     return trees 
 
-def day3_1(data):
-    return day3Aux(data, 3, 1)
+#Day 3, part 1: 280 (0.001 secs)
+#Day 3, part 2: 4355551200 (0.001 secs)
+def day3_1(data):    
+    result = day3Aux(data, 3, 1)
+    AssertExpectedResult(280, result, 1)
+    return result
     
 def day3_2(data):
-    return day3Aux(data, 3, 1) * day3Aux(data, 1, 1) * day3Aux(data, 5, 1) * day3Aux(data, 7, 1) * day3Aux(data, 1, 2)  
+    result = day3Aux(data, 3, 1) * day3Aux(data, 1, 1) * day3Aux(data, 5, 1) * day3Aux(data, 7, 1) * day3Aux(data, 1, 2)  
+    AssertExpectedResult(4355551200, result, 2)
+    return result
 
 # Day 4 methods
 
@@ -123,7 +149,6 @@ def addFields(line, passportFields):
         passportFields.append(field.split(":")[0]) 
 
 def isPassportValid(fields, passportFields):
-    numFields = 0
     return fields.issubset(passportFields)
     #for p in passportFields:
     #    if p in fields:
@@ -131,7 +156,8 @@ def isPassportValid(fields, passportFields):
 
     #return numFields >= 7
         
-
+#Day 4, part 1: 235 (0.002 secs)
+#Day 4, part 2: 194 (0.003 secs)
 def day4_1(data):
     fields = {'byr','iyr','eyr','hgt','hcl','ecl','pid'}
     valid = 0
@@ -150,6 +176,8 @@ def day4_1(data):
     #check last passport
     if isPassportValid(fields, passportFields):
                 valid += 1
+    
+    AssertExpectedResult(235, valid, 1)
     return valid
 
 def addValidFields(line, passportFields):
@@ -215,6 +243,8 @@ def day4_2(data):
     #check last passport
     if isPassportValid(fields, passportFields):
                 valid += 1
+    
+    AssertExpectedResult(194, valid, 2)
     return valid
 
 
@@ -250,6 +280,8 @@ def computeColumn(input):
 
     return math.floor(upper)
 
+#Day 5, part 1: 850 (0.003 secs)
+#Day 5, part 2: 599 (0.010 secs)
 def day5_1(data):     
     #data = read_input(2020, "51")
     maxSeatId = 0
@@ -259,6 +291,8 @@ def day5_1(data):
         seatID = row*8+column
         if seatID > maxSeatId:
             maxSeatId = seatID
+    
+    AssertExpectedResult(850, maxSeatId, 1)
     return maxSeatId
 
 def day5_2(data):     
@@ -278,11 +312,17 @@ def day5_2(data):
         seatID = row*8+column
         results.append(seatID)
 
+    result = 0
     for seat in seats:
         if seat-1 in results and seat+1 in results and seat not in results:
-            return seat
+            result = seat
+            break
 
+    AssertExpectedResult(599, result, 2)
+    return result
 
+#Day 6, part 1: 6686 (0.004 secs)
+#Day 6, part 2: 3476 (0.003 secs)
 def day6_1(data):     
     #data = read_input(2020, "61")
     
@@ -306,11 +346,12 @@ def day6_1(data):
                     None
     sum +=count
 
+    AssertExpectedResult(6686, sum, 1)
     return sum
 
 def processUniqueAnswers(answers, groupSize):
     count = 0
-    for k, v in answers.items():
+    for _, v in answers.items():
         if v == groupSize:
             count+= 1
     return count
@@ -336,6 +377,7 @@ def day6_2(data):
 
     sum += processUniqueAnswers(answers, groupSize)
 
+    AssertExpectedResult(3476, sum, 2)
     return sum
 
 def printBags(bags):
@@ -376,7 +418,8 @@ def find_bag(graph, start, end, path=[]):
                 return newpath
     return None
     
-
+#Day 7, part 1: 179 (0.131 secs)
+#Day 7, part 2: 18925 (0.003 secs)
 def day7_1(data):     
     #data = read_input(2020, "71")
     bags = buildGraphForBags(data)
@@ -388,6 +431,8 @@ def day7_1(data):
         p = find_bag(bags, key, target)
         if p != None:
             count += 1
+    
+    AssertExpectedResult(179, count, 1)
     return count
 
 def computeBags(bags, total, contents):
@@ -406,18 +451,17 @@ def day7_2(data):
     target = 'shiny gold'
     
     contents = bags[target]
-    return computeBags(bags, 0, contents)
+    result = computeBags(bags, 0, contents)
+    AssertExpectedResult(18925, result, 2)
+    return result
 
 
 def preventInfiniteLoop(data):
     visited = set()
     machine = HandheldMachine(data)
-    machine.program_counter = 0
 
     while True:  
-        #acumulator, pc = handheldMachine(data, pc, acumulator) 
-        machine.runInstruction(machine.program_counter)
-
+        machine.runStep()
         # if we reach this state it means we are in an infinite loop
         if machine.program_counter in visited:
             break
@@ -430,53 +474,26 @@ def preventInfiniteLoop(data):
 #Day 8, part 2: 1532 (0.019 secs)
 def day8_1(data):    
     #data = read_input(2020, "81")
-    return preventInfiniteLoop(data)
+    result = preventInfiniteLoop(data)
+    AssertExpectedResult(1675, result, 1)
+    return result
 
-def replaceOperation(program, pc):
-    instruction = program[pc]
-    op = instruction[:3]    
-    
-    if op == 'jmp':
-       program[pc] = program[pc].replace('jmp','nop')
-    elif op == 'nop':
-       program[pc] = program[pc].replace('nop','jmp')
-    
-    return program
-
-def handheldMachine(program, pc, acumulator):
-        instruction = program[pc] 
-        op = instruction[:3]
-        arg = int(instruction[3:])   
-                
-        if op == 'acc':
-            acumulator += arg
-            pc += 1
-        elif op == 'jmp':
-            pc += arg
-        elif op == 'nop':
-            pc += 1
-
-        return (acumulator, pc)
 
 def fixInfiniteLoop(data, switchOperations):    
     success = False
     targetPC = len(data)
 
     machine = HandheldMachine(data)
-    machine.program_counter = 0
-
     while not success:
         visited = set()  
         machine.reset()             
         switchPC = switchOperations.pop(0)
         machine.swapOperation(switchPC)
-        #program = replaceOperation(list(data), switchPC)
 
-        while True:           
-                                          
-            machine.runInstruction(machine.program_counter)
+        while True:                                                  
+            machine.runStep()
             
-            # if we reach the last intruction then we fixed the infinite loop!
+            # if we reach the last instruction then we fixed the infinite loop!
             if machine.program_counter  == targetPC:
                 success = True
                 break
@@ -489,35 +506,6 @@ def fixInfiniteLoop(data, switchOperations):
 
     return machine.accumulator
 
-def fixInfiniteLoopOriginal(data, switchOperations):    
-    success = False
-    targetPC = len(data)
-
-    pc = 0
-
-    while not success:
-        visited = set()  
-        pc = 0
-        acumulator = 0            
-        switchPC = switchOperations.pop(0)
-        program = replaceOperation(list(data), switchPC)
-
-        while True:           
-                                          
-            acumulator, pc = handheldMachine(program, pc, acumulator)
-            
-            # if we reach the last intruction then we fixed the infinite loop!
-            if pc  == targetPC:
-                success = True
-                break
-
-            # if we reach this state it means we are in an infinite loop :(
-            if pc  in visited:
-                break
-            else:
-                visited.add(pc)            
-
-    return acumulator
 
 def preprocess(data):
     switchOperations = []
@@ -533,7 +521,9 @@ def day8_2(data):
     #data = read_input(2020, "81")
 
     switchOperations = preprocess(data)
-    return fixInfiniteLoopOriginal(data, switchOperations)
+    result = fixInfiniteLoop(data, switchOperations)
+    AssertExpectedResult(1532, result, 2)
+    return result
 
 
 def sumSearch(data, sum, preamble, preambleSize):    
@@ -549,6 +539,8 @@ def sumSearch(data, sum, preamble, preambleSize):
 
     return False  
 
+#Day 9, part 1: 27911108 (0.004 secs)
+#Day 9, part 2: 4023754 (0.004 secs)
 def day9_1(data):    
     #data = read_input(2020, "91")
     data = [int(numeric_string) for numeric_string in data]
@@ -556,11 +548,17 @@ def day9_1(data):
     preambleSize = 25
     preamble = 0
 
+    result = 0
     for number in data[preambleSize:]:
         valid = sumSearch(data, number, preamble, preambleSize)
         preamble += 1
         if not valid:
-            return number
+            result = number
+            break
+
+    AssertExpectedResult(27911108, result, 1)
+    return result
+        
 
 def breakXMAS(data, num, preambleSize):
     max = len(data)
@@ -583,7 +581,9 @@ def day9_2(data):
     preambleSize = 25
     #sum = 127
     #preambleSize = 5
-    return breakXMAS(data, sum, preambleSize)
+    result = breakXMAS(data, sum, preambleSize)
+    AssertExpectedResult(4023754, result, 2)
+    return result
 
 def checkAdapterArrangement(data, deviceJoltage):
     jolt = 0
@@ -593,7 +593,6 @@ def checkAdapterArrangement(data, deviceJoltage):
 
     data = [0] + data + [data[-1] + 3]
     
-
     deltaJoltage = 3
     diffVoltages = list()
 
@@ -611,8 +610,10 @@ def checkAdapterArrangement(data, deviceJoltage):
             #    return False, 0
 
     #print(diffVoltages)
-    return jolt + deltaJoltage >= deviceJoltage, diff1 * diff3, diffVoltages
+    return diff1 * diff3, diffVoltages
 
+#Day 10, part 1: 2590 (0.000 secs)
+#Day 10, part 2: 296196766695424 (0.033 secs)
 def day10_1(data):    
     #data = read_input(2020, "102")
     data = [int(numeric_string) for numeric_string in data]
@@ -620,7 +621,8 @@ def day10_1(data):
     deltaJoltage = 3
     deviceJoltage = max(data) + deltaJoltage
 
-    isValid, result, _ = checkAdapterArrangement(data, deviceJoltage)
+    result, _ = checkAdapterArrangement(data, deviceJoltage)
+    AssertExpectedResult(2590, result, 1)
     return result
 
 def buildGraphForVoltages(data):
@@ -679,7 +681,7 @@ def matrixAdjanciesBasedSolution(data):
         aux = aux @ m
         sol_part_2 += aux[0, n_lines - 1]
     '''
-
+    data.insert(0,0)
     n = len(data)
     f = lambda i, j : j > i and data[j] - data[i] <= 3
     m = np.fromfunction(np.vectorize(f), (n, n), dtype=np.int64).astype(np.int64)
@@ -688,7 +690,7 @@ def matrixAdjanciesBasedSolution(data):
     aux = np.linalg.matrix_power(m, n)
     ans = aux[0, n - 1]
 
-    return ans*2
+    return ans
 
 def day10_2(data):    
     #data = read_input(2020, "102")
@@ -707,18 +709,19 @@ def day10_2(data):
     #print(len(find_all_paths(g, 0, target)))
     
     # solution based on patterns
-    isValid, result, diffVoltages = checkAdapterArrangement(data, deviceJoltage) 
+    result, diffVoltages = checkAdapterArrangement(data, deviceJoltage) 
 
     string_ints = [str(int) for int in diffVoltages]    
     str_of_ints = "".join(string_ints)
     str_of_ints = (str_of_ints.replace("1111","A").replace("111","B").replace("11","C") )
     result = (7 ** str_of_ints.count("A")) * (4 ** str_of_ints.count("B")) * (2 ** str_of_ints.count("C"))
     
+    AssertExpectedResult(296196766695424, result, 2)
     #return result
-    print(result == matrixAdjanciesBasedSolution(data))
-
-    return matrixAdjanciesBasedSolution(data)
-
+    #print(result == matrixAdjanciesBasedSolution(data))
+    result = matrixAdjanciesBasedSolution(data)
+    AssertExpectedResult(296196766695424, result, 2)
+    return result
 
 
 def countOccurencesInDirection(map, x, y, xInc, yInc, seat, rows, columns):
@@ -785,6 +788,8 @@ def shouldStop(oldMap, newMap):
 
     return shouldStop, count
 
+#Day 11, part 1: 2222 (3.186 secs)
+#Day 11, part 2: 2032 (2.932 secs)
 def day11_1(data):   
     #data = read_input(2020, "111")
     
@@ -794,13 +799,14 @@ def day11_1(data):
         newMap, changed = applySeatRules(oldMap)
         if not changed:              
             count = sum( [ seatRow.count("#") for seatRow in newMap])
-            return count
+            break
             #break
         #printMap(m)
         # initial approach until I changed applySeatRules
-        #stop, count = shouldStop(oldMap, newMap)        
-
-
+        #stop, count = shouldStop(oldMap, newMap)   
+           
+    AssertExpectedResult(2222, count, 1)
+    return count  
 
 def applyNewSeatRules(map):
     newMap = buildMapGrid(map)
@@ -853,16 +859,18 @@ def day11_2(data):
     #data = read_input(2020, "111")
  
     newMap = data 
-    count = 0
+    result = 0
     while True:
         oldMap = newMap     
         newMap, changed = applyNewSeatRules(oldMap)
         printMap(newMap)
 
         if not changed:              
-            return sum( [ seatRow.count("#") for seatRow in newMap])
-
-
+            result = sum( [ seatRow.count("#") for seatRow in newMap])
+            break
+    AssertExpectedResult(2032 , result, 2)
+    return result
+    
 
 def turnDirection(direction, action):
     '''
@@ -939,11 +947,12 @@ def PASystem(data):
 
     return abs(x) + abs(y)
 
-
+#Day 12, part 1: 1007 (0.002 secs)
+#Day 12, part 2: 41212 (0.002 secs)
 def day12_1(data):   
     #data = read_input(2020, "121")   
     result = PASystem(data)
-    print(result == 1007)
+    AssertExpectedResult(1007, result, 1)
     return result
 
 def moveInDirection(action, value, waypointX, waypointY):    
@@ -1021,8 +1030,7 @@ def PASystemWithWaypoint(data):
 def day12_2(data):   
     #data = read_input(2020, "121")
     result = PASystemWithWaypoint(data)
-
-    print(result == 41212)
+    AssertExpectedResult(41212, result, 2)
     return result
 
 
@@ -1037,9 +1045,8 @@ def readInput(data):
     return timestamp, busIDs, data[1].split(',')
 
 
-def is_multiple(x, y):
-    return x % y == 0
-
+#Day 13, part 1: 410 (0.001 secs)
+#Day 13, part 2: 600691418730595 (0.002 secs)
 def day13_1(data):   
     #data = read_input(2020, "136")   
 
@@ -1053,38 +1060,39 @@ def day13_1(data):
     for bus in busIDs:
         #print("Schedule for bus", bus,":")
 
-        for k in range(timestamp, (timestamp-bus) + i*4):
-            if is_multiple(k, bus):
+        for k in range(timestamp, (timestamp-bus) + i):
+            if k % bus == 0: # k is multiple of bus
                 results[bus] = k
                 break
     
     bus = min(results.items(), key=operator.itemgetter(1))[0]
 
-    return bus * (results[bus] - timestamp)
+    result = bus * (results[bus] - timestamp)
+    AssertExpectedResult(410, result, 1)
+    return result
 
 def computeMinimumTimestamp(schedule, i, step):
     delta = sys.maxsize
     init = i
 
     #print("Searching starting in",init,"with step", step)
-    # limit search ranged based on previous schedule iteration
-    for tt in range(init, init + delta, step):    
-        t = 0
+    # limit search range based on previous schedule iteration results
+    for timestamp in range(init, init + delta, step):    
+        offset = 0
         valid = True
 
         # check buses in schedule
-        for n in schedule:
-            if n != 'x':
+        for bus in schedule:
+            if bus != 'x':
                 # compute (timestamp + offset mod busId)
-                # if timestamp + offset is not a multiple of the busId then we can stop
-                if not is_multiple(tt + t, int(n)):
+                # if timestamp + offset is not a multiple of the bus then we can stop
+                if (timestamp + offset) % int(bus) != 0: 
                     valid = False
-            t += 1
+            offset += 1
 
         # after checking all the buses IDs if all were valid we got our timestamp!
         if valid:
-            return tt
-        
+            return timestamp       
             
 
 def day13_2(data):   
@@ -1099,7 +1107,15 @@ def day13_2(data):
         1789,37,47,1889 first occurs at timestamp 1202161486
     '''
 
-    _, busIDs, schedule = readInput(data)
+    '''
+    print(is_multiple(1068781 + 0, 7))
+    print(is_multiple(1068781 + 1, 13))
+    print(is_multiple(1068781 + 4, 59))
+    print(is_multiple(1068781 + 6, 31))
+    print(is_multiple(1068781 + 7, 19))
+    ''' 
+
+    _,_, schedule = readInput(data)
     results = []
     t = 0
 
@@ -1119,16 +1135,18 @@ def day13_2(data):
             #print("T for schedule",schedule[0:i],"is",t)
             results.append(t)
 
+    AssertExpectedResult(600691418730595, t, 2)
     return t
     #return t + math.gcd(results[0], results[1])
     
-    '''
-    print(is_multiple(1068781 + 0, 7))
-    print(is_multiple(1068781 + 1, 13))
-    print(is_multiple(1068781 + 4, 59))
-    print(is_multiple(1068781 + 6, 31))
-    print(is_multiple(1068781 + 7, 19))
-    '''  
+def day14_1(data):    
+    data = read_input(2020, "141")
+    #data = [int(numeric_string) for numeric_string in data]   
+    #data = sorted(data, key=int)  
+
+    result = 0
+    AssertExpectedResult(0, result, 1)
+    return data
 
 
 if __name__ == "__main__":
