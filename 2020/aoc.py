@@ -23,12 +23,10 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
-from common.utils import read_input, main, clear, AssertExpectedResult  # NOQA: E402
+from common.utils import read_input, main, clear, AssertExpectedResult, ints  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
-
-#from aocd import get_data #, lines, numbers
 
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
@@ -1141,15 +1139,141 @@ def day13_2(data):
     return t
     #return t + math.gcd(results[0], results[1])
     
-def day14_1(data):    
-    data = []
-    #data = read_input(2020, "141")
-    #data = [int(numeric_string) for numeric_string in data]   
-    #data = sorted(data, key=int)  
+def resetNumber(mask):
+    number = ['0'] * 36
+    i = 0
+    for bit in mask:
+        if bit != 'X':
+            number[i] = mask[i]
+        i += 1
+    return number
 
-    result = 0
-    AssertExpectedResult(0, result, 1)
-    return data
+def memoryAddressDecoder(data, version):
+    memory = {}
+    # stored inverted
+    mask =  ['X'] * 36    
+
+    for cmd in data:        
+        args = cmd.split("=")        
+        operation = args[0].strip()
+        value = args[1].strip()
+
+        if operation == 'mask':
+            mask = list(value)
+            mask.reverse()
+        else:
+            
+            position = operation.split("[")[1].split("]")[0]
+
+            if version == 1:
+                value = applyMaskToNumber(mask, value)
+                memory = updateMemory(position, value, memory)            
+            elif version == 2:
+                #print("Processing:",args,"with mask", str(''.join(mask)))
+                positions = applyMaskToAddress(mask, position)
+                for pos in positions:
+                    memory = updateMemory(pos, int(value), memory)            
+
+    return memory
+
+
+#Day 14, part 1: 17765746710228 (0.004 secs)
+#Day 14, part 2: 4401465949086 (0.251 secs)
+def day14_1(data):    
+    #data = read_input(2020, "141")
+
+    memory = memoryAddressDecoder(data, 1)
+    result = sum(memory.values())
+
+    AssertExpectedResult(17765746710228, result, 1)
+    return result
+
+def convertToDecimal(number):
+    # invert to convert to decimal
+    number.reverse()  
+    
+    # convert to decimal
+    decimal = int(''.join(number),2)
+    return decimal
+
+def expandFloatingBits(number):
+    positions = list()
+    # convert to a string
+    address = str(''.join(number))
+
+    #print("Expanding",str(''.join(number)))
+    #print(str(''.join(number)).count('X'))
+    
+    addresses = [address]
+    while len(addresses) != 0:
+        addr = addresses.pop()
+        if addr.count('X') == 0:
+            positions.append(convertToDecimal(list(addr)))
+        else:
+            addresses.append(addr.replace('X','1', 1))
+            addresses.append(addr.replace('X','0', 1))
+
+    #print("Addresses: ",len(positions))
+    #print("Addresses: ",positions)
+    return positions
+
+def applyMaskToAddress(mask, address):    
+    # kept inverted
+    number = resetNumber(mask)
+
+    # convert to binary then to a list
+    binary = list(bin(int(address))) 
+    # keep it inverted           
+    binary.reverse()         
+
+    for i in range(len(mask)):
+        if mask[i] != '0':
+            number[i] = mask[i]
+        else:
+            if i > len(binary)-3:
+                number[i] = mask[i]
+            else:
+                number[i] = binary[i]            
+    
+    # deal with floating bits
+    return expandFloatingBits(number)   
+
+
+def applyMaskToNumber(mask, value):
+    # kept inverted
+    number = resetNumber(mask)
+
+    # convert to binary then a list
+    binary = list(bin(int(value))) 
+    # keep it inverted           
+    binary.reverse()         
+
+    for i in range(len(binary)-2):
+        if mask[i] != 'X':
+            number[i] = mask[i]
+        else:
+            number[i] = binary[i]            
+    
+    # invert to convert to decimal
+    number.reverse()          
+    # convert to decimal
+    decimal = int(''.join(number),2)
+
+    return decimal
+
+def updateMemory(position, value, memory):    
+    # update memory
+    memory[position] = value
+    return memory
+
+def day14_2(data):    
+    #data = read_input(2020, "142")
+
+    memory = memoryAddressDecoder(data, 2)
+    #print(memory)
+    result = sum(memory.values())
+    AssertExpectedResult(4401465949086, result, 2)
+    return result
 
 
 if __name__ == "__main__":

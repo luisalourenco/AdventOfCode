@@ -70,6 +70,9 @@ def read_input(year, day):
 def AssertExpectedResult(expected, result, part):
     print("( Part",part,") Correct result:", expected == result)
 
+def ints(data):
+    return [int(n) for n in data]
+
 def main(argv_, globals_, year):
     start_day = None
     if len(argv_) > 1:
