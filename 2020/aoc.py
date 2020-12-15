@@ -616,7 +616,7 @@ def checkAdapterArrangement(data, deviceJoltage):
 #Day 10, part 2: 296196766695424 (0.033 secs)
 def day10_1(data):    
     #data = read_input(2020, "102")
-    data = [int(numeric_string) for numeric_string in data]
+    data = ints(data)
 
     deltaJoltage = 3
     deviceJoltage = max(data) + deltaJoltage
@@ -694,7 +694,7 @@ def matrixAdjanciesBasedSolution(data):
 
 def day10_2(data):    
     #data = read_input(2020, "102")
-    data = [int(numeric_string) for numeric_string in data]   
+    data = ints(data)
     data = sorted(data, key=int)       
 
     deltaJoltage = 3
@@ -1273,6 +1273,71 @@ def day14_2(data):
     #print(memory)
     result = sum(memory.values())
     AssertExpectedResult(4401465949086, result, 2)
+    return result
+
+
+def updateLastSpoken(numbersSpoken, lastSpoken, turn):
+    if lastSpoken not in numbersSpoken:
+        numbersSpoken[lastSpoken] = [turn]
+    else:
+        turns = numbersSpoken[lastSpoken]
+        if len(turns) == 1:
+            numbersSpoken[lastSpoken].append(turn)
+        elif len(turns) >= 2:
+            turns = numbersSpoken[lastSpoken]
+            # update turns spoken
+            turns[0] = turns[1]
+            turns[1] = turn
+            numbersSpoken[lastSpoken] = turns
+        else:
+            numbersSpoken[lastSpoken].append(turn)
+    return numbersSpoken
+
+def memoryGame(numbers, maxTurns):
+    numbersSpoken = {}
+    lastSpoken = 0
+    
+    turn = 1
+    # initial rounds done
+    for number in numbers:
+        numbersSpoken[number] = [turn]
+        lastSpoken = number  
+        turn += 1
+
+    for turn in range(len(numbers) + 1, maxTurns + 1):
+        # first time
+        if lastSpoken not in numbersSpoken:
+            numbersSpoken[number] = [turn]
+            lastSpoken = 0
+
+        else:
+            turns = numbersSpoken[lastSpoken]
+            # first time
+            if len(turns) == 1:
+                lastSpoken = 0
+            # number already spoken
+            else:
+                turns = numbersSpoken[lastSpoken]
+                res = turns[1] - turns[0]                
+                lastSpoken = res     
+
+            numbersSpoken = updateLastSpoken(numbersSpoken, lastSpoken, turn)
+        #print("Turn",turn,":",lastSpoken)   
+    
+    return lastSpoken
+        
+def day15_1(data):    
+    #data = read_input(2020, "151") 
+    numbers = ints(data[0].split(","))
+    result = memoryGame(numbers, 2020)        
+    AssertExpectedResult(319, result, 1)
+    return result
+
+def day15_2(data):    
+    #data = read_input(2020, "151")
+    numbers = ints(data[0].split(","))
+    result = memoryGame(numbers, 30000000)  
+    AssertExpectedResult(2424, result, 2)
     return result
 
 
