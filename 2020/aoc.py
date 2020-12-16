@@ -27,6 +27,7 @@ from common.utils import read_input, main, clear, AssertExpectedResult, ints  # 
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
+#from memory_profiler import profile
 
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
@@ -1338,6 +1339,169 @@ def day15_2(data):
     numbers = ints(data[0].split(","))
     result = memoryGame(numbers, 30000000)  
     AssertExpectedResult(2424, result, 2)
+    return result
+
+def isTicketValid(ticket, rules):
+    ticketValues = ints(ticket.split(","))
+    isValid = True
+    errorRate = 0
+    for value in ticketValues:
+        validRules = 0
+        # values must be valid for at least one rule
+        for k,v in rules.items():
+            conditions = v.split("or")
+            leftCondition = conditions[0].strip()
+            rightCondition = conditions[1].strip()
+
+            rangeLeft = ints(leftCondition.split("-"))
+            rangeRight = ints(rightCondition.split("-"))
+
+            if rangeLeft[0] <= value <= rangeLeft[1] or rangeRight[0] <= value <= rangeRight[1]:
+                validRules += 1
+            #else:
+            #    print("Failed condition",k)
+            #    print(value)
+
+        if validRules == 0:
+            errorRate += value
+            isValid = False
+    return isValid, errorRate
+
+def processTicketsInput(data):
+    rules = {}
+    rulesProcessingDone = False
+    myTicketProcessing = False 
+    nearbyTicketsProcessing = False
+    nearbyTickets = list()
+    for info in data:
+        
+        if info == '':
+            rulesProcessingDone = True
+        elif not rulesProcessingDone:
+            fieldInfo = info.split(":")
+            rules[fieldInfo[0].strip()] = fieldInfo[1].strip()
+        elif info == 'your ticket:':
+                myTicketProcessing = True
+        elif myTicketProcessing:
+            myTicket = info
+            myTicketProcessing  = False
+            nearbyTicketsProcessing = True
+        elif nearbyTicketsProcessing:
+            nearbyTickets.append(info)
+    nearbyTickets.pop(0)
+
+    return rules, myTicket, nearbyTickets
+
+#Day 16, part 1: 19060 (0.186 secs)
+#Day 16, part 2: 953713095011 (0.886 secs)
+def day16_1(data):    
+    #data = read_input(2020, "161") 
+    #data = ints(data)
+    #data = sorted(data, key=int)
+
+    rules, _, nearbyTickets = processTicketsInput(data)
+    
+    total = 0
+    for nearbyTicket in nearbyTickets:
+        _, errorRate = isTicketValid(nearbyTicket, rules)
+     #   print(nearbyTicket,"is valid?", isValid)
+        total += errorRate
+    
+
+    result = total
+    AssertExpectedResult(19060, result, 1)
+    return total
+
+def pruneInvalidTickets(nearbyTickets, rules):
+    validNearbyTickets = list()
+    for nearbyTicket in nearbyTickets:
+        isValid, errorRate = isTicketValid(nearbyTicket, rules)
+        if isValid:
+            validNearbyTickets.append(nearbyTicket)
+        #print(nearbyTicket,"is valid?", isValid)
+    return validNearbyTickets
+
+def isRuleValid(ruleCondition, value):
+    conditions = ruleCondition.split("or")
+    leftCondition = conditions[0].strip()
+    rightCondition = conditions[1].strip()
+
+    rangeLeft = ints(leftCondition.split("-"))
+    rangeRight = ints(rightCondition.split("-"))
+
+    return rangeLeft[0] <= value <= rangeLeft[1] or rangeRight[0] <= value <= rangeRight[1]
+
+def updateFieldsOrder(fieldsOrder, isRuleValid, position, ruleName):
+    
+    #print("fieldsOrder:", fieldsOrder)
+    #print("isRuleValid:", isRuleValid)
+    #print("position:", position)
+    #print("ruleName:", ruleName)
+    if position not in fieldsOrder:
+        fieldsOrder[position] = {ruleName: isRuleValid}
+    else:
+        fields = fieldsOrder[position]
+        if ruleName in fields:
+            fields[ruleName] = fields[ruleName] and isRuleValid
+        else:
+            fields[ruleName] = isRuleValid
+        fieldsOrder[position] = fields
+    
+    return fieldsOrder
+
+def validateFieldsOrder(fieldsOrder):
+
+    # don't feel like implementing a fix point algorithm
+    for _ in range(100):
+        for k,v in fieldsOrder.items():
+            possibleFields = list(field for field,val in v.items() if val)
+            if len(possibleFields) == 1:
+                for kk, _ in fieldsOrder.items():
+                    if k != kk:
+                        fieldsOrder[kk][possibleFields[0]] = False
+    return fieldsOrder
+
+def getTicketFieldsOrder(nearbyTickets, rules):
+
+    fieldsOrder = {}
+    for ticket in nearbyTickets:
+        ticketsValues = ints(ticket.split(","))
+
+        for position in range(len(ticketsValues) ):
+            value = int(ticketsValues[position])
+            for k,v in rules.items():
+                fieldsOrder = updateFieldsOrder(fieldsOrder, isRuleValid(v, value), position, k)
+        fieldsOrder = validateFieldsOrder(fieldsOrder)
+
+    return fieldsOrder
+
+def generateDeparturePositions(fieldsToCheck, fieldsOrder):
+    positions = []
+
+    while True:
+        fieldToCheck = fieldsToCheck.pop()
+        for position, fields in fieldsOrder.items():
+            if fields[fieldToCheck]:
+                positions.append(position)
+        
+        if len(fieldsToCheck) == 0:
+            break
+
+    return positions
+
+def day16_2(data):    
+    #data = read_input(2020, "162") 
+
+    rules, myTicket, nearbyTickets = processTicketsInput(data)
+    nearbyTickets = pruneInvalidTickets(nearbyTickets, rules)
+    fieldsOrder = getTicketFieldsOrder(nearbyTickets, rules)
+    fieldsToCheck = ['departure location','departure station','departure platform','departure track','departure date', 'departure time']
+    positions = generateDeparturePositions(fieldsToCheck, fieldsOrder)
+    
+    myTicket = ints(myTicket.split(","))    
+    result = myTicket[positions[0]] * myTicket[positions[1]] * myTicket[positions[2]] * myTicket[positions[3]] * myTicket[positions[4]] * myTicket[positions[5]]
+    
+    AssertExpectedResult(953713095011, result, 2)
     return result
 
 
