@@ -1396,8 +1396,6 @@ def processTicketsInput(data):
 #Day 16, part 2: 953713095011 (0.886 secs)
 def day16_1(data):    
     #data = read_input(2020, "161") 
-    #data = ints(data)
-    #data = sorted(data, key=int)
 
     rules, _, nearbyTickets = processTicketsInput(data)
     
@@ -1415,7 +1413,7 @@ def day16_1(data):
 def pruneInvalidTickets(nearbyTickets, rules):
     validNearbyTickets = list()
     for nearbyTicket in nearbyTickets:
-        isValid, errorRate = isTicketValid(nearbyTicket, rules)
+        isValid, _ = isTicketValid(nearbyTicket, rules)
         if isValid:
             validNearbyTickets.append(nearbyTicket)
         #print(nearbyTicket,"is valid?", isValid)
@@ -1432,11 +1430,7 @@ def isRuleValid(ruleCondition, value):
     return rangeLeft[0] <= value <= rangeLeft[1] or rangeRight[0] <= value <= rangeRight[1]
 
 def updateFieldsOrder(fieldsOrder, isRuleValid, position, ruleName):
-    
-    #print("fieldsOrder:", fieldsOrder)
-    #print("isRuleValid:", isRuleValid)
-    #print("position:", position)
-    #print("ruleName:", ruleName)
+
     if position not in fieldsOrder:
         fieldsOrder[position] = {ruleName: isRuleValid}
     else:
@@ -1502,6 +1496,140 @@ def day16_2(data):
     result = myTicket[positions[0]] * myTicket[positions[1]] * myTicket[positions[2]] * myTicket[positions[3]] * myTicket[positions[4]] * myTicket[positions[5]]
     
     AssertExpectedResult(953713095011, result, 2)
+    return result
+    
+
+def processInitialCubes(data, offset, part = 1):
+    rows = len(data)
+    columns = len(data[0])    
+    active = list()
+
+    for y in range(rows):
+        for x in range(columns): 
+            if data[y][x] == '#':
+                if part == 1:
+                    active.append((x + offset, y + offset, 0))
+                else:
+                    active.append((x + offset, y + offset, 0, 0))
+    
+    return active
+
+def countActiveNeighbours(active, x, y, z, offset, part = 1, w = 0):
+
+    count = 0
+    x += offset
+    y += offset
+
+    if part == 1:
+        for (xx, yy, zz) in active:
+            isNeighbour = abs(xx -x) in [0,1] and abs(yy -y) in [0,1] and abs(zz -z) in [0,1]
+            if isNeighbour:
+                #print((xx , yy, zz),"is an active neighbour!")
+                count += 1
+    else:
+        for (xx, yy, zz, ww) in active:
+            isNeighbour = abs(xx -x) in [0,1] and abs(yy -y) in [0,1] and abs(zz -z) in [0,1] and abs(ww -w) in [0,1]
+            if isNeighbour:
+                #print((xx , yy, zz),"is an active neighbour!")
+                count += 1
+
+    if (x,y,z) in active and part  == 1:
+        return count-1
+    elif (x,y,z,w) in active and part  == 2:
+        return count-1
+    else:
+        return count
+
+def bootProcess(active, cycles, rows, columns, offset):
+    newActives = list()
+
+    for z in range(-cycles, cycles+1):
+        for x in range(-offset , rows + offset):
+            for y in range(-offset, columns + offset): 
+                point = (x + offset, y + offset, z)
+
+                #print("Analysing", point)
+                neighbours = countActiveNeighbours(active, x, y, z, offset)
+                if point in active and (neighbours in [2,3]):
+                    #print("Is active #, will remain active # because it has", neighbours, "neighbours")
+                    newActives.append(point)                
+                elif point not in active and (neighbours == 3):
+                    #print("Was inactive ., will now become active # because it has", neighbours, "neighbours")
+                    newActives.append(point)                
+
+                #print()
+    return newActives
+
+
+def printCubesByLevel(actives, cycle):   
+    for i in range(-cycle, cycle+1):
+        level = [ (x,y,z) for (x,y,z) in actives if z == i]
+        print("Level", i)
+        print(level)
+
+#Day 17, part 1: 448 (1.464 secs)
+#Day 17, part 2: 2400 (103.963 secs)
+def day17_1(data):    
+    #data = read_input(2020, "171") 
+    data = buildMapGrid(data)
+
+    rows = len(data)
+    columns = len(data[0]) 
+    offset = 10
+    cycles = 6
+    active = processInitialCubes(data, offset)
+
+    #printCubesByLevel(active, 0)
+    #print()
+    for c in range(1, cycles+1):
+        active = bootProcess(list(active), c, rows, columns, offset)
+        #print("Cycle",c)
+        #printCubesByLevel(active, c)
+        #print("# Actives:", len(active))
+        #print()
+
+    result = len(active)
+    AssertExpectedResult(448, result, 1)
+    return result
+
+def bootProcess2(active, cycles, rows, columns, offset):
+    newActives = list()
+
+    for z in range(-cycles, cycles+1):
+        for w in range(-cycles, cycles+1):
+            for x in range(-offset , rows + offset):
+                for y in range(-offset, columns + offset): 
+                    point = (x + offset, y + offset, z, w)
+                    #print("Analysing", point)
+                    neighbours = countActiveNeighbours(active, x, y, z, offset, 2, w)
+                    if point in active and (neighbours in [2,3]):
+                        #print("Is active #, will remain active # because it has", neighbours, "neighbours")
+                        newActives.append(point)                
+                    elif point not in active and (neighbours == 3):
+                        #print("Was inactive ., will now become active # because it has", neighbours, "neighbours")
+                        newActives.append(point)                
+
+                    #print()
+    return newActives
+
+
+
+def day17_2(data):    
+    #data = read_input(2020, "171") 
+    data = buildMapGrid(data)
+
+    rows = len(data)
+    columns = len(data[0]) 
+
+    offset = 10
+    cycles = 6
+    active = processInitialCubes(data, offset, 2)
+
+    for c in range(1, cycles+1):
+        active = bootProcess2(list(active), c, rows, columns, offset)
+
+    result = len(active)
+    AssertExpectedResult(2400, result, 2)
     return result
 
 
