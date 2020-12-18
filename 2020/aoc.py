@@ -27,7 +27,8 @@ from common.utils import read_input, main, clear, AssertExpectedResult, ints  # 
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
-#from memory_profiler import profile
+from lark import Lark, Transformer, v_args
+
 
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
@@ -1497,7 +1498,7 @@ def day16_2(data):
     
     AssertExpectedResult(953713095011, result, 2)
     return result
-    
+
 
 def processInitialCubes(data, offset, part = 1):
     rows = len(data)
@@ -1568,14 +1569,14 @@ def printCubesByLevel(actives, cycle):
         print(level)
 
 #Day 17, part 1: 448 (1.464 secs)
-#Day 17, part 2: 2400 (103.963 secs)
+#Day 17, part 2: 2400 (43.614 secs)
 def day17_1(data):    
     #data = read_input(2020, "171") 
     data = buildMapGrid(data)
 
     rows = len(data)
     columns = len(data[0]) 
-    offset = 10
+    offset = 5
     cycles = 6
     active = processInitialCubes(data, offset)
 
@@ -1613,7 +1614,6 @@ def bootProcess2(active, cycles, rows, columns, offset):
     return newActives
 
 
-
 def day17_2(data):    
     #data = read_input(2020, "171") 
     data = buildMapGrid(data)
@@ -1621,7 +1621,7 @@ def day17_2(data):
     rows = len(data)
     columns = len(data[0]) 
 
-    offset = 10
+    offset = 5
     cycles = 6
     active = processInitialCubes(data, offset, 2)
 
@@ -1631,6 +1631,85 @@ def day17_2(data):
     result = len(active)
     AssertExpectedResult(2400, result, 2)
     return result
+
+
+''' Day 18 '''
+# These grammars are based on the examples given in Lark documentation, just have to switch the precedence order accordingly
+
+calc_grammar = """
+    ?start: sum
+
+    ?sum: atom
+        | sum "+" atom   -> add
+        | sum "-" atom   -> sub
+        | sum "*" atom  -> mul
+        | sum "/" atom  -> div
+
+    ?atom: NUMBER           -> number
+         | "(" sum ")"
+
+    %import common.NUMBER
+    %import common.WS_INLINE
+
+    %ignore WS_INLINE
+"""
+
+calc_grammar2 = """
+    ?start: product
+
+    ?product: sum
+        | product "*" sum  -> mul
+        | product "/" sum  -> div
+
+    ?sum: atom
+        | sum "+" atom   -> add
+        | sum "-" atom   -> sub
+
+    ?atom: NUMBER           -> number
+         | "(" product ")"
+
+    %import common.NUMBER
+    %import common.WS_INLINE
+
+    %ignore WS_INLINE
+"""
+
+@v_args(inline=True) 
+class CalculateTree(Transformer):
+    from operator import add, mul
+    number = int
+
+
+#Day 18, part 1: 11076907812171.0 (0.103 secs)
+#Day 18, part 2: 283729053022731.0 (0.100 secs)
+def day18_1(data):    
+    #data = read_input(2020, "181") 
+    
+    calc_parser = Lark(calc_grammar, parser='lalr', transformer=CalculateTree())
+    calc = calc_parser.parse
+
+    sum = 0
+    for exp in data:
+        sum += calc(exp)
+
+    result = sum
+    AssertExpectedResult(11076907812171, result, 1)
+    return result
+
+def day18_2(data):    
+    #data = read_input(2020, "181") 
+    
+    calc_parser = Lark(calc_grammar2, parser='lalr', transformer=CalculateTree())
+    calc = calc_parser.parse
+
+    sum = 0
+    for exp in data:
+        sum += calc(exp)
+
+    result = sum
+    AssertExpectedResult(283729053022731, result, 2)
+    return result
+
 
 
 if __name__ == "__main__":
