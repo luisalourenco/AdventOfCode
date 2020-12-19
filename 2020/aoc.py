@@ -28,6 +28,7 @@ from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
 from common.aocVM import HandheldMachine
 from lark import Lark, Transformer, v_args
+from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
 
 
 # pylint: enable=import-error
@@ -1884,22 +1885,68 @@ grammarDay19Part1 = """
     %ignore WS_INLINE
 """
 
-#Day 19, part 1: 224 (2.004 secs)
+def processInputDay19ForCFG(data):
+    # Creation of terminals
+    ter_a = Terminal("a")
+    ter_b = Terminal("b")
+    
+    variables = []
+    productions = []
+
+    messages = []
+    lines = 0
+    for line in data:
+        lines += 1
+        if line == '':
+            messages = data[lines:]
+            break
+        
+        # processing Rules
+        info = line.split(":")
+        subRules = info[1].strip().split("|")        
+            
+        for subRule in subRules:
+            rule = str(info[0].strip())
+
+            # Create vars for CFG
+            ruleVar = Variable(rule)
+            if ruleVar not in variables:
+                variables.append(ruleVar)
+
+            rulesList = subRule.strip().replace('\"','').split(' ')
+            #print(rulesList)
+            # Create productions for CFG
+            if rulesList == ['a']:
+                prod = Production(ruleVar, [ter_a])
+                productions.append(prod)
+            elif rulesList == ['b']:
+                prod = Production(ruleVar, [ter_b])
+                productions.append(prod)
+            else:
+                prod = Production(ruleVar, [Variable(i) for i in rulesList])
+                productions.append(prod)  
+    
+    cfg = CFG(variables, [ter_a, ter_b], Variable("0"), productions)
+    return cfg, messages
+
+
+#Day 19, part 1: 224 (2.004 secs) - Lark
+#Day 19, part 1: 224 (74.343 secs) - CFG using pyformlang
 #Day 19, part 2: 436 (3.966 secs)
 def day19_1(data):    
     #data = read_input(2020, "191") 
 
+    # initial approach based on Lark parser. Problem with this solution is the lack of automation in the grammar generation
     parser = Lark(grammarDay19Part1)
     ast = parser.parse    
-    _, messages = processInputDay19(data)
     
-    #print(rules)
-    #print(messages)
+    cfg, messages = processInputDay19ForCFG(data)
 
     count = 0
     for msg in messages:
         try:
             ast(msg)
+            #if cfg.contains(msg): -- this is really inneficient lol
             count += 1
         except:
             count = count
