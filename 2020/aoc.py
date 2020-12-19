@@ -1679,7 +1679,6 @@ class CalculateTree(Transformer):
     from operator import add, mul
     number = int
 
-
 #Day 18, part 1: 11076907812171.0 (0.103 secs)
 #Day 18, part 2: 283729053022731.0 (0.100 secs)
 def day18_1(data):    
@@ -1704,13 +1703,376 @@ def day18_2(data):
 
     sum = 0
     for exp in data:
+
         sum += calc(exp)
 
     result = sum
     AssertExpectedResult(283729053022731, result, 2)
     return result
 
+def processInputDay19(data):
+    rules = {}
+    messages = []
+    lines = 0
+    for line in data:
+        lines += 1
+        if line == '':
+            messages = data[lines:]
+            break
+        
+        # processing Rules
+        info = line.split(":")
 
+        subRules = info[1].strip().split("|")        
+            
+        for subRule in subRules:
+            rule = int(info[0].strip())
+                
+            rulesList = subRule.strip().replace(' ','').replace('\"','')
+            #if rulesList.isnumeric():
+                 #rulesList = ints(rulesList)
+
+            if rule in rules:
+                rules[rule].append(rulesList)
+            else: 
+                rules[rule] = [rulesList]
+    
+    return rules, messages
+
+
+grammarDay19Part1 = """
+    ?start: zero
+
+    ?eigthy: twenty ten | thritynine twelve
+    ?seventysix: twenty ten | thritynine oneohseven
+    ?nine: twenty two | thritynine seventyfour
+    ?twentytwo: thritynine eightytwo | twenty fourty
+    ?sistyfive: twentyfive twenty | onetwentyseven thritynine
+    ?sisxtyseven: ninetytwo twenty | twentyfour thritynine
+    ?oneohnine: thritynine thritynine | thirtyeight twenty
+    ?fiftyseven: oneohseven thritynine | onethrity twenty
+    ?twentythree: sisxtyseven thritynine | onetwentynine twenty
+    ?eighteen: twenty thritynine | thritynine thritynine
+    ?hundred: ninetysix twenty | oneohnine thritynine
+    ?eightfour: one thritynine | ninetynine twenty
+    ?three: twenty onetwentyeight | thritynine oneten
+    ?fiftyeight: fourtyfour thritynine | seventyseven twenty
+    ?eightthree: ninetysix thritynine | oneohseven twenty
+    ?seventythree: ninetysix twenty | eighteen thritynine
+    ?fourtyeight: eightytwo thritynine | twelve twenty
+    ?thirteen: thritynine onethritytwo | twenty thirtytwo
+    ?twelve: twenty thritynine | twenty twenty
+    ?eightseven: twenty onetwentyeight | thritynine twelve
+    ?seventyfive: thritynine onethrityone | twenty thirtyfive
+    ?eightfive: oneoheight twenty | eigthy thritynine
+    ?ninety: twenty eighteen | thritynine ninetysix
+    ?onetwentyseven: onetwentyone thritynine | eightone twenty
+    ?seventynine: thritynine eightsix | twenty thirtysix
+    ?eighteight: thirtyeight eighteen
+    ?fiveteen: thritynine nine | twenty fiftynine
+    ?oneohseven: twenty thritynine | thritynine twenty
+    ?fourtytwo: twenty fiftyone | thritynine onetwenty
+    ?thirtyseven: oneohsix thritynine | eightfive twenty
+    ?seventyfour: thritynine seventysix | twenty ninetyseven
+    ?onetwentynine: eightseven thritynine | thirtyfour twenty
+    ?onefifteen: twenty eighteen | thritynine oneten
+    ?fourty: thritynine twenty
+    ?twentyfive: eightfour thritynine | onetwelve twenty
+    ?ninetyseven: fourty thritynine | ninetysix twenty
+    ?ninetysix: twenty thritynine
+    ?oneohone: onefourteen twenty | eightnine thritynine
+    ?eightytwo: thritynine thritynine | twenty twenty
+    ?onenineteen: twenty thirtyeight | thritynine thritynine
+    ?thirtythree: thritynine thritynine
+    ?onetwentyeight: thritynine twenty | twenty thirtyeight
+    ?thirtyone: thritynine fourtythree | twenty oneeightteen
+    ?four: twelve thirtyeight
+    ?seventyseven: ninetyeight thritynine | thirty twenty
+    ?fourtynine: thritynine sixty | twenty eighteight
+    ?seventytwo: ninetysix thritynine | oneten twenty
+    ?oneseventeen: twenty onetwentsix | thritynine sixtynine
+    ?fiftysix: twelve thritynine | oneohnine twenty
+    ?fourtythree: twentyone thritynine | oneohthree twenty
+    ?fiftytwo: oneohnine thritynine | ten twenty
+    ?thirtysix: twenty oneohseven | thritynine fourty
+    ?onetwentsix: twenty twentysix | thritynine fourtyfive
+    ?sixtynine: twenty fiftythree | thritynine fourteen
+    ?oneeleven: seventeen thritynine | fourtyeight twenty
+    ?onetwentytwo: thritynine seventy | twenty ninetysix
+    ?fiftyfive: oneohnine thirtyeight
+    ?onethirteen: sixtysix twenty | fourtyseven thritynine
+    ?twentyone: seven thritynine | oneohfive twenty
+    ?onetwelve: twentytwo twenty | fiftyfour thritynine
+    ?ninetytwo: twelve twenty | onetwentyeight thritynine
+    ?eightnine: onetwentyeight twenty | oneohseven thritynine
+    ?thirtyeight: twenty | thritynine
+    ?thirtyfour: oneohseven thritynine | ten twenty
+    ?oneohfour: twenty eighteen | thritynine onethrity
+    ?fourtyseven: eightytwo twenty | twelve thritynine
+    ?two: thritynine sixtysix | twenty onefifteen
+    ?seventyone: thritynine six | twenty ninetytwo
+    ?five: twenty eighteight | thritynine twentyseven
+    ?twentyseven: oneohnine twenty | fourty thritynine
+    ?thirtytwo: thritynine ninety | twenty fiftyseven
+    ?onetwentythree: thritynine ten | twenty ninetysix
+    ?ninetyfour: twenty fourtysix | thritynine oneohnine
+    ?seventeen: thritynine ten | twenty thirtythree
+    ?ninetyone: twenty thirteen | thritynine ninetythree
+    ?oneohthree: thritynine seventyfive | twenty nineteen
+    ?eleven: fourtytwo thirtyone 
+    ?sixtythree: twenty oneohseven | thritynine seventy
+    ?six: twenty ten | thritynine eighteen
+    ?oneten: thirtyeight thirtyeight
+    ?onethritytwo: thritynine sixtyfour | twenty oneohfour
+    ?onethritythree: oneohseven twenty | twelve thritynine
+    ?sixtyone: twenty twelve | thritynine thirtythree
+    ?sixteen: thritynine thirtythree | twenty fourtysix
+    ?fifty: thritynine thirtysix | twenty six
+    ?ninetyfive: twenty oneohtwo | thritynine fiftytwo
+    ?onetwentyfour: twenty seventy | thritynine thirtythree
+    ?onethrityone: thritynine sixtythree | twenty onetwentyfour
+    ?sixtyfour: twenty ninetysix | thritynine oneohseven
+    ?fiftyone: thritynine ninetyone | twenty oneseventeen
+    ?seven: five thritynine | oneeleven twenty
+    ?ninetynine: fourtysix twenty | oneohseven thritynine
+    ?one: eightytwo thritynine | onenineteen twenty
+    ?sixty: twenty onetwentyeight | thritynine eightytwo
+    ?thirty: twenty onetwentytwo | thritynine fiftytwo
+    ?onetwentyfive: thritynine ninetysix | twenty ten
+    ?eightone: onetwentyfive thritynine | sixtyone twenty
+    ?eightsix: thritynine ninetysix | twenty ninetysix
+    ?onethrity: thritynine twenty | twenty twenty
+    ?ninetythree: sixtytwo twenty | seventyone thritynine
+    ?twentyeight: onethrity twenty | onenineteen thritynine
+    ?onetwenty: fourtyone thritynine | fiftyeight twenty
+    ?fiftyfour: eightytwo thirtyeight
+    ?sixtytwo: seventytwo twenty | twentyeight thritynine
+    ?twentyfour: fourty twenty | ten thritynine
+    ?oneohtwo: eighteen twenty | eightytwo thritynine
+    ?twentysix: twenty fourtyeight | thritynine eightthree
+    ?ten: thritynine twenty | thritynine thritynine
+    ?oneeightteen: fiveteen twenty | sistyfive thritynine
+    ?seventy: twenty thritynine | thritynine thirtyeight
+    ?oneoheight: thritynine oneohseven | twenty onetwentyeight
+    ?fourtysix: twenty twenty
+    ?thritynine: "a"
+    ?sixtyeight: thritynine onenineteen | twenty onetwentyeight
+    ?fiftynine: ninetyfive twenty | fourtynine thritynine
+    ?fourtyone: twentythree thritynine | thirtyseven twenty
+    ?twentynine: twenty sixteen | thritynine seventyeight
+    ?onesixteen: oneoheight thritynine | ninetynine twenty
+    ?thirtyfive: thritynine fiftyfive | twenty four
+    ?fiftythree: ninetyfour twenty | onethritythree thritynine
+    ?twenty: "b"
+    ?ninetyeight: ninetyseven twenty | fiftysix thritynine
+    ?eight: fourtytwo
+    ?nineteen: twenty onethirteen | thritynine onesixteen
+    ?oneohsix: thritynine three | twenty onetwentythree
+    ?fourtyfour: seventynine twenty | fifty thritynine
+    ?fourtyfive: thritynine seventythree | twenty sixtyeight
+    ?zero: eight eleven
+    ?sixtysix: thritynine onetwentyeight | twenty twelve
+    ?seventyeight: thritynine onethrity | twenty fourty
+    ?fourteen: thritynine hundred | twenty onefourteen
+    ?oneohfive: thritynine twentynine | twenty oneohone
+    ?onefourteen: thritynine fourty | twenty eighteen
+    ?onetwentyone: twenty sixtyfour | thritynine ninetytwo
+
+
+    %import common.WS_INLINE
+
+    %ignore WS_INLINE
+"""
+
+#Day 19, part 1: 224 (2.004 secs)
+#Day 19, part 2: 436 (3.966 secs)
+def day19_1(data):    
+    #data = read_input(2020, "191") 
+
+    parser = Lark(grammarDay19Part1)
+    ast = parser.parse    
+    _, messages = processInputDay19(data)
+    
+    #print(rules)
+    #print(messages)
+
+    count = 0
+    for msg in messages:
+        try:
+            ast(msg)
+            count += 1
+        except:
+            count = count
+            #print("no match for",msg)
+
+    result = count
+    AssertExpectedResult(224, result, 1)
+    return result
+
+grammarDay19Part2 = """
+    ?start: zero
+
+    ?eigthy: twenty ten | thritynine twelve
+    ?seventysix: twenty ten | thritynine oneohseven
+    ?nine: twenty two | thritynine seventyfour
+    ?twentytwo: thritynine eightytwo | twenty fourty
+    ?sistyfive: twentyfive twenty | onetwentyseven thritynine
+    ?sisxtyseven: ninetytwo twenty | twentyfour thritynine
+    ?oneohnine: thritynine thritynine | thirtyeight twenty
+    ?fiftyseven: oneohseven thritynine | onethrity twenty
+    ?twentythree: sisxtyseven thritynine | onetwentynine twenty
+    ?eighteen: twenty thritynine | thritynine thritynine
+    ?hundred: ninetysix twenty | oneohnine thritynine
+    ?eightfour: one thritynine | ninetynine twenty
+    ?three: twenty onetwentyeight | thritynine oneten
+    ?fiftyeight: fourtyfour thritynine | seventyseven twenty
+    ?eightthree: ninetysix thritynine | oneohseven twenty
+    ?seventythree: ninetysix twenty | eighteen thritynine
+    ?fourtyeight: eightytwo thritynine | twelve twenty
+    ?thirteen: thritynine onethritytwo | twenty thirtytwo
+    ?twelve: twenty thritynine | twenty twenty
+    ?eightseven: twenty onetwentyeight | thritynine twelve
+    ?seventyfive: thritynine onethrityone | twenty thirtyfive
+    ?eightfive: oneoheight twenty | eigthy thritynine
+    ?ninety: twenty eighteen | thritynine ninetysix
+    ?onetwentyseven: onetwentyone thritynine | eightone twenty
+    ?seventynine: thritynine eightsix | twenty thirtysix
+    ?eighteight: thirtyeight eighteen
+    ?fiveteen: thritynine nine | twenty fiftynine
+    ?oneohseven: twenty thritynine | thritynine twenty
+    ?fourtytwo: twenty fiftyone | thritynine onetwenty
+    ?thirtyseven: oneohsix thritynine | eightfive twenty
+    ?seventyfour: thritynine seventysix | twenty ninetyseven
+    ?onetwentynine: eightseven thritynine | thirtyfour twenty
+    ?onefifteen: twenty eighteen | thritynine oneten
+    ?fourty: thritynine twenty
+    ?twentyfive: eightfour thritynine | onetwelve twenty
+    ?ninetyseven: fourty thritynine | ninetysix twenty
+    ?ninetysix: twenty thritynine
+    ?oneohone: onefourteen twenty | eightnine thritynine
+    ?eightytwo: thritynine thritynine | twenty twenty
+    ?onenineteen: twenty thirtyeight | thritynine thritynine
+    ?thirtythree: thritynine thritynine
+    ?onetwentyeight: thritynine twenty | twenty thirtyeight
+    ?thirtyone: thritynine fourtythree | twenty oneeightteen
+    ?four: twelve thirtyeight
+    ?seventyseven: ninetyeight thritynine | thirty twenty
+    ?fourtynine: thritynine sixty | twenty eighteight
+    ?seventytwo: ninetysix thritynine | oneten twenty
+    ?oneseventeen: twenty onetwentsix | thritynine sixtynine
+    ?fiftysix: twelve thritynine | oneohnine twenty
+    ?fourtythree: twentyone thritynine | oneohthree twenty
+    ?fiftytwo: oneohnine thritynine | ten twenty
+    ?thirtysix: twenty oneohseven | thritynine fourty
+    ?onetwentsix: twenty twentysix | thritynine fourtyfive
+    ?sixtynine: twenty fiftythree | thritynine fourteen
+    ?oneeleven: seventeen thritynine | fourtyeight twenty
+    ?onetwentytwo: thritynine seventy | twenty ninetysix
+    ?fiftyfive: oneohnine thirtyeight
+    ?onethirteen: sixtysix twenty | fourtyseven thritynine
+    ?twentyone: seven thritynine | oneohfive twenty
+    ?onetwelve: twentytwo twenty | fiftyfour thritynine
+    ?ninetytwo: twelve twenty | onetwentyeight thritynine
+    ?eightnine: onetwentyeight twenty | oneohseven thritynine
+    ?thirtyeight: twenty | thritynine
+    ?thirtyfour: oneohseven thritynine | ten twenty
+    ?oneohfour: twenty eighteen | thritynine onethrity
+    ?fourtyseven: eightytwo twenty | twelve thritynine
+    ?two: thritynine sixtysix | twenty onefifteen
+    ?seventyone: thritynine six | twenty ninetytwo
+    ?five: twenty eighteight | thritynine twentyseven
+    ?twentyseven: oneohnine twenty | fourty thritynine
+    ?thirtytwo: thritynine ninety | twenty fiftyseven
+    ?onetwentythree: thritynine ten | twenty ninetysix
+    ?ninetyfour: twenty fourtysix | thritynine oneohnine
+    ?seventeen: thritynine ten | twenty thirtythree
+    ?ninetyone: twenty thirteen | thritynine ninetythree
+    ?oneohthree: thritynine seventyfive | twenty nineteen
+    ?eleven: fourtytwo thirtyone | fourtytwo eleven thirtyone
+    ?sixtythree: twenty oneohseven | thritynine seventy
+    ?six: twenty ten | thritynine eighteen
+    ?oneten: thirtyeight thirtyeight
+    ?onethritytwo: thritynine sixtyfour | twenty oneohfour
+    ?onethritythree: oneohseven twenty | twelve thritynine
+    ?sixtyone: twenty twelve | thritynine thirtythree
+    ?sixteen: thritynine thirtythree | twenty fourtysix
+    ?fifty: thritynine thirtysix | twenty six
+    ?ninetyfive: twenty oneohtwo | thritynine fiftytwo
+    ?onetwentyfour: twenty seventy | thritynine thirtythree
+    ?onethrityone: thritynine sixtythree | twenty onetwentyfour
+    ?sixtyfour: twenty ninetysix | thritynine oneohseven
+    ?fiftyone: thritynine ninetyone | twenty oneseventeen
+    ?seven: five thritynine | oneeleven twenty
+    ?ninetynine: fourtysix twenty | oneohseven thritynine
+    ?one: eightytwo thritynine | onenineteen twenty
+    ?sixty: twenty onetwentyeight | thritynine eightytwo
+    ?thirty: twenty onetwentytwo | thritynine fiftytwo
+    ?onetwentyfive: thritynine ninetysix | twenty ten
+    ?eightone: onetwentyfive thritynine | sixtyone twenty
+    ?eightsix: thritynine ninetysix | twenty ninetysix
+    ?onethrity: thritynine twenty | twenty twenty
+    ?ninetythree: sixtytwo twenty | seventyone thritynine
+    ?twentyeight: onethrity twenty | onenineteen thritynine
+    ?onetwenty: fourtyone thritynine | fiftyeight twenty
+    ?fiftyfour: eightytwo thirtyeight
+    ?sixtytwo: seventytwo twenty | twentyeight thritynine
+    ?twentyfour: fourty twenty | ten thritynine
+    ?oneohtwo: eighteen twenty | eightytwo thritynine
+    ?twentysix: twenty fourtyeight | thritynine eightthree
+    ?ten: thritynine twenty | thritynine thritynine
+    ?oneeightteen: fiveteen twenty | sistyfive thritynine
+    ?seventy: twenty thritynine | thritynine thirtyeight
+    ?oneoheight: thritynine oneohseven | twenty onetwentyeight
+    ?fourtysix: twenty twenty
+    ?thritynine: "a"
+    ?sixtyeight: thritynine onenineteen | twenty onetwentyeight
+    ?fiftynine: ninetyfive twenty | fourtynine thritynine
+    ?fourtyone: twentythree thritynine | thirtyseven twenty
+    ?twentynine: twenty sixteen | thritynine seventyeight
+    ?onesixteen: oneoheight thritynine | ninetynine twenty
+    ?thirtyfive: thritynine fiftyfive | twenty four
+    ?fiftythree: ninetyfour twenty | onethritythree thritynine
+    ?twenty: "b"
+    ?ninetyeight: ninetyseven twenty | fiftysix thritynine
+    ?eight: fourtytwo | fourtytwo eight
+    ?nineteen: twenty onethirteen | thritynine onesixteen
+    ?oneohsix: thritynine three | twenty onetwentythree
+    ?fourtyfour: seventynine twenty | fifty thritynine
+    ?fourtyfive: thritynine seventythree | twenty sixtyeight
+    ?zero: eight eleven
+    ?sixtysix: thritynine onetwentyeight | twenty twelve
+    ?seventyeight: thritynine onethrity | twenty fourty
+    ?fourteen: thritynine hundred | twenty onefourteen
+    ?oneohfive: thritynine twentynine | twenty oneohone
+    ?onefourteen: thritynine fourty | twenty eighteen
+    ?onetwentyone: twenty sixtyfour | thritynine ninetytwo
+
+
+    %import common.WS_INLINE
+    %ignore WS_INLINE
+"""
+
+def day19_2(data):    
+    #data = read_input(2020, "191") 
+
+    parser = Lark(grammarDay19Part2)
+    ast = parser.parse    
+    _, messages = processInputDay19(data)
+    
+    #print(rules)
+ 
+    count = 0
+    for msg in messages:
+        try:
+            ast(msg)
+            count += 1
+        except:
+            count = count
+            #print("no match for",msg)
+
+    result = count
+    AssertExpectedResult(436, result, 2)
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
