@@ -16,6 +16,7 @@ import itertools
 import numpy as np
 from functools import lru_cache
 import operator
+from itertools import takewhile
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -1936,14 +1937,30 @@ def processInputDay19ForCFG(data):
 def day19_1(data):    
     #data = read_input(2020, "191") 
 
-    # initial approach based on Lark parser. Problem with this solution is the lack of automation in the grammar generation
+    '''
+    # initial approach based on Lark parser. Problem with this solution is the lack of automation in the grammar generation. 
+    # EDIT: this was until I figured I was being dumb agaibb :facepalm:
     parser = Lark(grammarDay19Part1)
     ast = parser.parse    
     
+    # this approach is very slow
     cfg, messages = processInputDay19ForCFG(data)
+    '''
+
+
+    # joins each line, separated by \n, until it finds an empty string
+    it = iter(data)
+    grammar = "\n".join(takewhile(lambda l: l != '', it))
+
+    # prefixes digits by r
+    grammar = re.sub(r'(\d+)', r'r\1', grammar)
+
+    #print(grammar)
+    parser = Lark(grammar, start="r0")
+    ast = parser.parse
 
     count = 0
-    for msg in messages:
+    for msg in list(it):
         try:
             ast(msg)
             #if cfg.contains(msg): -- this is really inneficient lol
@@ -2102,14 +2119,30 @@ grammarDay19Part2 = """
 def day19_2(data):    
     #data = read_input(2020, "191") 
 
+    '''
+    # dumb approach
     parser = Lark(grammarDay19Part2)
     ast = parser.parse    
     _, messages = processInputDay19(data)
-    
+    '''
     #print(rules)
+
+    # joins each line, separated by \n, until it finds an empty string
+    it = iter(data)
+    grammar = "\n".join(takewhile(lambda l: l != '', it))
+    # modify rules 8 and 11... I know it's a regex :(
+    grammar = re.sub(r'8: 42', r'8: 42 | 42 8', grammar)
+    grammar = re.sub(r'11: 42 31', r'11: 42 31 | 42 11 31', grammar)
+
+    # prefixes digits by r
+    grammar = re.sub(r'(\d+)', r'r\1', grammar)
+
+    # this is indeed much cleaner :|
+    parser = Lark(grammar, start="r0")
+    ast = parser.parse
  
     count = 0
-    for msg in messages:
+    for msg in list(it):
         try:
             ast(msg)
             count += 1
@@ -2119,6 +2152,15 @@ def day19_2(data):
 
     result = count
     AssertExpectedResult(436, result, 2)
+    return result
+
+
+
+def day20_1(data):    
+    #data = read_input(2020, "201") 
+
+    result = 0
+    AssertExpectedResult(0, result, 1)
     return result
 
 if __name__ == "__main__":
