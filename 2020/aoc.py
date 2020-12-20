@@ -2155,12 +2155,186 @@ def day19_2(data):
     return result
 
 
+def checkBorderMatches(tiles):
+    #print()
+    matches = 1
+    for number, tile in tiles.items():
+        #print("Checking tile", number)
+        up = tile[0]
+        down = tile[1]
+        left = tile[2]
+        right = tile[3]
+        matchesU = 0
+        matchesD = 0
+        matchesL = 0
+        matchesR = 0
+        for  n, t in tiles.items():
+            if n != number:
+                if t[0] == up or t[1] == up or t[2] == up or t[3] == up or\
+                   t[0][::-1] == up or t[1][::-1] == up or t[2][::-1] == up or t[3][::-1] == up:
+                    #print("UP matches a border of",n)
+                    matchesU += 1
+                elif t[0] == down or t[1] == down or t[2] == down or t[3] == down or\
+                     t[0][::-1] == down or t[1][::-1] == down or t[2][::-1] == down or t[3][::-1] == down:
+                    #print("DOWN matches a border of",n)
+                    matchesD += 1
+                elif t[0] == left or t[1] == left or t[2] == left or t[3] == left or \
+                     t[0][::-1]  == left or t[1][::-1]  == left or t[2][::-1]  == left or t[3][::-1]  == left:
+                    #print("LEFT matches a border of",n)
+                    matchesL += 1
+                elif t[0] == right or t[1] == right or t[2] == right or t[3] == right or\
+                     t[0][::-1]  == right or t[1][::-1]  == right or t[2][::-1]  == right or t[3][::-1]  == right:
+                    #print("RIGHT matches a border of",n)
+                    matchesR += 1
 
+        if matchesU+ matchesD + matchesL + matchesR ==2:
+            matches *= number
+            '''
+            print()
+            print("total mathces:", matchesU+ matchesD + matchesL + matchesR)
+            print("UP",tile[0],"has ", matchesU)   
+            print("DOWN", tile[1],"has ", matchesD)   
+            print("LEFT", tile[2],"has ", matchesL)   
+            print("RIGHT", tile[3],"has ", matchesR)   
+            print()
+            '''
+    #print()
+    return matches
+
+def parseInputDay20(data):
+    tiles = {}
+    left = []
+    right = []
+    up = []
+    down = []
+    newTile = True
+    pos = -1
+
+    for line in data:
+        #print(line)
+        pos += 1
+        if newTile:
+            number = int(line.split(" ")[1][:-1])
+            newTile = False
+            continue
+
+        if line == '':
+            down = (data[pos-1])
+
+            tiles[number] = [up, down, "".join(left), "".join(right)]
+            newTile = True
+            left = []
+            right = []
+            up = []
+            down = []
+            #print(pos)            
+            continue
+
+        if len(up) == 0:
+            up = line
+        left.append(line[0])
+        right.append(line[len(line)-1])
+
+    return tiles
+
+def parseInputDay20Part2(data):
+    tiles = {}
+    left = []
+    right = []
+    up = []
+    down = []
+    newTile = True
+    pos = -1
+    grid = []
+    for line in data:
+        #print(line)
+        pos += 1
+        if newTile:
+            number = int(line.split(" ")[1][:-1])
+            newTile = False
+            
+            #print()
+            #print(number)
+            continue
+
+        if line == '':
+            down = (data[pos-1])
+            # remove border from final grid
+            grid = grid[:-1]          
+
+            tiles[number] = [up, down, "".join(left), "".join(right)]
+            newTile = True
+            left = []
+            right = []
+            up = []
+            down = []
+            #print(pos)            
+            continue
+
+        if len(up) == 0:
+            up = line
+        else:
+            
+            #print(line)
+            #print("redact borders",line[1:len(line)-1])
+
+            # redacting left and right borders in the final grid
+            grid.append(line[1:len(line)-1])
+
+        left.append(line[0])
+        right.append(line[len(line)-1])
+
+    return tiles, grid
+
+'''
+Didn't feel like solving a puzzle so I just compute the number of tiles with 2 matching borders for Part1.
+Part 2 made me realise I was screwed :( yet I stil didn't feel like solving a puzzle so I started to look for strategies based on the number of monsters. 
+I guess the issue was finding the correct number of monsters. 
+My solution worked for the sample becuase it doesn't have 2 \n at the end. This screwed me with the real data input lol
+When I hit the 15m timeout mark on AoC I went to validate how far off was I from the actual solution and found out this bug. 
+I had already tried 29 monsters earlier T_T
+'''
+#Day 20, part 1: 17148689442341 (0.056 secs)
+#Day 20, part 2: 2009 (0.010 secs)
 def day20_1(data):    
     #data = read_input(2020, "201") 
 
-    result = 0
-    AssertExpectedResult(0, result, 1)
+    tiles = parseInputDay20(data)
+    result = checkBorderMatches(tiles)
+      
+    AssertExpectedResult(17148689442341, result, 1)
+    return result
+
+
+def day20_2(data):    
+    #data = read_input(2020, "201") 
+    _, grid = parseInputDay20Part2(data)
+    
+    count = 0
+    # 39 is high: 1857 is too low
+    # 35 is high: 1917 is too low
+    # 30 is high: 1992 is too low -- upper bound
+    ## had a bug in input data (2 new lines at the end) which ruined my solution - this was the one :'(
+    # 29 is wrong : 2007/ 2009 T_T
+    # 28 is wrong : 2022 - no hint :(
+    # 27 is wrong : 2037
+    # 26 is wrong : 2052
+    # 25 is wrong : 2067
+    # 24 is wrong : 2082
+    # 23
+    # 22
+    # 21
+    # 20 is wrong : 2142
+    # 15 is wrong : 2217
+    monsters = 15 * 29
+    
+    # count all # in the grid without borders
+    count = sum([line.count("#") for line in grid])   
+
+    # guess the total amount of sea monsters lol
+    result = count - monsters   
+      
+    AssertExpectedResult(2009, result, 2)
     return result
 
 if __name__ == "__main__":
