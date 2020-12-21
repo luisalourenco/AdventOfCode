@@ -2337,6 +2337,77 @@ def day20_2(data):
     AssertExpectedResult(2009, result, 2)
     return result
 
+
+def processInputDay21(data):
+    ingredientsDict = {}
+    allergensDict = {}
+    for food in data:
+        ingredientList = food.split("(")
+        ingredients = ingredientList[0].strip().split(" ")
+        allergens = ingredientList[1]
+        allergens = [allergen.strip() for allergen in allergens.split("contains")[1].strip()[:-1].split(",")]
+
+        for i in ingredients:
+            if i not in ingredientsDict:
+                ingredientsDict[i] = 1
+            else: 
+                ingredientsDict[i] += 1
+        
+        for a in allergens:
+            if a not in allergensDict:
+                allergensDict[a] = set(ingredients)
+            else:
+                allergensDict[a].intersection_update(set(ingredients))   
+
+    #print("# Allergens:", len(allergensDict.keys()))
+    #print("# Ingredients:", len(ingredientsDict.keys()))
+    #print("# Ingredients wo allergens:", len(ingredientsDict.keys()) - len(allergensDict.keys()))
+    #print(allergensDict)
+    #print(ingredientsDict)
+    return ingredientsDict, allergensDict
+
+def checkAllergens(allergens):
+    # yes, I'm lazy
+    for _ in range(5):
+        for allergen, ingredients in allergens.items():
+            # means this allergen is solved, remove the ingridient from all other allergens sets
+            if len(ingredients) == 1:
+                ingredient = ingredients.pop()
+                for a, _ in allergens.items():
+                    if a != allergen:
+                        allergens[a].discard(ingredient)
+                
+                ingredients.add(ingredient)
+                allergens[allergen] = ingredients
+    return allergens
+
+def day21_1(data):    
+    #data = read_input(2020, "211") 
+    
+    ingredients, allergens = processInputDay21(data)
+    # find match between allergens and ingredients
+    allergens = checkAllergens(allergens)
+    ingridientsWithAllergens = [ing.pop() for ing in allergens.values()]
+    result = sum([occurences for ingredient, occurences in ingredients.items() if ingredient not in ingridientsWithAllergens])
+
+    AssertExpectedResult(1977, result, 1)
+    return result
+
+def day21_2(data):    
+    #data = read_input(2020, "211") 
+    
+    _, allergens = processInputDay21(data)
+    allergens = checkAllergens(allergens)
+
+    sortedAllergens = [keys for keys in allergens.keys()]
+    sortedAllergens.sort()
+    sortedIngridients = [allergens[k].pop() for k in sortedAllergens ]
+
+    result = ','.join(sortedIngridients)
+    
+    AssertExpectedResult('dpkvsdk,xmmpt,cxjqxbt,drbq,zmzq,mnrjrf,kjgl,rkcpxs', result, 2)
+    return result
+
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
 
