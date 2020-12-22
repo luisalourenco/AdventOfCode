@@ -2368,7 +2368,7 @@ def processInputDay21(data):
 
 def checkAllergens(allergens):
     # yes, I'm lazy
-    for _ in range(5):
+    for _ in range(3):
         for allergen, ingredients in allergens.items():
             # means this allergen is solved, remove the ingridient from all other allergens sets
             if len(ingredients) == 1:
@@ -2407,6 +2407,162 @@ def day21_2(data):
     
     AssertExpectedResult('dpkvsdk,xmmpt,cxjqxbt,drbq,zmzq,mnrjrf,kjgl,rkcpxs', result, 2)
     return result
+
+
+def processInputDay22(data):
+    player1 = []
+    player2 = []
+    switchPlayer = False
+    for card in data:
+        if card == 'Player 1:' or card == '':
+            continue
+        elif card == 'Player 2:':
+            switchPlayer = True
+            continue
+
+        if switchPlayer:
+            player2.append(card)
+        else:
+            player1.append(card)
+    
+    return ints(player1), ints(player2)
+
+def playCombat(player1, player2):    
+
+    while True:
+        if len(player1) == 0: 
+            return player2
+        elif len(player2) == 0:
+            return player1
+
+        play1 = player1.pop(0)
+        play2 = player2.pop(0)
+
+        if play1 > play2:
+            player1.append(play1)
+            player1.append(play2)
+        else:
+            player2.append(play2)
+            player2.append(play1)
+
+#Day 22, part 1: 33403 (0.001 secs)
+#Day 22, part 2: 29177 (10.875 secs)
+def day22_1(data):    
+    #data = read_input(2020, "221")    
+
+    player1, player2 = processInputDay22(data)
+    cards = playCombat(player1, player2)
+
+    #print("Player 1 cards:", player1)
+    #print("Player 2 cards:", player2)
+
+    score = 0
+    pos = 1
+    cards.reverse()
+    for card in cards:
+        score += card * pos
+        pos += 1
+    
+    result = score 
+    AssertExpectedResult(33403, result, 1)
+    return result
+
+def playRecursiveCombatGame(player1, player2, game, debug = False):    
+        # play game
+        rounds = set()
+        roundNumber = 0
+        
+        if debug:
+            print("=== Game", game,"===")
+            print()
+        
+        while True:   
+            roundNumber += 1
+
+            # recursion stop condition, player 1 wins 
+            if (str(player1), str(player2)) in rounds:
+                return "Player 1", player1
+            
+            # save round state
+            rounds.add( ( str(player1.copy()), str(player2.copy()) ) )
+
+            if debug:
+                print("-- Round", roundNumber," (Game", game, ") --")
+                print("Player 1's deck:", str(player1) )
+                print("Player 2's deck:", str(player2) )
+            
+            # game ends
+            if len(player1) == 0: 
+                return "Player 2", player2
+            elif len(player2) == 0:
+                return "Player 1", player1
+                
+            # make a play
+            play1 = player1.pop(0)
+            play2 = player2.pop(0)
+
+            if debug:
+                print("Player 1 plays:", play1)
+                print("Player 2 plays:", play2)
+
+            # play sub-game
+            winner = None
+            if len(player1) >= play1 and len(player2) >= play2:
+                if debug:
+                    print("Playing a sub-game to determine the winner...")
+                    print()
+                player1Copy = player1.copy()[:+play1]
+                player2Copy = player2.copy()[:+play2]
+                winner, _ = playRecursiveCombatGame(player1Copy, player2Copy, game+1)
+                
+                if debug:
+                    print("The winner of game", game+1,"is",winner,"!")
+                    print("...anyway, back to game", game,".")
+
+            # determine round's winner
+            if winner == "Player 1":
+                if debug:
+                    print("Player 1 wins round", roundNumber," of game", game,"!")
+                    print()
+                player1.append(play1)
+                player1.append(play2)
+            elif winner == "Player 2":
+                if debug:
+                    print("Player 2 wins round", roundNumber," of game", game,"!")
+                    print()
+                player2.append(play2)
+                player2.append(play1)
+            elif play2 > play1:
+                if debug:
+                    print("Player 2 wins round", roundNumber," of game", game,"!")
+                    print()
+                player2.append(play2)
+                player2.append(play1)
+            elif play1 > play2:
+                if debug:
+                    print("Player 1 wins round", roundNumber," of game", game,"!")
+                    print()
+                player1.append(play1)
+                player1.append(play2)
+
+def day22_2(data):    
+    #data = read_input(2020, "221")    
+
+    player1, player2 = processInputDay22(data)
+    _, cards = playRecursiveCombatGame(player1, player2, 1)
+
+    score = 0
+    pos = 1
+    cards.reverse()
+    for card in cards:
+        score += card * pos
+        pos += 1
+
+    result = score 
+    AssertExpectedResult(29177, result, 1)
+    return result
+
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
