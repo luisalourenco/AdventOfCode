@@ -26,7 +26,7 @@ sys.path.insert(0, FILE_DIR + "/../../")
 
 from common.utils import read_input, main, clear, AssertExpectedResult, ints  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
-from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph
+from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
 from lark import Lark, Transformer, v_args
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -2559,10 +2559,156 @@ def day22_2(data):
         pos += 1
 
     result = score 
-    AssertExpectedResult(29177, result, 1)
+    AssertExpectedResult(29177, result, 2)
     return result
 
+#@hashable_lru
+def playCrabGame(cupsList, moves):
+    cups = len(cupsList)
+    currentCupLabel = cupsList[0]
+    currentCupPos = 0
 
+    original = cupsList.copy()
+    for move in range(moves):
+        #print("-- move", move+1,"--")
+        #print(cupsList)
+
+        currentCupLabel = cupsList[currentCupPos]
+        #print("current cup:", currentCupLabel)
+
+        pos = (currentCupPos+1)
+        pickOne = cupsList[pos % len(cupsList)]
+        pickTwo = cupsList[(pos+1) % len(cupsList)]
+        pickThree = cupsList[(pos+2) % len(cupsList)]
+        #print("pick up:", [pickOne, pickTwo, pickThree])
+        cupsList.remove(pickOne)
+        cupsList.remove(pickTwo)
+        cupsList.remove(pickThree)
+
+        destination = currentCupLabel - 1
+        while destination in [pickOne, pickTwo, pickThree] or destination not in cupsList:
+            destination -= 1
+            if destination < min(original):
+                destination = max(original)
+        
+        
+       # print("destination:",destination)
+       # print()
+        destination = cupsList.index(destination) + 1
+        cupsList = cupsList[0:destination] + [pickOne, pickTwo, pickThree] + cupsList[destination:]
+        
+        currentCupPos = (cupsList.index(currentCupLabel) + 1 ) % cups
+    return cupsList
+
+def computeScore(cups):
+    start = (cups.index(1) + 1) % len(cups)
+    if start == 0:
+        return ''.join([str(cup) for cup in cups[:-1]])
+    else:
+        cups = cups[start:] + cups[:start-1]
+        return ''.join([str(cup) for cup in cups])
+
+def computeScore2(cups):
+    pos = 1
+    while cups[pos] != 1:
+        print(cups[pos])
+        pos = cups[pos]
+    return 0
+
+#Day 23, part 1: 96342875 (0.001 secs)
+#Day 23, part 2: 563362809504 (8.657 secs)
+def day23_1(data):    
+    #data = read_input(2020, "231")        
+    cupsList = ints(data[0])
+    cups = playCrabGame(cupsList, 100)
+
+    '''
+    original = ints(data[0])
+    
+    cupsDict = {}
+    for i in range(len(original)):
+        pos = (i + 1)% len(original)
+        cupsDict[original[i]] = original[pos]
+
+    cupsDict["curr"] = original[0]
+
+    print(cupsDict)
+    moves = 100
+    cups = playCrabGameOptimized(cupsDict, moves, max(original), 1)
+    '''
+    result = computeScore(cups)
+    AssertExpectedResult('96342875', result, 1)
+    return result
+
+def playCrabGameOptimized(cupsDict, moves, max, min):
+    '''
+    curr - 3
+    389125467
+    1 -> 2
+    2 -> 5
+    3 -> 8
+    4 -> 6
+    5 -> 4
+    6 -> 6
+    7 -> 3
+    8 -> 9
+    9-> 1
+    10 -> 11
+    (...)
+    '''
+    for move in range(moves):
+        #print("-- move", move+1,"--")
+        #print(cupsDict)
+        currentCupLabel = cupsDict["curr"]
+        #print("current cup:", currentCupLabel)
+
+        pickOne = cupsDict[currentCupLabel]
+        pickTwo = cupsDict[pickOne]
+        pickThree = cupsDict[pickTwo]
+        
+        #print("pick up:", [pickOne, pickTwo, pickThree])        
+        
+        destination = currentCupLabel - 1
+        while destination in [pickOne, pickTwo, pickThree] or destination not in cupsDict:  
+            destination -= 1
+            if destination < min:
+                destination = max 
+        if destination < min:
+            destination = max 
+        
+        #print("destination:", destination)
+        #print()        
+        
+        # "removes" the three picked cups
+        cupsDict[currentCupLabel] = cupsDict[pickThree]
+        # change pickThree next to destination's next label and destination next label to first picked cup
+        cupsDict[pickThree] = cupsDict[destination]
+        cupsDict[destination] = pickOne
+        cupsDict["curr"] = cupsDict[currentCupLabel]
+      
+
+    return cupsDict
+
+def day23_2(data):
+    #data = read_input(2020, "231")    
+    
+    original = ints(data[0])
+    cupsDict = dict(zip(range(1,1000001), range(2,1000001)))
+    
+    for i in range(len(original)):
+        pos = (i + 1)% len(original)
+        cupsDict[original[i]] = original[pos]
+
+    cupsDict["curr"] = original[0]
+    cupsDict[1000000] = original[0]
+    cupsDict[5] = 10
+
+    moves = 10000000
+    cups = playCrabGameOptimized(cupsDict.copy(), moves, 1000000, 1)
+    result = cups[cups[1]] * cups[1]
+    
+    AssertExpectedResult(563362809504, result, 2)
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
