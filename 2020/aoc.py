@@ -2710,6 +2710,120 @@ def day23_2(data):
     AssertExpectedResult(563362809504, result, 2)
     return result
 
+
+
+def addOrFlipTile(tiles, position):
+    # True means tile is black
+    #print("Tile position", position)
+    if position not in tiles:
+        #print("Adding tile", position, "colour black")
+        tiles[position] = True
+    else:        
+        tiles[position] = not tiles[position]        
+        #print("Flipping tile", position,"to colour", "black" if tiles[position] else "white")
+    return tiles
+    
+def flipTiles(data):
+    # https://www.redblobgames.com/grids/hexagons/
+    directions = ['e', 'se', 'sw', 'w', 'nw', 'ne']
+    directionsDelta = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1)]
+    directionsDict = dict(zip(directions, directionsDelta))
+
+    tiles = {}
+
+    for tile in data:
+        position = (0,0)
+        iterator = iter(tile)
+
+        #print("Getting position for tile", tile)
+        while True:
+            try:
+                dir = next(iterator)
+                if dir == 'n' or dir == 's':                    
+                    direction = dir + next(iterator)
+                else:
+                    direction = dir
+                
+                pos = directionsDict[direction]
+                #print("Direction", direction,"has delta", pos)
+                #print("Adding delta",pos," to current position", position)
+                position = (position[0] + pos[0], position[1] + pos[1])
+                #print("Final position", position)
+
+                #print("dir:",direction)
+            except StopIteration:
+                break
+        #print()
+        tiles = addOrFlipTile(tiles, position)        
+        #print("Tile is in position:", position)
+        #print()
+    return tiles
+
+#Day 24, part 1: 232 (0.004 secs)
+#Day 24, part 2: 3519 (3.540 secs)
+def day24_1(data):
+    #data = read_input(2020, "241") 
+       
+    tiles = flipTiles(data)
+    #print("# Tiles:", len(tiles))
+    result = sum([1 for (pos, isBlack) in tiles.items() if isBlack])
+
+    #print("# Black tiles:", result)
+    AssertExpectedResult(232, result, 1)
+    return result
+
+
+def countBlackNeightbours(grid, pos):
+    directionsDelta = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1)]
+    black = 0
+    for x,y in directionsDelta:
+        neighbour = (pos[0] + x , pos[1] + y)
+        if neighbour in grid:
+            if grid[neighbour]:
+                black +=1
+
+    return black
+
+def flipTilesGame(tiles, moves):
+    newGrid = tiles.copy()
+    
+    for day in range(moves):
+        grid = newGrid.copy()
+        
+        for pos, isBlack in grid.items():
+            blackNeighbours = countBlackNeightbours(grid, pos)
+            if isBlack and (blackNeighbours == 0 or blackNeighbours > 2):
+                #flip to white
+                newGrid[pos] = False
+            elif not isBlack and blackNeighbours == 2:
+                newGrid[pos] = True
+
+        #print("Day",day,":", sum([1 for (pos, isBlack) in newGrid.items() if isBlack]))
+    return newGrid
+
+
+def day24_2(data):
+    #data = read_input(2020, "241") 
+
+    size = 70
+    positions = [(0+i, 0+j) for i in range(-size,size+1) for j in range(-size,size+1)]    
+    tiles = dict(zip(positions, [False]*len(positions)))
+    
+    inputTiles = flipTiles(data)
+    for pos, isBlack in inputTiles.items():
+        tiles[pos] = isBlack
+    
+    moves = 100
+    tiles = flipTilesGame(tiles.copy(), moves)
+
+    #print("# Tiles:", len(tiles))
+    result = sum([1 for (pos, isBlack) in tiles.items() if isBlack])
+
+    #print("# Black tiles:", result)
+    AssertExpectedResult(3519, result, 2)
+    return result
+
+
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
 
