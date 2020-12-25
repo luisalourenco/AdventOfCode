@@ -17,6 +17,8 @@ import numpy as np
 from functools import lru_cache
 import operator
 from itertools import takewhile
+from turtle import Turtle, Screen
+from math import sqrt
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
@@ -2801,6 +2803,45 @@ def flipTilesGame(tiles, moves):
         #print("Day",day,":", sum([1 for (pos, isBlack) in newGrid.items() if isBlack]))
     return newGrid
 
+def hexagon(turtle, radius, color):
+    FONT_SIZE = 18
+    FONT = ('Arial', FONT_SIZE, 'normal')
+    ROOT3_OVER_2 = sqrt(3) / 2
+
+    clone = turtle.clone()  # so we don't affect turtle's state
+    xpos, ypos = clone.position()
+    clone.setposition(xpos - radius / 2, ypos - ROOT3_OVER_2 * radius)
+    clone.setheading(-30)
+    clone.color('black', color)
+    clone.pendown()
+    clone.begin_fill()
+    clone.circle(radius, steps=6)
+    clone.end_fill()
+    clone.penup()
+    clone.setposition(xpos, ypos - FONT_SIZE / 2)
+    #clone.write(label, align="center", font=FONT)
+
+def plotTiles(tiles):    
+    SIDE = 50  # the scale used for drawing
+
+    # Initialize the turtle
+    tortoise = Turtle(visible=False)
+    tortoise.speed('fastest')
+    tortoise.penup()
+
+    # Plot the points
+    for pos, isBlack in tiles.items():
+        if isBlack:
+            color = 'black'
+        else:
+            color = 'white'
+        tortoise.goto((pos[0]*SIDE, pos[1] * SIDE))
+        hexagon(tortoise, SIDE, color)
+
+    # Wait for the user to close the window
+    screen = Screen()
+    screen.exitonclick()   
+      
 
 def day24_2(data):
     #data = read_input(2020, "241") 
@@ -2818,9 +2859,70 @@ def day24_2(data):
 
     #print("# Tiles:", len(tiles))
     result = sum([1 for (pos, isBlack) in tiles.items() if isBlack])
-
-    #print("# Black tiles:", result)
+   
+    #does not work :'(
+    #plotTiles(tiles)
+    
     AssertExpectedResult(3519, result, 2)
+    return result
+
+
+def transformSubjectNumber(number, loopSize):
+    value = 1
+    loop_size = loopSize
+    n = 20201227
+
+    for _ in range(loop_size):
+        value *= number
+        value %= n
+    
+    return value
+
+'''
+# initial inneficient version, work was being repeated when computing the subject transformation
+def findLoopSize(publicKey):
+    loopSize = 1
+    result = 1
+    while True:
+        loopSize += 1 
+        result = transformSubjectNumber(7, loopSize)
+        if(result == publicKey):
+            break
+
+    return loopSize
+'''
+
+def findLoopSize(publicKey):
+    loopSize = 0
+    result = 1
+    
+    while result != publicKey:
+        loopSize += 1 
+        result *= 7
+        result %= 20201227
+
+    return loopSize
+
+#Day 25, part 1: 19774660 (5.556 secs)
+def day25_1(data):
+    #data = read_input(2020, "251") 
+
+    iterator = iter(data)
+    cardPublicKey = int(next(iterator))
+    doorPublicKey = int(next(iterator))
+    cardLoopsSize = findLoopSize(cardPublicKey)
+    doorLoopSize = findLoopSize(doorPublicKey)
+    
+    encryptKeyDoor = transformSubjectNumber(doorPublicKey, cardLoopsSize)
+    encryptKeyCard = transformSubjectNumber(cardPublicKey, doorLoopSize)
+    
+    # double check :p 
+    if encryptKeyDoor == encryptKeyCard:
+        result = encryptKeyCard
+    else:
+        result = 0
+    
+    AssertExpectedResult(19774660, result, 1)
     return result
 
 
