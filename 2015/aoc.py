@@ -375,6 +375,91 @@ def day6_2(data):
     return result
 
 
+'''
+Day 7 - Some Assembly Required
+'''
+def processInstructionsBooklet(data):
+
+    wires = {}
+    commands = []
+    for instruction in data:
+        pieces = instruction.split('->')
+        wire = pieces[1].strip()
+
+        operation = pieces[0].strip().split(' ')
+        size = len(operation)
+        if size == 1:
+            try:
+                wires[wire] = int(operation[0])
+            except ValueError:
+                wires[wire] = operation[0]
+        elif size == 2:
+            command = operation[0].strip()
+            args = [operation[1].strip()]
+            commands.append((command, args, wire))
+        elif size == 3:
+            command = operation[1].strip()
+            args = [operation[0].strip(), operation[2].strip()]
+            commands.append((command, args, wire))
+        else:
+            raise ValueError
+
+    #print(commands)
+    #print(wires)
+    
+    return wires, commands
+
+def emulateCircuit(wires, circuit):
+    
+            while len(circuit) > 0:
+                operation, args, wire = circuit.pop()
+                #print(operation, args, wire)
+                try:
+                    if len(args) == 2:
+                        left = args[0]
+                        left = int(left) if left.isnumeric() else wires[left]
+                        right = args[1]
+                        right = int(right) if right.isnumeric() else wires[right]
+                    elif len(args) == 1:
+                        arg = args[0]
+                        arg = int(arg) if arg.isnumeric() else wires[arg]
+                except KeyError:
+                    circuit.insert(0, (operation, args, wire))
+                    continue
+
+                if operation == 'AND':
+                    print(wire, "<-", left,operation,right)
+                    wires[wire] = left & right
+                elif operation == 'OR':
+                    wires[wire] = left | right
+                    print(wire, "<-", left,operation,right)
+                elif operation == 'LSHIFT':
+                    wires[wire] = left << right
+                    print(wire, "<-", left,operation,right)
+                elif operation == 'RSHIFT':
+                    wires[wire] = left >> right
+                    print(wire, "<-", left,operation,right)
+                elif operation == 'NOT':
+                    wires[wire] = abs(~arg+1)
+                    print(wire, "<-", operation,arg)
+                else:
+                    circuit.append((operation, args, wire))
+                    raise ValueError           
+                    
+            return wires
+
+def day7_1(data):
+    #data = read_input(2015, "701")
+
+    wires, circuit = processInstructionsBooklet(data)
+    wires = emulateCircuit(wires, circuit)
+    print(wires)
+    print(wires['a'])
+    result = 0
+    AssertExpectedResult(0, result, 1)
+    return result
+
+
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
 
