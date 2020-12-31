@@ -20,6 +20,11 @@ from itertools import takewhile
 from math import sqrt
 import hashlib
 from itertools import groupby
+import codecs
+from tsp_solver.greedy import solve_tsp
+from tsp_solver.util import path_cost
+#from python_tsp.exact import solve_tsp_dynamic_programming
+
 
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -28,6 +33,7 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
+from common.test import solve_tsp2
 from common.utils import read_input, main, clear, AssertExpectedResult, ints  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
@@ -410,7 +416,8 @@ def processInstructionsBooklet(data):
     return wires, commands
 
 def emulateCircuit(wires, circuit):
-    
+
+            pending = []
             while len(circuit) > 0:
                 operation, args, wire = circuit.pop()
                 #print(operation, args, wire)
@@ -426,39 +433,171 @@ def emulateCircuit(wires, circuit):
                 except KeyError:
                     circuit.insert(0, (operation, args, wire))
                     continue
-
+                
+                
                 if operation == 'AND':
-                    print(wire, "<-", left,operation,right)
+                    #print(wire, "<-", left,operation,right,"[",args[0],",",args[1],"]")
                     wires[wire] = left & right
                 elif operation == 'OR':
                     wires[wire] = left | right
-                    print(wire, "<-", left,operation,right)
+                    #print(wire, "<-", left,operation,right,"[",args[0],",",args[1],"]")
                 elif operation == 'LSHIFT':
                     wires[wire] = left << right
-                    print(wire, "<-", left,operation,right)
+                    #print(wire, "<-", left,operation,right,"[",args[0],",",args[1],"]")
                 elif operation == 'RSHIFT':
                     wires[wire] = left >> right
-                    print(wire, "<-", left,operation,right)
+                    #print(wire, "<-", left,operation,right,"[",args[0],",",args[1],"]")
                 elif operation == 'NOT':
-                    wires[wire] = abs(~arg+1)
-                    print(wire, "<-", operation,arg)
+                    wires[wire] = abs(~arg)
+                    #print(wire, "<-", operation,arg,"[",args[0],"]")
                 else:
-                    circuit.append((operation, args, wire))
+                    #circuit.append((operation, args, wire))
                     raise ValueError           
                     
+            #print("pending:",pending)
             return wires
 
 def day7_1(data):
     #data = read_input(2015, "701")
 
     wires, circuit = processInstructionsBooklet(data)
+    #print(wires)
     wires = emulateCircuit(wires, circuit)
-    print(wires)
-    print(wires['a'])
-    result = 0
-    AssertExpectedResult(0, result, 1)
+    #print(wires)
+    result = wires[wires['a']]
+    AssertExpectedResult(956, result, 1)
     return result
 
+def day7_2(data):
+    #data = read_input(2015, "701")
+
+    wires, circuit = processInstructionsBooklet(data)
+    wires['b'] = 956
+    wires = emulateCircuit(wires, circuit)
+    result = wires[wires['a']]
+    AssertExpectedResult(40149, result, 2)
+    return result
+
+
+'''
+Day 8 - Matchsticks
+'''
+
+def rawString(string):
+    return '%r'%string
+
+def processStringsAndComputeResult(data):
+
+    inMemoryCount = 0
+    inCodeCount = 0
+    encodedCount = 0
+    for string in data:
+        string = string.strip()
+        inCodeCount += len(string)
+
+        ss = codecs.decode(string[1: len(string)-1], 'unicode_escape')
+        inMemoryCount += len(ss)
+
+        encoded = 6
+        for s in string[1:-1]:
+            #print("char:",s)
+            if s in ['\\', '"']:
+                encoded += 2
+            else:
+                encoded += 1
+        encodedCount += encoded
+        #print("encoded :", string, encoded)
+        #print("in memory:", ss, len(ss))
+        #print("in code:", string, len(string))
+        #print()
+
+    return inCodeCount - inMemoryCount, encodedCount - inCodeCount
+
+def day8_1(data):
+    #data = read_input(2015, "801")
+    result, _ = processStringsAndComputeResult(data)
+    AssertExpectedResult(1342, result, 1)
+    return result
+
+def day8_2(data):
+    #data = read_input(2015, "801")
+    _, result = processStringsAndComputeResult(data)
+    AssertExpectedResult(2074, result, 2)
+    return result
+
+
+'''
+Day 9 - All in a Single Night
+'''
+
+def processInputAndBuildGraph(data):   
+    
+    # Faerun to Norrath = 129
+    distances = []
+    cities = {}
+    pos = 0
+    for route in data:
+        routes = route.split("to")
+        orig = routes[0].strip()
+        routes2 = routes[1].split("=")
+        dest = routes2[0].strip()
+        distance = int(routes2[1].strip())
+
+        if orig not in cities:
+            origN = pos
+            cities[orig] = pos
+            pos += 1
+        else:
+            origN = cities[orig]
+        
+        if dest not in cities:
+            destN = pos
+            cities[dest] = pos
+            pos += 1
+        else:
+            destN = cities[dest]
+
+        # Add route as an edge to the graph
+        #graph[origN][destN] = distance
+        
+        distances.append((origN,destN,distance))
+        #graph.add_edge(orig, dest, distance=(distance))
+    
+    graph = [ [ sys.maxsize for i in range(pos) ] for j in range(pos) ]  
+    for orig, dest, distance in distances:
+        graph[orig][dest] = distance
+        graph[dest][orig] = distance
+        graph[orig][orig] = 0
+        graph[dest][dest] = 0
+    
+    return graph, cities
+
+
+def day9_1(data):
+    #data = read_input(2015, "901")
+    graph, cities = processInputAndBuildGraph(data)
+    
+    #print(cities)
+    #for ds in graph:
+    #    print(ds)
+        
+    path = solve_tsp(graph)
+    print(path)
+    result = path_cost(graph, path)
+    AssertExpectedResult(207, result, 1)
+    return result
+
+def day9_2(data):
+    #data = read_input(2015, "901")
+    graph, cities = processInputAndBuildGraph(data)    
+    cost = 0
+    for i in itertools.permutations(list(cities.values())):
+        r = path_cost(graph, i)
+        if r > cost:
+            cost = r
+    result = cost
+    AssertExpectedResult(804, result, 2)
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
