@@ -640,6 +640,107 @@ def day10_2(data):
     return result
 
 
+'''
+Day 11 - Corporate Policy
+'''
+
+def incrementPassword(password):
+    newPassword = ''
+    stopIncrements = False
+    for letter in password[::-1]:
+        if stopIncrements:
+             newPassword = newPassword + letter
+        else:
+            # ensures x is between [ord('a'), ord('z')]
+            x = ( ord(letter) + 1 ) % ( ord('z')+1 ) 
+            if x == 0:                
+                x = ord('a')
+            else:
+                stopIncrements = True  
+            newPassword = newPassword + chr(x)
+
+    return newPassword[::-1]
+
+def containsIncreasingStraight(password):
+    for i in range(2, 8):
+        if ord(password[i]) - ord(password[i-1]) == 1 and ord(password[i-1]) - ord(password[i-2]) == 1:
+            return True 
+    return False
+
+#abcdefkd
+def isPasswordValid(password):
+    forbiddenCharacters = ['i', 'o', 'l']
+
+    # rule #1
+    if not containsIncreasingStraight(password):
+        #print("Rule #1")
+        return False
+
+    # rule #2
+    if sum([1 for letter in password if letter in forbiddenCharacters]) > 0:
+        #print("Rule #3: contains forbidden characters")
+        return False
+
+    # rule #3
+    uniqueGroups = []  
+    for char, group in groupby(password):
+        if sum(1 for _ in group) >= 2:
+            if char not in uniqueGroups:
+                uniqueGroups.append(char)
+            else:
+                #print("Rule #3: does not contain two DISTINCT pairs of letters")
+                return False
+    # rule #3
+    if len(uniqueGroups) < 2:
+        #print("Rule #3: does not contain at least two pairs of letters")
+        return False
+
+    return True
+
+def nextPassword(password):
+    preventInifniteLoops = 0
+    newPassword = password
+    while True:
+        preventInifniteLoops += 1
+        newPassword = incrementPassword(newPassword)
+        if isPasswordValid(newPassword):# or preventInifniteLoops == 1000000:
+            return newPassword
+
+    return ''
+
+#Day 11, part 1: hepxxyzz (2.015 secs)
+#Day 11, part 2: heqaabcc (5.394 secs)
+def day11_1(data):
+    #data = read_input(2015, "111")
+    oldPassword = data[0]
+    #newPassword = nextPassword(newPassword)
+    
+    #print("next:",nextPassword('abcdefgh'))
+    #print("next:",nextPassword('ghijklmn'))
+    result = nextPassword(oldPassword)
+    AssertExpectedResult('hepxxyzz', result, 1)
+    return result
+
+def day11_2(data):
+    #data = read_input(2015, "111")
+    oldPassword = 'hepxxyzz'
+ 
+    result = nextPassword(oldPassword)
+    AssertExpectedResult('heqaabcc', result, 2)
+    return result
+
+
+'''
+Day 12 - JSAbacusFramework.io
+'''
+
+def day12_1(data):
+    data = read_input(2015, "121")   
+ 
+    result = 0
+    AssertExpectedResult(0, result, 1)
+    return result
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
