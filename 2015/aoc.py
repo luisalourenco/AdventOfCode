@@ -599,6 +599,48 @@ def day9_2(data):
     AssertExpectedResult(804, result, 2)
     return result
 
+'''
+Day 10 - Elves Look, Elves Say
+'''
+
+'''
+3113322113
+[('3', 1), ('1', 2), ('3', 2), ('2', 2), ('1', 2), ('3', 1)]
+'''
+def playLookAndSay(number, rounds):  
+    groups = groupby(number)
+    groupResults = ''.join( [ (str(sum(1 for _ in group)) + label ) for label, group in groups] )
+
+    return groupResults
+
+#Day 10, part 1: 329356 (0.983 secs)
+#Day 10, part 2: 4666278 (13.142 secs)
+def day10_1(data):
+    #data = read_input(2015, "101")
+    
+    rounds = 40
+    result = data[0]
+    for _ in range(rounds):
+        result = playLookAndSay(result, rounds)
+    
+    result = len(result)
+    AssertExpectedResult(329356, result, 1)
+    return result
+
+def day10_2(data):
+    #data = read_input(2015, "101")
+  
+    rounds = 50
+    result = data[0]
+    for _ in range(rounds):
+        result = playLookAndSay(result, rounds)
+    
+    result = len(result)
+    AssertExpectedResult(4666278, result, 2)
+    return result
+
+
+
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
 
