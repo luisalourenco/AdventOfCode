@@ -23,7 +23,7 @@ from itertools import groupby
 import codecs
 from tsp_solver.greedy import solve_tsp
 from tsp_solver.util import path_cost
-#from python_tsp.exact import solve_tsp_dynamic_programming
+
 
 
 
@@ -37,7 +37,8 @@ from common.test import solve_tsp2
 from common.utils import read_input, main, clear, AssertExpectedResult, ints  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
-from lark import Lark, Transformer, v_args
+from lark import Lark, Transformer, Visitor, v_args, Token
+from lark.visitors import Interpreter, visit_children_decor
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
 
 
@@ -58,6 +59,7 @@ WHITE_SQUARE = "█"
 WHITE_CIRCLE = "•"
 BLUE_CIRCLE = f"{bcolors.OKBLUE}{bcolors.BOLD}•{bcolors.ENDC}"
 RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
+
 
 '''
 Day 1 - Not Quite Lisp
@@ -734,11 +736,275 @@ def day11_2(data):
 Day 12 - JSAbacusFramework.io
 '''
 
+json_grammar = r"""
+    start: value
+
+    value:  object
+            | list
+            | string
+            | SIGNED_NUMBER -> number
+            | "true" -> true
+            | "false" -> false
+            | "null" -> null
+    
+    pvalue:  object
+            | plist
+            | pstring
+            | SIGNED_NUMBER -> pnumber
+            | "true" -> true
+            | "false" -> false
+            | "null" -> null
+
+    list : "[" [value ("," value)*] "]"
+
+    plist : "[" [value ("," value)*] "]"
+
+    object : "{" [pair ("," pair)*] "}"
+
+    pair : string ":" pvalue
+
+    string : ESCAPED_STRING
+    pstring.1 : ESCAPED_STRING
+
+    %import common.ESCAPED_STRING
+    %import common.SIGNED_NUMBER
+    %import common.WS
+
+    %ignore WS
+
+"""
+
+class TreeToJson(Visitor):
+    count = 0
+
+    #def __init__(self):
+    #    self.count = 0
+
+    def sum(self):
+        return self.count
+
+    @v_args(inline=True)
+    def string(self, s):
+        return s[1:-1].replace('\\"', '"')
+    
+    @v_args(inline=True)
+    def pstring(self, s):
+        return s[1:-1].replace('\\"', '"')
+
+    list = list
+    plist = list
+    pair = tuple
+    object = dict
+    
+    #number = v_args(inline=True)(int)
+
+    @v_args(inline=True)
+    def number(self, n):
+        self.count += int(n)
+        #print(self.count)
+        return int(n)
+    
+    @v_args(inline=True)
+    def pnumber(self, n):
+        self.count += int(n)
+        #print(self.count)
+        return int(n)
+
+    null = lambda self, _: None
+    true = lambda self, _: True
+    false = lambda self, _: False
+
+
 def day12_1(data):
-    data = read_input(2015, "121")   
- 
+    #data = read_input(2015, "121")   
+
+    tree2Json = TreeToJson()
+    json_parser = Lark(json_grammar, parser='lalr', transformer=tree2Json)
+    parse = json_parser.parse
+    parsedTree = parse(data[0])
+    
+    tree2Json.visit_topdown(tree=parsedTree)
+    print("sum:", tree2Json.sum())
+    
+    #print("sum:", parsedTree)
+    
+    result = tree2Json.sum()
+    AssertExpectedResult(111754, result, 1)
+    return result
+
+
+
+class TreeToJson2(Visitor):
+    count = 0
+    pcount = 0
+    total = 0
+    hasRed = False
+    DEBUG_MODE = False
+
+    def _updateCounts(self):
+        if self.DEBUG_MODE:
+            print("hasRead:",self.hasRed)
+
+        if self.hasRed:            
+            self.total += 0#self.count   
+            self.hasRed = False                   
+        else:
+            self.total += self.count + self.pcount
+            self.count = 0
+        self.pcount = 0
+
+    def sum(self):
+        return self.total
+
+    @v_args(inline=True)
+    def string(self, s):
+        return s[1:-1].replace('\\"', '"')
+
+    @v_args(inline=True)
+    def pstring(self, s):        
+        ss = s[1:-1].replace('\\"', '"')
+        if self.DEBUG_MODE:
+            print("eval pstring", ss)
+
+        if ss == 'red':
+            self.hasRed = True
+
+        return ss
+
+    def list(self, items):
+        self._updateCounts()        
+        return list(items)
+    
+    def plist(self, items):
+        if self.DEBUG_MODE:
+            print("eval plist", items)
+            print("eval plist count", self.count)
+            print("eval plist pcount", self.pcount)
+        if self.hasRed:
+            self.count = 0
+        #self._updateCounts()        
+        return list(items)
+
+    def pair(self, key_value):
+        k, v = key_value
+        return k, v
+
+    def object(self, items):
+        if self.DEBUG_MODE:
+            print("val obj", items)
+
+        self._updateCounts()
+        if self.hasRed:
+            self.hasRed = False
+        return dict(items)
+
+    @v_args(inline=True)
+    def number(self, n):
+        self.count += int(n)
+        return int(n)
+    
+    @v_args(inline=True)
+    def pnumber(self, n):
+        self.pcount += int(n)
+        return int(n)
+
+    null = lambda self, _: None
+    true = lambda self, _: True
+    false = lambda self, _: False
+
+def parseAndGetResult(input):
+    treeToJson = TreeToJson2()
+    json_parser = Lark(json_grammar, parser='lalr', transformer=treeToJson)
+    parse = json_parser.parse
+    parsedTree = parse(input)    
+    treeToJson.visit(tree=parsedTree)
+    #print( parsedTree.pretty() )
+    
+    return treeToJson.sum()
+
+
+def day12(input):
+    import re
+    return sum(int(n) for n in re.findall(r"-?\d+", input))
+
+def troubleshoot2(input):
+    def eval_obj_without_red(match):
+        obj = match.group()
+        if ':"red"' not in obj:
+            return str(day12(obj))
+        else:
+            return str(0)
+    
+    import re
+    while ':"red"' in input:
+        input = re.sub(r"{[^{}]*}", eval_obj_without_red, input)
+    return day12(input)
+
+import json
+
+def testSamples():
+    sample1 = '[1,2,3]'
+    sample2 = '[1,{"c":"red","b":2},3]'
+    sample3 = '{"d":"red","e":[1,2,3,4],"f":5}'
+    sample4 = '[1,"red",5]'
+    sample5 = '{"c": ["red", 1], "c":1}'
+    sample6 = '{"c": ["red", {"c": ["red", 1], "c":1}], "c":1}'
+    sample7 = '{"c": ["red", {"c": ["red", {"d":"red","e":[1,2,3,4],"f":5}, 2], "c":1}], "c":1}'
+    sample8 = '{"red":"blue","e":[1,2,3,4],"f":5}'
+    sample9 = '{"e": 86,"c": 23,"a": {"a": [120,169,"green","red","orange"],"b": "red"},"g": "yellow","b": ["yellow"],"d": "red","f": -19}'
+    sample10 = '{"a": [120,169,"green","red","orange"],"b": "red"}'
+
+
+    ex1 = troubleshoot(sample1)
+    ex2 = troubleshoot(sample2)
+    ex3 = troubleshoot(sample3)
+    ex4 = troubleshoot(sample4)
+    ex5 = troubleshoot2(sample5)
+    ex6 = troubleshoot2(sample6)
+    ex7 = troubleshoot2(sample7)
+    ex8 = troubleshoot(sample8)
+    ex9 = troubleshoot(sample9)
+    ex10 = troubleshoot(sample10)
+
+    samples = [sample1, sample2, sample3, sample4, sample5, sample6, sample7, sample8, sample9, sample10]
+    expected = [ex1, ex2, ex3, ex4, ex5, ex6, ex7, ex8, ex9, ex10]       
+
+    for sample, expected in zip(samples, expected):  
+        res = parseAndGetResult(sample)
+        if res != expected:
+            print("Got", res, "but expected", expected, "for sample", sample)
+        else:
+            print("Correct result for sample ", sample,":", expected)
+
+def troubleshoot(input):
+    def sum_numbers(obj):
+        if type(obj) == type(dict()):
+            if "red" in obj.values():
+                return 0
+            return sum(map(sum_numbers, obj.values()))
+
+        if type(obj) == type(list()):
+            return sum(map(sum_numbers, obj))
+
+        if type(obj) == type(0):
+            return obj
+
+        return 0
+
+    data = json.loads(input)
+    return sum_numbers(data)
+
+def day12_2(data):    
+    #data = read_input(2015, "121")   
+    testSamples()
+
     result = 0
-    AssertExpectedResult(0, result, 1)
+    result = parseAndGetResult(data[0]) 
+    
+    # 54040 too low
+    # 89528 too high
+    # should be around 65k :\
+    AssertExpectedResult(111754, result, 2)
     return result
 
 
