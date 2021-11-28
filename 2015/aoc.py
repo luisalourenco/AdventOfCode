@@ -17,12 +17,13 @@ import numpy as np
 from functools import lru_cache
 import operator
 from itertools import takewhile
+from itertools import permutations
 from math import sqrt
 import hashlib
 from itertools import groupby
 import codecs
-from tsp_solver.greedy import solve_tsp
-from tsp_solver.util import path_cost
+#from tsp_solver.greedy import solve_tsp
+#from tsp_solver.util import path_cost
 
 
 
@@ -994,6 +995,7 @@ def troubleshoot(input):
     data = json.loads(input)
     return sum_numbers(data)
 
+# incomplete :(
 def day12_2(data):    
     #data = read_input(2015, "121")   
     testSamples()
@@ -1005,6 +1007,76 @@ def day12_2(data):
     # 89528 too high
     # should be around 65k :\
     AssertExpectedResult(111754, result, 2)
+    return result
+
+'''
+Day 13: Knights of the Dinner Table  
+'''
+
+# 0: person, 2: signal, 3: value
+def parseConstraints(data, includeMyself = False):
+    people = dict()
+    me = 'Myself'
+    if includeMyself:
+        people[me] = dict()
+
+    for line in data:
+        allData = line.split(" ")
+        person = allData[0]
+        neighbour = allData[len(allData)-1][:-1]
+        value = int(allData[3])
+        if allData[2] == 'lose':
+            value = -value
+
+        if person not in people.keys():
+            people[person] = {neighbour : value}
+            if includeMyself:
+                people[me][person] = 0
+                people[person][me] = 0
+        else:
+            people[person][neighbour] = value
+        
+    
+    #print(len(people))
+    return people
+
+def computeChangeInHappines(p, people):
+    happines = 0
+    for i in range(0, len(p)):
+        person = p[i]
+        neighbourOne = p[(i-1) % len(p)]
+        neighbourTwo = p[(i+1) % len(p)]
+        preferences = people[person]
+        happines += preferences[neighbourOne] + preferences[neighbourTwo]
+
+    return happines
+
+#Day 13, part 1: 733 (0.235 secs)
+def day13_1(data):
+    people = parseConstraints(data)
+ 
+    perm = permutations(people.keys())
+    maxHappines = 0
+    for p in perm:
+        happines = computeChangeInHappines(p, people)
+        if happines > maxHappines:
+            maxHappines = happines
+
+    result = maxHappines
+    return result
+
+# Day 13, part 2: 725 (2.359 secs)
+def day13_2(data):
+    people = parseConstraints(data, True)
+ 
+    perm = permutations(people.keys())
+    maxHappines = 0
+    for p in perm:
+        happines = computeChangeInHappines(p, people)
+        if happines > maxHappines:
+            maxHappines = happines
+
+    result = maxHappines
     return result
 
 
