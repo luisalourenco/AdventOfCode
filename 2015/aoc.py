@@ -1102,24 +1102,66 @@ def parseReindeerData(data):
     #print(len(people))
     return reindeers
 
-def computeDistanceAtTime(time, reindeers):
-    # math.ceil((1000/(10+127)))*14*10
+def computeDistanceAtTime(time, reindeers, distances):
     winningDistance = 0
-    for (speed, duration, rest) in reindeers.values():
-        distance =  math.ceil(time / (duration+rest)) * (speed * duration)
+    for reindeer in reindeers.keys():       
+
+        (speed, duration, rest) = reindeers.get(reindeer)
+
+        timesFlew = math.floor(time/(duration+rest))
+        lastTakeOff = timesFlew * (duration + rest) 
+
+        if lastTakeOff + duration < time:
+            timesFlew +=  1      
+            distance = timesFlew * speed * duration
+        else:
+            distance = timesFlew * speed * duration + ((time - lastTakeOff) * speed)
+        
+        distances[reindeer] = distance
+
         if distance > winningDistance:
             winningDistance = distance
-    return winningDistance
+
+    return (distances, winningDistance)
 
 # 2660 too low
 # 2720 too high
-def day14_1(data):
-    data = read_input(2015, "141")  
+#Day 14, part 1: 2696 (0.002 secs)
+def day14_1(data):    
+    #data = read_input(2015, "141")  
     reindeers = parseReindeerData(data)
+    scoreboard = {x : 0 for x in reindeers}
     #print(reindeers)
-    result = computeDistanceAtTime(2503, reindeers)
-    result = computeDistanceAtTime(1000, reindeers)
+    (_, result) = computeDistanceAtTime(2503, reindeers, scoreboard)
+    #result = computeDistanceAtTime(1000, reindeers)
     return result
+
+def computeScoreboard(winningDistance, distances, scoreboard):
+    for reindeer in distances:
+        distance = distances.get(reindeer)
+        if distance == winningDistance:
+            scoreboard[reindeer] += 1
+
+    return scoreboard
+
+#1085 too high
+#Day 14, part 2: 1085 (0.028 secs)
+def day14_2(data):
+    #data = read_input(2015, "141")  
+    reindeers = parseReindeerData(data)
+    distances = {x : 0 for x in reindeers}
+    scoreboard = {x : 0 for x in reindeers}
+    result = 0
+    time = 2503
+
+    for i in range(time):
+        (distances, winningDistance) = computeDistanceAtTime(i, reindeers, distances)
+        scoreboard = computeScoreboard(winningDistance, distances, scoreboard)
+    
+    result = max(scoreboard.values())
+    
+    return result
+
 
 
 if __name__ == "__main__":
