@@ -1079,6 +1079,48 @@ def day13_2(data):
     result = maxHappines
     return result
 
+'''
+Day 14: Reindeer Olympics
+'''
+
+
+# 0: reindeer, 3: speed, 6: duration, :-2: rest
+# Rudolph can fly 22 km/s for 8 seconds, but then must rest for 165 seconds.
+def parseReindeerData(data):
+    reindeers = dict()
+    
+    for line in data:
+        allData = line.split(" ")
+        reindeer = allData[0]       
+        speed = int(allData[3])
+        duration = int(allData[6])
+        rest = int(allData[13])
+
+        if reindeer not in reindeers.keys():
+            reindeers[reindeer] = (speed, duration, rest)
+
+    #print(len(people))
+    return reindeers
+
+def computeDistanceAtTime(time, reindeers):
+    # math.ceil((1000/(10+127)))*14*10
+    winningDistance = 0
+    for (speed, duration, rest) in reindeers.values():
+        distance =  math.ceil(time / (duration+rest)) * (speed * duration)
+        if distance > winningDistance:
+            winningDistance = distance
+    return winningDistance
+
+# 2660 too low
+# 2720 too high
+def day14_1(data):
+    data = read_input(2015, "141")  
+    reindeers = parseReindeerData(data)
+    #print(reindeers)
+    result = computeDistanceAtTime(2503, reindeers)
+    result = computeDistanceAtTime(1000, reindeers)
+    return result
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
