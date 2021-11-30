@@ -22,8 +22,9 @@ from math import sqrt
 import hashlib
 from itertools import groupby
 import codecs
-#from tsp_solver.greedy import solve_tsp
-#from tsp_solver.util import path_cost
+from tsp_solver.greedy import solve_tsp
+from tsp_solver.util import path_cost
+from collections import namedtuple
 
 
 
@@ -1162,6 +1163,53 @@ def day14_2(data):
     
     return result
 
+'''
+Day 15: Science for Hungry People
+'''
+
+def parseIngredients(data):
+    ingredients = dict()
+    Ingredient = namedtuple('Ingredient', 'name capacity durability flavor texture calories')
+
+    # Sprinkles: capacity 2, durability 0, flavor -2, texture 0, calories 3
+    for line in data:
+        ingredientsData = line.split(" ")
+        name = ingredientsData[0][:-1]
+        capacity = ingredientsData[2][:-1]
+        durability = ingredientsData[4][:-1]
+        flavor = ingredientsData[6][:-1]
+        texture = ingredientsData[8][:-1]
+        calories = ingredientsData[10]
+        ingredient = Ingredient(name, int(capacity), int(durability), int(flavor), int(texture), int(calories))
+        ingredients[name] = ingredient
+
+    return ingredients
+
+def computeCookieRecipeScore(ingredients, recipe):
+    #recipe =  name: teaspoons
+    capacity = 0
+    durability = 0
+    flavor = 0
+    texture = 0
+    calories = 1
+    for (name, teaspoon) in recipe:
+        capacity += (teaspoon * ingredients[name].capacity)
+        durability += (teaspoon * ingredients[name].durability)
+        flavor += (teaspoon * ingredients[name].flavor)
+        texture += (teaspoon * ingredients[name].texture)
+
+    return capacity * durability * flavor * texture * calories
+
+def day15_1(data):
+    data = read_input(2015, "151")  
+    recipe = [('Butterscotch', 44), ('Cinnamon', 56)]
+    ingredients = parseIngredients(data)       
+
+    score = computeCookieRecipeScore(ingredients, recipe)
+
+    result = score
+    
+    return result
 
 
 if __name__ == "__main__":
