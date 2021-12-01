@@ -16,7 +16,7 @@ import itertools
 import numpy as np
 from functools import lru_cache
 import operator
-from itertools import takewhile
+from itertools import combinations, takewhile
 from itertools import permutations
 from math import sqrt
 import hashlib
@@ -1192,24 +1192,237 @@ def computeCookieRecipeScore(ingredients, recipe):
     flavor = 0
     texture = 0
     calories = 1
+
     for (name, teaspoon) in recipe:
         capacity += (teaspoon * ingredients[name].capacity)
         durability += (teaspoon * ingredients[name].durability)
         flavor += (teaspoon * ingredients[name].flavor)
         texture += (teaspoon * ingredients[name].texture)
 
+    if (capacity < 0 or durability < 0 or flavor < 0 or texture <0):
+        return 0
+
     return capacity * durability * flavor * texture * calories
 
+#failed to describe this using LP :(
+def solveWithLinearProgramming():
+    from scipy.optimize import linprog
+
+    # Set up values relating to both minimum and maximum values of y
+
+    # x y z w
+    coefficients_inequalities = [[2,0,-2,0], [0,5,-3,0], [0,0,5,-1], [0,-1,0,5]]  # require -1*x + -1*y <= -180
+    constants_inequalities = [1,1,1,1]
+
+    coefficients_equalities = [[2,4,0,-6]]  # require 2x + 4y + 0z - 6w = 100
+    constants_equalities = [100]
+    bounds_x = (0, 100)  # require 30 <= x <= 160
+    bounds_y = (0, 100)  # require 10 <= y <= 60
+    bounds_z = (0, 100)
+    bounds_w = (0, 100)
+
+    # Find and print the maximal value of y = minimal value of -y
+    coefficients_max_y = [1,1,1,1]  # minimize 0*x + -1*y
+    res = linprog(coefficients_max_y,
+                A_ub=coefficients_inequalities,
+                b_ub=constants_inequalities,
+                A_eq=coefficients_equalities,
+                b_eq=constants_equalities,
+                bounds=(bounds_x, bounds_y, bounds_z, bounds_w))
+    print('Maximum value of y =', res.fun)  # opposite of value of -y
+
+# 91352448 too high
+# Day 15, part 1: 21367368 (28.625 secs)
+# Day 15, part 2: 1766400 (27.154 secs)
 def day15_1(data):
-    data = read_input(2015, "151")  
-    recipe = [('Butterscotch', 44), ('Cinnamon', 56)]
+    #data = read_input(2015, "151")  
+
     ingredients = parseIngredients(data)       
-
-    score = computeCookieRecipeScore(ingredients, recipe)
-
-    result = score
     
+    combinations = [combination for combination in permutations(range(1,100), len(ingredients)) if sum(combination) == 100 ]
+    bestScore = 0
+    for recipe in combinations:
+        score = computeCookieRecipeScore(ingredients, (zip(ingredients.keys(), recipe)))
+        if score > bestScore:
+            bestScore = score
+   
+    result = bestScore
+    
+    result = 0
+    AssertExpectedResult(21367368, result)    
     return result
+
+def day15_2(data):
+    #data = read_input(2015, "151")  
+    ingredients = parseIngredients(data)      
+
+    combinations = [combination for combination in permutations(range(1,100), len(ingredients)) 
+                        if sum(combination) == 100 and 
+                        sum(np.multiply(combination, [i.calories for i in ingredients.values()])) == 500
+                   ]
+    bestScore = 0
+    for recipe in combinations:
+        score = computeCookieRecipeScore(ingredients, (zip(ingredients.keys(), recipe)))
+        if score > bestScore:
+            bestScore = score
+   
+    result = bestScore
+    AssertExpectedResult(1766400, result)    
+    return result
+
+
+
+'''
+    Day 16: Aunt Sue
+'''
+'''
+Clues
+    children: 3
+    cats: 7
+    samoyeds: 2
+    pomeranians: 3
+    akitas: 0
+    vizslas: 0
+    goldfish: 5
+    trees: 3
+    cars: 2
+    perfumes: 1
+'''
+def validateProperty(prop, value):  
+    if(prop == 'children'):
+        if value != 3: return False
+    if(prop == 'cats'):
+        if value != 7: return False
+    if(prop == 'samoyeds'):
+        if value != 2: return False
+    if(prop == 'pomeranians'):
+        if value != 3: return False
+    if(prop == 'akitas'):
+        if value != 0: return False
+    if(prop == 'vizslas'):
+        if value != 0: return False
+    if(prop == 'goldfish'):
+        if value != 5: return False
+    if(prop == 'trees'):
+        if value != 3: return False
+    if(prop == 'cars'):
+        if value != 2: return False
+    if(prop == 'perfumes'):
+        if value != 1: return False
+
+    #print("validating property",prop,"with value",value)
+    return True
+
+def parseAunstSue(data, validatePropertiesFunc):
+    #Sue 1: goldfish: 6, trees: 9, akitas: 0
+    candidates = dict()
+    for line in data:
+        properties = dict()
+        inputData = line.split(" ")
+        number = inputData[1][:-1]
+
+        # parse and validate properties
+        for i in range(2, len(inputData)-1, 2):            
+            prop = inputData[i][:-1]
+            value = inputData[i+1]
+            if value.find(',') != -1:
+                value = int(value[:-1])
+            
+            if validatePropertiesFunc(prop, int(value)):
+                properties[prop] = value
+            else:
+                break
+
+        if properties:
+            # all properties are valid, add as candidate
+            candidates[number] = dict(properties)
+    return candidates        
+
+# 473, too high
+# Day 16, part 1: 103 (0.114 secs)
+def day16_1(data):
+    #data = read_input(2015, "151")  
+    candidates = parseAunstSue(data, validateProperty)     
+
+    mostConditionsSatisfied = 0
+    for aunt in candidates.keys():
+        property = candidates[aunt]
+
+        if len(list(property))  > int(mostConditionsSatisfied):
+            mostConditionsSatisfied = len(list(property)) 
+            auntSue = int(aunt)
+   
+    result = auntSue
+    AssertExpectedResult(103, result)    
+    return result
+
+def validatePropertyV2(prop, value):  
+    if(prop == 'children'):
+        if value != 3: return False
+    if(prop == 'cats'):
+        if value <= 7: return False
+    if(prop == 'samoyeds'):
+        if value != 2: return False
+    if(prop == 'pomeranians'):
+        if value >= 3: return False
+    if(prop == 'akitas'):
+        if value != 0: return False
+    if(prop == 'vizslas'):
+        if value != 0: return False
+    if(prop == 'goldfish'):
+        if value >= 5: return False
+    if(prop == 'trees'):
+        if value <= 3: return False
+    if(prop == 'cars'):
+        if value != 2: return False
+    if(prop == 'perfumes'):
+        if value != 1: return False
+
+    #print("validating property",prop,"with value",value)
+    return True
+
+# Day 16, part 2: 405 (0.005 secs)
+def day16_2(data):
+    #data = read_input(2015, "151")  
+    candidates = parseAunstSue(data, validatePropertyV2)     
+
+    mostConditionsSatisfied = 0
+    for aunt in candidates.keys():
+        property = candidates[aunt]
+
+        if len(list(property))  > int(mostConditionsSatisfied):
+            mostConditionsSatisfied = len(list(property)) 
+            auntSue = int(aunt)
+   
+    result = auntSue
+    AssertExpectedResult(405, result)    
+    return result
+
+'''
+    Day 17: No Such Thing as Too Much
+'''
+#WIP
+def fillContainers(containers, eggnogLiters):
+    containers = sorted(containers, key=int)
+    count = 0
+
+    sum = 0
+ 
+
+    return count
+
+def day17_1(data):
+    eggnogLiters = 25
+    
+    containers = [20, 15, 10, 5, 5]
+    result = fillContainers(containers, eggnogLiters)
+    
+    result = 0
+    return result
+
+
+
+
 
 
 if __name__ == "__main__":
