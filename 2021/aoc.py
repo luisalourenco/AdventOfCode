@@ -33,7 +33,7 @@ from common.graphUtils import printGraph, find_all_paths, find_path, find_shorte
 from common.aocVM import HandheldMachine
 from lark import Lark, Transformer, v_args
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
-
+from itertools import islice
 
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
@@ -56,18 +56,42 @@ RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
 ################# Advent of Code - 2021 Edition #################
 
 
-#Day 1, part 1: 
-#Day 1, part 2: 
+#Day 1, part 1: 1548 (0.016 secs)
+#Day 1, part 2: 1589 (0.003 secs)
 def day1_1(data):
-    #data = read_input(2021, "11")    
-    #data = sorted(data, key=int)
-    result = 0
-   
+    data = read_input(2021, "1")    
+    count = 0
+    currentDepth = sys.maxsize
+    for line in data:
+        depth = int(line)
+
+        if depth > currentDepth:
+            count += 1
+        currentDepth = depth
+
+    result = count  
     
-    #AssertExpectedResult(1006875, result, 1)
+    AssertExpectedResult(1548, result, 1)
     return result
 
-#def day1_2(data):    
+def day1_2(data):
+    data = read_input(2021, "1")    
+    window_size = 3
+    count = 0
+    currentDepth = sys.maxsize
+
+    for i in range(len(data) - window_size + 1):
+        window = [int(x) for x in data[i: i + window_size]]
+        depth = sum(window)
+  
+        if depth > currentDepth:
+            count += 1
+        currentDepth = depth    
+
+    result = count  
+    
+    AssertExpectedResult(1589, result, 1)
+    return result   
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2020)
