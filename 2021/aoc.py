@@ -21,6 +21,9 @@ from itertools import takewhile
 from turtle import Turtle, Screen
 from math import sqrt
 
+# UPDATE THIS VARIABLE
+AOC_EDITION_YEAR = 2021
+
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 print(FILE_DIR)
 sys.path.insert(0, FILE_DIR + "/")
@@ -59,7 +62,7 @@ RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
 #Day 1, part 1: 1548 (0.016 secs)
 #Day 1, part 2: 1589 (0.003 secs)
 def day1_1(data):
-    data = read_input(2021, "1")    
+    #data = read_input(2021, "1")    
     count = 0
     currentDepth = sys.maxsize
     for line in data:
@@ -71,11 +74,11 @@ def day1_1(data):
 
     result = count  
     
-    AssertExpectedResult(1548, result, 1)
+    AssertExpectedResult(1548, result)
     return result
 
 def day1_2(data):
-    data = read_input(2021, "1")    
+    #data = read_input(2021, "1")    
     window_size = 3
     count = 0
     currentDepth = sys.maxsize
@@ -90,9 +93,9 @@ def day1_2(data):
 
     result = count  
     
-    AssertExpectedResult(1589, result, 1)
+    AssertExpectedResult(1589, result)
     return result   
 
 if __name__ == "__main__":
-    main(sys.argv, globals(), 2020)
+    main(sys.argv, globals(), AOC_EDITION_YEAR)
 

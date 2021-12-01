@@ -4,6 +4,7 @@ import functools
 from timeit import default_timer as timer
 import sys
 import os
+import inspect
 
 """ AUX FUNCTIONS """
 class SignalCatchingError(Exception):
@@ -49,7 +50,7 @@ def timeout(seconds_before_timeout):
     return deco
 
 def execute_day(_globals, year, day, part):
-    #print("Executing day {0}, part {1}".format(day, part))
+    #print("Executing year {0} day {1}, part {2}".format(year, day, part))
     func_name = "day{0}_{1}".format(day, part)
     if func_name in _globals:
         start = timer()
@@ -67,7 +68,8 @@ def read_input(year, day):
     with open("{0}/../{1}/input/day{2}".format(file_dir, year, day), "r") as fileReader:
         return [line.rstrip('\n') for line in fileReader]
 
-def AssertExpectedResult(expected, result, part):
+def AssertExpectedResult(expected, result, part = 0):
+    part = inspect.stack()[1].function.split("_")[1]    
     print("( Part",part,") Correct result:", expected == result)
 
 def ints(data):
