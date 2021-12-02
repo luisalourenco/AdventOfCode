@@ -96,6 +96,55 @@ def day1_2(data):
     AssertExpectedResult(1589, result)
     return result   
 
+#1911
+def day2_1(data):
+    #data = read_input(2021, "21")    
+    horizontalPos = 0
+    depth = 0
+    
+    for line in data:
+        inputData = line.split(" ")
+        move = inputData[0]
+        value = int(inputData[1])
+
+        if (move == "forward"):
+            horizontalPos += value
+
+        elif (move == "down"):
+            depth += value
+        elif (move == "up"):
+            depth -= value
+
+    result = horizontalPos * depth
+    
+    AssertExpectedResult(1488669, result)
+    return result
+
+def day2_2(data):
+    #data = read_input(2021, "21")    
+    horizontalPos = 0
+    depth = 0
+    aim = 0
+
+    for line in data:
+        inputData = line.split(" ")
+        move = inputData[0]
+        value = int(inputData[1])
+
+        if (move == "forward"):
+            horizontalPos += value
+            depth += (aim * value)
+
+        elif (move == "down"):
+            aim += value
+        elif (move == "up"):
+            aim -= value
+
+    result = horizontalPos * depth
+    
+    AssertExpectedResult(1176514794, result)
+    return result
+
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
 
