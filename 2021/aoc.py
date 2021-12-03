@@ -144,9 +144,29 @@ def day2_2(data):
     AssertExpectedResult(1176514794, result)
     return result
 
+# Improved version for Day 3 part 1
+def alternativeDay3_1(data):
+    # reads each line from data, convert each line to an int using map 
+    # then convert the resulting int into a list of numbers
+    bitsMatrix = [ list(map(int, line)) for line in data ]   
 
-def day3_1(data):
-    #data = read_input(2021, "31")    
+    gammaRate = ""
+    epsilonRate = ""
+
+    for i in range(len(bitsMatrix[0])):
+        ones = [item[i] for item in bitsMatrix].count(1)
+        zeros = [item[i] for item in bitsMatrix].count(0)
+        #print("ones:",ones, "zeros:",zeros)
+        if ones > zeros:
+            gammaRate += '1'
+            epsilonRate += '0'
+        else:
+            gammaRate += '0'
+            epsilonRate += '1'
+
+    return int(gammaRate, 2) * int(epsilonRate, 2)
+
+def originalDay3_1(data):
     gammaRate = []
     epsilonRate = []
     bitsPosition = []
@@ -174,8 +194,15 @@ def day3_1(data):
     e = ''.join(format(int(i,2)) for i in epsilonRateBin)
     
     result = int(g, 2) * int(e,2)
+
+    return result
+
+def day3_1(data):
+    #data = read_input(2021, "31")    
+    result = alternativeDay3_1(data)
     
     AssertExpectedResult(2648450, result)
+
     return result
 
 def findRating(bitsPosition, bits, rating):
@@ -211,8 +238,50 @@ def findRating(bitsPosition, bits, rating):
             return remainder
     return remainder
 
-def day3_2(data):
-    #data = read_input(2021, "31")    
+def getNewBitsMatrix(bitsMatrix, cond, rating, position):
+    getNewBitsMatrix = []
+    for bit in bitsMatrix:  
+        if(rating == 'oxygen'):
+            criteria = 1
+            criteria2 = 0
+        else:
+            criteria = 0
+            criteria2 = 1
+
+        if cond:      
+            if bit[position] == criteria:
+                getNewBitsMatrix.append(bit)
+        else:
+            if bit[position] == criteria2:
+                getNewBitsMatrix.append(bit)       
+     
+    return getNewBitsMatrix
+
+def getRating(bitsMatrix, rating):
+    size = len(bitsMatrix[0])
+    for i in range(size):
+        ones = [item[i] for item in bitsMatrix].count(1)
+        zeros = [item[i] for item in bitsMatrix].count(0)
+        #print("ones:",ones, "zeros:",zeros, "criteria:", ones > zeros)  
+        bitsMatrix = getNewBitsMatrix(bitsMatrix, ones >= zeros, rating, i)
+        if len(bitsMatrix) == 1:
+            break
+
+    return int("".join(map(str, bitsMatrix.pop())),2)
+
+def alternativeDay3_2(data):
+    # reads each line from data, convert each line to an int using map 
+    # then convert the resulting int into a list of numbers
+    bitsMatrix = [ list(map(int, line)) for line in data ]   
+
+    oxygenRating = getRating(bitsMatrix, 'oxygen')
+    co2Rating = getRating(bitsMatrix, 'co2')
+    
+    return oxygenRating * co2Rating
+
+def oldDay3_2(data):
+    #data = read_input(2021, "31")  
+
     bitsPosition = []
     oxygenGeneratorRating = []
     co2ScrubberRating = []
@@ -234,6 +303,13 @@ def day3_2(data):
     
     result = int(o,2) * int(c, 2) 
     
+    AssertExpectedResult(2845944, result)
+    return result
+
+def day3_2(data):
+    #data = read_input(2021, "31") 
+        
+    result = alternativeDay3_2(data)    
     AssertExpectedResult(2845944, result)
     return result
 
