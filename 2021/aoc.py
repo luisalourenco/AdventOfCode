@@ -58,6 +58,7 @@ RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
 
 ################# Advent of Code - 2021 Edition #################
 
+##### Day 1 #####
 
 #Day 1, part 1: 1548 (0.016 secs)
 #Day 1, part 2: 1589 (0.003 secs)
@@ -95,6 +96,9 @@ def day1_2(data):
     
     AssertExpectedResult(1589, result)
     return result   
+
+
+##### Day 2 #####
 
 # Day 2, part 1: 1488669 (0.050 secs)
 def day2_1(data):
@@ -143,6 +147,8 @@ def day2_2(data):
     
     AssertExpectedResult(1176514794, result)
     return result
+
+##### Day 3 #####
 
 # Improved version for Day 3 part 1
 def alternativeDay3_1(data):
@@ -313,6 +319,7 @@ def day3_2(data):
     AssertExpectedResult(2845944, result)
     return result
 
+##### Day 4 #####
 
 def readInputAndBoards(data):
     boards = []
@@ -373,7 +380,6 @@ def day4_1(data):
     boards, plays, results = readInputAndBoards(data)
     
     for play in plays:       
-
         for i in range(len(boards)):
             board = boards[i]
             results[i] = playBoard(play, board, results[i])
@@ -394,7 +400,6 @@ def day4_1(data):
 def day4_2(data):
     #data = read_input(2021, "41") 
     boards, plays, results = readInputAndBoards(data)
-    totalWins = len(boards)
     winners = []
     
     for play in plays:       
@@ -405,15 +410,13 @@ def day4_2(data):
 
         n, hasWon = checkBoards(results)
         if (hasWon):
-            totalWins = totalWins - 1
             if n not in winners:
                 winners.append(n)
             else:
                 continue
             result = getScore(boards[n], results[n], play)
             #print("last winning play:", play, "on board:", n)    
-            if(totalWins == 0):
-                break  
+  
             results[n] = [ [1] * 5 for i in range(5)]
             
     AssertExpectedResult(5586, result)
