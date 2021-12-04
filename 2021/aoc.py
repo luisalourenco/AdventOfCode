@@ -313,6 +313,114 @@ def day3_2(data):
     AssertExpectedResult(2845944, result)
     return result
 
+
+def readInputAndBoards(data):
+    boards = []
+    results = []
+    plays = []
+    firstLine = True
+    boardLine = 0
+    for line in data:
+        if (firstLine):
+            plays = list([int(play) for play in line.split(",")])
+            firstLine = False
+        else: 
+            if line == '':
+                continue
+            if boardLine == 0:
+                board = [] 
+                result = []           
+
+            row = [ int(elem.strip()) for elem in line.split(" ") if elem != '']
+            board.append(row)
+            result.append([1]*5)
+            boardLine += 1
+
+            if boardLine == 5:
+                boards.append(board)
+                results.append(result)
+                boardLine = 0
+    return boards, plays, results
+
+def playBoard(play, board, results):
+    for i in range(5):
+        for j in range(5):
+            if (board[i][j] == play):
+                results[i][j] = 0
+                return results
+    return results
+
+def checkBoards(results):
+    #print(results)
+    for n in range(len(results)):
+        result = results[n]
+        for i in range(5):
+            countCol = [item[i] for item in result].count(0)
+            countRow = result[i].count(0)
+            if countCol == 5 or countRow == 5:
+                return (n, True)
+    return (n, False)
+
+def getScore(board, results, play):
+    score = 0
+    for i in range(5):
+        score += sum([x*y for x,y in zip(board[i], results[i])])
+    return score * play
+
+# Day 4, part 1: 35711 (0.063 secs)
+def day4_1(data):
+    #data = read_input(2021, "41") 
+    boards, plays, results = readInputAndBoards(data)
+    
+    for play in plays:       
+
+        for i in range(len(boards)):
+            board = boards[i]
+            results[i] = playBoard(play, board, results[i])
+
+        n, hasWon = checkBoards(results)
+        if (hasWon):
+            result = getScore(boards[n], results[n], play)
+            #print("winning play:", play, "on board:", n)    
+            break  
+                 
+    AssertExpectedResult(35711, result)
+
+    return result
+
+# 45440 high 
+# 13936 high
+# Day 4, part 2: 5586 (0.043 secs)
+def day4_2(data):
+    #data = read_input(2021, "41") 
+    boards, plays, results = readInputAndBoards(data)
+    totalWins = len(boards)
+    winners = []
+    
+    for play in plays:       
+
+        for i in range(len(boards)):
+            board = boards[i]
+            results[i] = playBoard(play, board, results[i])
+
+        n, hasWon = checkBoards(results)
+        if (hasWon):
+            totalWins = totalWins - 1
+            if n not in winners:
+                winners.append(n)
+            else:
+                continue
+            result = getScore(boards[n], results[n], play)
+            #print("last winning play:", play, "on board:", n)    
+            if(totalWins == 0):
+                break  
+            results[n] = [ [1] * 5 for i in range(5)]
+            
+    AssertExpectedResult(5586, result)
+    
+    return result
+
+
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
 
