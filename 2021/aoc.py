@@ -504,6 +504,18 @@ def day5_2(data):
 
     return result
 
+##### Day 6 #####
+
+def day6_1(data):
+    data = read_input(2021, "61")  
+    
+    for line in data:
+        inputDate = line.split(" ")
+    
+    result = 0                
+    AssertExpectedResult(0, result)
+
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
