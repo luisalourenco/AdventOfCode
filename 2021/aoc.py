@@ -18,8 +18,11 @@ import numpy as np
 from functools import lru_cache
 import operator
 from itertools import takewhile
+import itertools, collections
 from turtle import Turtle, Screen
 from math import remainder, sqrt
+from collections import namedtuple
+
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2021
@@ -426,17 +429,97 @@ def day4_2(data):
 
 ##### Day 5 #####
 
-def day5_1(data):
-    #data = read_input(2021, "51") 
+def readLines(data):
+    lines = []
+    Point = namedtuple('Point', 'x y')
     for line in data:
-        inputData = line.split(" ")
+        inputData = line.split("->")
+        start = inputData[0].strip().split(",")
+        end = inputData[1].strip().split(",")
+        lines.append( (Point(int(start[0]), int(start[1])),  Point(int(end[0]), int(end[1]))) )
+    return lines
 
+def fillMap(lines, rows, columns, fillDiagonal = False):
+
+    map = [ [ (0) for i in range(columns) ] for j in range(rows) ]    
+
+    for (p1, p2) in lines:
+        if (p1.x <= p2.x):
+            startX = p1.x
+            endX = p2.x
+        else:
+            startX = p2.x
+            endX = p1.x
+
+        if (p1.y <= p2.y):
+            startY = p1.y
+            endY = p2.y
+        else:
+            startY = p2.y
+            endY = p1.y
+
+        #print("Fill",p1," ->",p2,"from x:",startX, endX,"to y:",startY, endY)
+        if (startX == endX):
+            for j in range(startY, endY+1):
+                map[j][startX] += 1
+        elif (startY == endY):
+            for i in range(startX, endX+1):
+                map[startY][i] += 1
+        elif (fillDiagonal):
+            #print("Fill diag",p1," ->",p2,"from x:",startX, endX,"to y:",startY, endY)
+            i = p1.x 
+            j = p1.y
+
+            control = startX
+            while (control <= endX):
+                #print("filling",i,j)
+                map[j][i] += 1
+                control +=1
+                if (p1.x <= p2.x):
+                    i+=1
+                else:
+                    i-=1
+                if (p1.y <= p2.y):
+                    j+=1
+                else:
+                    j-=1
+                          
+    return map
+
+def countIntersections(map, rows, columns):
     result = 0
-                 
-    AssertExpectedResult(0, result)
+    for i in range(rows):
+        for j in range(columns):
+            if map[i][j] >= 2:
+                result += 1
+    return result
+
+# 953911
+# Day 5, part 1: 5 (0.047 secs)
+def day5_1(data):
+    #data = read_input(2021, "51")  
+    columns = 1000
+    rows = 1000
+    lines = readLines(data)
+    map = fillMap(lines, rows, columns)
+    result = countIntersections(map, rows, columns)                 
+    AssertExpectedResult(6225, result)
 
     return result
 
+
+# 24778
+# Day 5, part 2: 22116 (0.151 secs)
+def day5_2(data):
+    #data = read_input(2021, "51")  
+    columns = 1000
+    rows = 1000
+    lines = readLines(data)
+    map = fillMap(lines, rows, columns, True)
+    result = countIntersections(map, rows, columns)                 
+    AssertExpectedResult(22116, result)
+
+    return result
 
 
 if __name__ == "__main__":
