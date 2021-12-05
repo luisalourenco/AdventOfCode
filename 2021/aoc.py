@@ -440,49 +440,32 @@ def readLines(data):
     return lines
 
 def fillMap(lines, rows, columns, fillDiagonal = False):
+    map = [ [ 0 for _ in range(columns) ] for _ in range(rows) ]    
 
-    map = [ [ (0) for i in range(columns) ] for j in range(rows) ]    
-
-    for (p1, p2) in lines:
-        if (p1.x <= p2.x):
-            startX = p1.x
-            endX = p2.x
-        else:
-            startX = p2.x
-            endX = p1.x
-
-        if (p1.y <= p2.y):
-            startY = p1.y
-            endY = p2.y
-        else:
-            startY = p2.y
-            endY = p1.y
+    for (p1, p2) in lines:        
 
         #print("Fill",p1," ->",p2,"from x:",startX, endX,"to y:",startY, endY)
-        if (startX == endX):
-            for j in range(startY, endY+1):
-                map[j][startX] += 1
-        elif (startY == endY):
-            for i in range(startX, endX+1):
-                map[startY][i] += 1
+        if (p1.x == p2.x): 
+            for j in range(min(p1.y, p2.y), max(p1.y, p2.y)+1):
+                map[j][p1.x] += 1
+        elif (p1.y == p2.y):
+            for i in range(min(p1.x, p2.x), max(p1.x, p2.x)+1):
+                map[p1.y][i] += 1
         elif (fillDiagonal):
             #print("Fill diag",p1," ->",p2,"from x:",startX, endX,"to y:",startY, endY)
             i = p1.x 
             j = p1.y
 
-            control = startX
-            while (control <= endX):
+            control = min(p1.x, p2.x)
+            while (control <= max(p1.x,p2.x)):
                 #print("filling",i,j)
                 map[j][i] += 1
                 control +=1
-                if (p1.x <= p2.x):
-                    i+=1
-                else:
-                    i-=1
-                if (p1.y <= p2.y):
-                    j+=1
-                else:
-                    j-=1
+                dx = 1 if (p1.x <= p2.x) else -1
+                dy = 1 if (p1.y <= p2.y) else -1
+                i += dx 
+                j += dy
+                
                           
     return map
 
