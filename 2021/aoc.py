@@ -534,6 +534,7 @@ def simulateLanterfish(lanternfishs, daysSimulation, printData = False):
 
     return lanternfishs
 
+#Day 6, part 1: 387413 (0.922 secs)
 def day6_1(data):
     #data = read_input(2021, "61")
     daysSimulation = 80    
@@ -571,7 +572,7 @@ def simulateLanterfishOptimized(lanternfishs, daysSimulation, printData = False)
     
     return sum(timers.values())
 
-        
+# Day 6, part 2: 1738377086345 (0.003 secs)       
 def day6_2(data):
     #data = read_input(2021, "61")
     daysSimulation = 256    
@@ -581,6 +582,23 @@ def day6_2(data):
     AssertExpectedResult(1738377086345, result)
 
     return result
+
+
+##### Day 7 #####
+
+def day7_1(data):
+    #data = read_input(2021, "71")
+
+    for line in data: 
+        inputData = line.split(" ")
+    
+    result = 0
+    
+    AssertExpectedResult(0, result)
+
+    return result
+
+    
 
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
