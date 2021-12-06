@@ -22,7 +22,8 @@ import itertools, collections
 from turtle import Turtle, Screen
 from math import remainder, sqrt
 from collections import namedtuple
-
+from collections import Counter
+from collections import defaultdict
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2021
@@ -506,14 +507,78 @@ def day5_2(data):
 
 ##### Day 6 #####
 
+
+def simulateLanterfish(lanternfishs, daysSimulation, printData = False):
+    newFishTimerValue = 8
+    resetFishTimerValue = 6  
+    prev = len(lanternfishs)
+    sum = 0
+
+    for day in range(daysSimulation):
+        
+        if (printData):   
+            #print("Day",day,":", len(lanternfishs),"diff:", len(lanternfishs)-prev)
+            print("Day",day,":", (lanternfishs))
+            if (day%7 == 0):                         
+                print("Day",day,":", len(lanternfishs),"diff:", len(lanternfishs)-prev)
+                prev = len(lanternfishs)
+            else:
+                sum += len(lanternfishs)
+            
+            #print("Day",day,":", lanternfishs)
+
+        newFishes = [ 1 if fish == 0 else 0 for fish in lanternfishs].count(1) 
+        lanternfishs = [ resetFishTimerValue if fish == 0 else fish -1 for fish in lanternfishs]       
+        for _ in range(newFishes):
+            lanternfishs.append(newFishTimerValue)
+
+    return lanternfishs
+
 def day6_1(data):
-    data = read_input(2021, "61")  
+    #data = read_input(2021, "61")
+    daysSimulation = 80    
+    lanternfishs = [int(fish) for fish in data.pop().split(",")]
+    lanternfishs = simulateLanterfish(lanternfishs, daysSimulation)
     
-    for line in data:
-        inputDate = line.split(" ")
+    result = len(lanternfishs)               
+    AssertExpectedResult(387413, result)
+
+    return result
+
+def simulateLanterfishOptimized(lanternfishs, daysSimulation, printData = False):
+    newFishTimerValue = 8
+    resetFishTimerValue = 6      
+    timers = Counter(lanternfishs)
     
-    result = 0                
-    AssertExpectedResult(0, result)
+    for _ in range(daysSimulation):       
+        newTimers = defaultdict(int)
+
+        for (timer, fishes) in sorted(timers.items()):
+            if timer == 0:
+                newTimers[newFishTimerValue] = fishes
+                newTimers[resetFishTimerValue] = fishes
+            elif timer == resetFishTimerValue + 1:
+                newTimers[resetFishTimerValue] += fishes
+            else:
+                newTimers[timer - 1] = fishes
+        timers = newTimers
+        
+        '''
+        print("Day",day+1,":", sum([f for f in timers.values()]))
+        for (n,f) in sorted(timers.items()):
+            print(n,":",f)
+        '''
+    
+    return sum(timers.values())
+
+        
+def day6_2(data):
+    #data = read_input(2021, "61")
+    daysSimulation = 256    
+    lanternfishs = [int(fish) for fish in data.pop().split(",")]
+    result = simulateLanterfishOptimized(lanternfishs, daysSimulation)
+    
+    AssertExpectedResult(1738377086345, result)
 
     return result
 
