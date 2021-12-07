@@ -608,27 +608,23 @@ def day7_1(data):
     #data = read_input(2021, "71")
 
     horizontalPositions = [int(position) for position in data.pop().split(",")]
-    result = computeLeastFuel(horizontalPositions)
-    
-    
+    result = computeLeastFuel(horizontalPositions)  
     AssertExpectedResult(344605, result)
 
     return result
 
-def computeLeastFuelV2(horizontalPositions):
+def computeLeastFuelV2(horizontalPositions, fuelCosts):
     minFuel = sys.maxsize
     maxPos = max(horizontalPositions)
-
     alignedPosition = maxPos
     while alignedPosition >= 0:
         fuel = 0
-        increment = 0
         for position in horizontalPositions:
             val = abs(alignedPosition - position)
-            increment = 1
-            for i in range(val):
-                fuel+= increment
-                increment += 1
+            if val != 0:
+                fuel += fuelCosts[val]
+            else:
+                fuel += 0
         
         if fuel < minFuel:
             minFuel = fuel
@@ -637,14 +633,26 @@ def computeLeastFuelV2(horizontalPositions):
     
     return minFuel
 
+def computeFuelCosts(maxPos):
+    fuelCosts = defaultdict()  
+    increment = 1
+    fuel = 0
+    for j in range(1, maxPos+1):       
+        fuel+= increment
+        increment += 1
+        fuelCosts[j] = fuel
+    
+    return fuelCosts
+
 # Day 7, part 2: 93699985 (80.608 secs)
+# Day 7, part 2: 93699985 (0.267 secs)
 def day7_2(data):
-    data = read_input(2021, "71")
+    #data = read_input(2021, "71")
 
     horizontalPositions = [int(position) for position in data.pop().split(",")]
-    result = computeLeastFuelV2(horizontalPositions)
-    
-    
+    maxPos = max(horizontalPositions)
+    fuelCosts = computeFuelCosts(maxPos)
+    result = computeLeastFuelV2(horizontalPositions, fuelCosts)    
     AssertExpectedResult(93699985, result)
 
     return result
