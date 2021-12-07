@@ -586,19 +586,68 @@ def day6_2(data):
 
 ##### Day 7 #####
 
+def computeLeastFuel(horizontalPositions):
+    minFuel = sys.maxsize
+    maxPos = max(horizontalPositions)
+
+    alignedPosition = maxPos
+    while alignedPosition >= 0:
+        fuel = 0
+        for position in horizontalPositions:
+            fuel += abs(alignedPosition - position)
+        
+        if fuel < minFuel:
+            minFuel = fuel
+        
+        alignedPosition -= 1
+    
+    return minFuel
+
+# Day 7, part 1: 344605 (0.220 secs)
 def day7_1(data):
     #data = read_input(2021, "71")
 
-    for line in data: 
-        inputData = line.split(" ")
+    horizontalPositions = [int(position) for position in data.pop().split(",")]
+    result = computeLeastFuel(horizontalPositions)
     
-    result = 0
     
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(344605, result)
 
     return result
 
+def computeLeastFuelV2(horizontalPositions):
+    minFuel = sys.maxsize
+    maxPos = max(horizontalPositions)
+
+    alignedPosition = maxPos
+    while alignedPosition >= 0:
+        fuel = 0
+        increment = 0
+        for position in horizontalPositions:
+            val = abs(alignedPosition - position)
+            increment = 1
+            for i in range(val):
+                fuel+= increment
+                increment += 1
+        
+        if fuel < minFuel:
+            minFuel = fuel
+        
+        alignedPosition -= 1
     
+    return minFuel
+
+# Day 7, part 2: 93699985 (80.608 secs)
+def day7_2(data):
+    data = read_input(2021, "71")
+
+    horizontalPositions = [int(position) for position in data.pop().split(",")]
+    result = computeLeastFuelV2(horizontalPositions)
+    
+    
+    AssertExpectedResult(93699985, result)
+
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
