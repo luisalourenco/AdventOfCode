@@ -660,14 +660,171 @@ def day7_2(data):
 
 ##### Day 8 #####
 
+def parseEntries(data):
+    Entry = namedtuple('Entry', 'input output')
+    entries = []
+    for line in data:
+        signals = line.split(" | ")
+        input = signals[0].split(" ")
+        output = signals[1].split(" ")
+        entries.append(Entry(input, output))
+    
+    return entries
+
+def interpretEntries(entries):
+    segments = defaultdict(int)
+    segments[7] = 3
+    segments[4] = 4
+    segments[1] = 2
+    segments[8] = 7
+    unique = 0
+   
+    for entry in entries:
+        ones = sum([1 for i in entry.output if len(i) == segments[1]])
+        fours = sum([1 for i in entry.output if len(i) == segments[4]])
+        sevens = sum([1 for i in entry.output if len(i) == segments[7]])
+        eights = sum([1 for i in entry.output if len(i) == segments[8]])
+        
+        unique += ones + fours + sevens + eights        
+    
+    return unique
+
+# Day 8, part 1: 375 (0.055 secs)
 def day8_1(data):
     #data = read_input(2021, "81")
 
-    for line in data:
-        inputData = line.split(" ")
+    entries = parseEntries(data)
+    result = interpretEntries(entries)
 
-    result = 0  
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(375, result)
+
+    return result
+
+
+def cleanupResult(l):
+    if len(l) == 0:
+        return ''
+    else:
+        return l.pop()
+
+
+def sortString(str):
+    return ''.join(sorted(str))
+
+
+# based on 1s, find 3s since 2 and 5s will not contain 1s
+def findThrees(ones, sizeFive, numbers):   
+    for three in sizeFive:
+        if len(set(three).intersection(ones)) == 2:
+            numbers[three] = 3    
+            numbers[3] = three
+
+
+# at this point we know 3s, lenght 6 is either a 0, 6 or 9 but only 9 has 3s in it
+def findNines(sizeSixes, numbers):
+    three = numbers[3]
+    for nine in sizeSixes:
+        if len(set(nine).intersection(three)) == 5:
+            numbers[sortString(nine)] = 9    
+            numbers[9] = sortString(nine)
+
+# at this point we know 9s, lenght 5 is either a 2, 5 or 3 but 9s contains 5
+def findFives(sizeFives, numbers):
+    nine = numbers[9]
+    for five in sizeFives:
+        if len(set(nine).intersection(five)) == 5:
+            numbers[sortString(five)] = 5    
+            numbers[5] = sortString(five)
+
+# we can decide 6s from 5s at this point
+def findSixes(sizeSixes, numbers):
+    five = numbers[5]
+    for six in sizeSixes:
+        if len(set(six).intersection(five)) == 5:
+            numbers[sortString(six)] = 6    
+            numbers[6] = sortString(six)
+
+def computeValue(numbers, entry):
+    val = ''.join([str(numbers[sortString(number)]) for number in entry])
+    return int(val)   
+
+
+def findDigitsAndGetValue(entries):
+    
+    sum = 0
+    for entry in entries:
+        numbers = dict()
+        onesOut = cleanupResult([sortString(i) for i in entry.output if len(i) == 2])
+        onesIn = cleanupResult([sortString(i) for i in entry.input if len(i) == 2])
+        ones = set(onesIn).union(set(onesOut))
+        sortedOne = sortString(''.join(ones))
+        numbers[sortedOne] = 1
+        numbers[1] = sortedOne
+        
+        foursIn = cleanupResult([sortString(i) for i in entry.input if len(i) == 4])
+        foursOut = cleanupResult([sortString(i) for i in entry.output if len(i) == 4])
+        fours = set(foursIn).union(set(foursOut))
+        sortedFour = sortString(''.join(fours))
+        numbers[sortedFour] = 4
+        numbers[4] = sortedFour
+
+        sevensIn = cleanupResult([sortString(i) for i in entry.input if len(i) == 3])
+        sevensOut = cleanupResult([sortString(i) for i in entry.output if len(i) == 3])
+        sevens = set(sevensIn).union(set(sevensOut))
+        sortedSeven = sortString(''.join(sevens))
+        numbers[sortedSeven] = 7
+        numbers[7] = sortedSeven
+
+        eightsIn = cleanupResult([sortString(i) for i in entry.input if len(i) == 7])       
+        eightsOut = cleanupResult([sortString(i) for i in entry.output if len(i) == 7]) 
+        eights = set(eightsIn).union(set(eightsOut))
+        sortedEights = sortString(''.join(eights))
+        numbers[sortedEights] = 8      
+        numbers[8] = sortedEights
+
+        sizeFiveIn = [sortString(i) for i in entry.input if len(i) == 5]     
+        sizeFiveOut = [sortString(i) for i in entry.output if len(i) == 5]    
+        sizeFives = set(sizeFiveIn).union(set(sizeFiveOut))
+
+        sizeSixIn = [sortString(i) for i in entry.input if len(i) == 6]     
+        sizeSixOut = [sortString(i) for i in entry.output if len(i) == 6]    
+        sizeSixes = set(sizeSixIn).union(set(sizeSixOut))
+       
+        # based on 1s, find 3s since 2 and 5s will not contain 1s
+        findThrees(ones, sizeFives, numbers)
+        sizeFives.remove(numbers[3])
+        # based on 3s, find 9s since 6s and 0s will not contain 3s in it
+        findNines(sizeSixes, numbers)
+        sizeSixes.remove(numbers[9])
+        # based on 9s, find 5s since 2s or 3s will not contains 5s in it
+        findFives(sizeFives, numbers)
+        sizeFives.remove(numbers[5])        
+        # we can infer 6s from 5s at this point
+        findSixes(sizeSixes, numbers)
+        sizeSixes.remove(numbers[6])
+
+        # only zero is left on list of lenght 6
+        zero = sizeSixes.pop()
+        numbers[0] = zero
+        numbers[zero] = 0
+       
+        # only two is left on list of lenght 5
+        two = sizeFives.pop()
+        numbers[2] = two
+        numbers[two] = 2
+
+        sum += computeValue(numbers, entry.output)
+    return sum
+
+
+# Day 8, part 2: 1019355 (0.013 secs)
+def day8_2(data):
+    #data = read_input(2021, "81")
+    entries = parseEntries(data)
+    result = interpretEntries(entries)
+    result = findDigitsAndGetValue(entries)
+
+    AssertExpectedResult(1019355, result)
 
     return result
 
