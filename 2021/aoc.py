@@ -19,8 +19,8 @@ from functools import lru_cache
 import operator
 from itertools import takewhile
 import itertools, collections
-from turtle import Turtle, Screen
-from math import remainder, sqrt
+from turtle import Turtle, Screen, heading
+from math import pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
@@ -827,6 +827,110 @@ def day8_2(data):
     AssertExpectedResult(1019355, result)
 
     return result
+
+
+##### Day 9 #####
+
+def findLowPoints(heightMap):
+    Position = namedtuple('Position', 'height x y')
+    lowPoints = []    
+    columns = len(heightMap[0])
+    rows = len(heightMap)
+    newHeightMap =  [[9 for x in range(columns)] for y in range(rows)] 
+
+    for j in range(columns):
+        for i in range(rows):
+            adjacent = []
+            height = heightMap[i][j]
+            newHeightMap[i][j] = Position(height, i, j)
+           
+            if (i != 0):
+               adjacent.append(heightMap[i-1][j])
+            if (i != rows-1):
+                adjacent.append(heightMap[i+1][j])
+            if (j != 0):
+                adjacent.append(heightMap[i][j-1])
+            if (j != columns - 1):
+                adjacent.append(heightMap[i][j+1])
+            
+            if height < min(adjacent):
+                lowPoints.append(Position(height, i, j))
+
+    return lowPoints, newHeightMap
+
+
+# Day 9, part 1: 516 (0.066 secs)
+def day9_1(data):
+    #data = read_input(2021, "91")
+    heightMap = []    
+    for line in data:
+        heightMap.append([int(position) for position in list(line)])
+    
+    lowPoints, _ = findLowPoints(heightMap)
+    result = sum([risk.height + 1 for risk in lowPoints])
+  
+    AssertExpectedResult(516, result)
+
+    return result
+
+def findBasins(heightMap, lowPoints, newHeightMap):
+    basins = []
+    
+    for lowPoint in lowPoints:
+        #print("**** lowpoint ****", lowPoint)        
+        basins.append(findBasinRec(lowPoint, newHeightMap, [], []))       
+
+    return basins  
+        
+
+def findBasinRec(lowPoint, map, basin, visited):
+    columns = len(map[0])
+    rows = len(map)
+    x = lowPoint.x
+    y = lowPoint.y
+    height = lowPoint.height   
+
+    #print("rec with:", lowPoint)    
+    #print("visited?", lowPoint in visited)
+    #print("visited:",visited)
+    if lowPoint in visited:
+        #print("basin:", basin,len(visited) )
+        return []
+    else:
+        visited.append(lowPoint)    
+    
+    if (height == 9):
+        return []
+    else:          
+        basin.append(height)
+        findBasinRec(map[x-1][y], map, basin, visited) if x-1 >= 0 else [] 
+        findBasinRec(map[x+1][y], map, basin, visited) if x+1 <= rows-1 else []
+        findBasinRec(map[x][y-1], map, basin, visited) if y-1 >= 0 else [] 
+        findBasinRec(map[x][y+1], map, basin, visited) if y+1 <= columns - 1 else []
+        return basin
+
+# Day 9, part 2: 1023660 (0.060 secs)
+def day9_2(data):
+    #data = read_input(2021, "91")
+    heightMap = []    
+    for line in data:
+        heightMap.append([int(position) for position in list(line)])
+    
+    lowPoints, newHeightMap = findLowPoints(heightMap)
+    basins = findBasins(heightMap, lowPoints, newHeightMap)
+
+    #print("basins found:",basins)    
+
+    zipped = zip(map(len, basins), basins)
+    res = sorted(list(zipped), key = lambda x: x[0])
+    res.reverse()
+    result = functools.reduce(operator.mul, [x for x,_ in res][:3] , 1)
+
+    AssertExpectedResult(1023660, result)
+
+    return result
+
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
