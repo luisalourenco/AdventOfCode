@@ -38,7 +38,7 @@ from common.utils import read_input, main, clear, AssertExpectedResult, ints  # 
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
-from lark import Lark, Transformer, v_args
+from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
 from itertools import islice
 
@@ -933,15 +933,147 @@ def day9_2(data):
 
 ##### Day 10 #####
 
-def day10_1(data):
-    data = read_input(2021, "101")
-    
-    for line in data:
-        inputData = line.split(" ")
+grammar = """
+start: leftside+
+leftside: lparan+ | lcparan+ | langleparan+ | lregparan+
 
-    result = 0
+lparan: "[" leftside* rparan 
+lcparan:  "{" leftside* rcparan
+langleparan:  "<" leftside* rangleparan
+lregparan:  "(" leftside* rregparan
+
+rparan:"]" 
+rcparan: "}" 
+rangleparan:">" 
+rregparan:  ")"
+
+%import common.WS_INLINE
+%ignore WS_INLINE
+%ignore " "     
+"""
+
+def computeSyntaxErrorScore(e):
+    excp = str(e)
+    st = excp.split("Token(")[1]
+    st = st.split(", ")[1]    
+    s = st.split("'")[1].strip()
+    
+    #print("token:",s)
+    if s == ')':
+        val = 3
+    elif s == ']':
+        val = 57
+    elif s == '}':
+        val = 1197
+    elif s ==  '>':
+        val = 25137
+    else:
+        val = 0
+    return val
+
+# Day 10, part 1: 323613 (0.183 secs)
+def day10_1(data):
+    #data = read_input(2021, "101")
+    
+    parser = Lark(grammar, parser='lalr')
+    calc = parser.parse
+
+    syntaxErrorScore = 0
+    for line in data:
+        try:
+            calc(line)
+        except Exception as e:
+            score = computeSyntaxErrorScore(e)
+            #print("score:",score)
+            syntaxErrorScore += score  
+
+    result = syntaxErrorScore
   
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(323613, result)
+
+    return result
+
+def getTokenValue(token):
+    if token == ')':
+        return 1
+    elif token == ']':
+        return  2
+    elif token == '}':
+        return  3
+    elif token ==  '>':
+        return  4
+    else:
+        return 0
+
+def computeAutoCompleteScore(e, token):
+    excp = str(e)
+    st = excp.split("Token(")[1]
+    st = st.split(", ")[1]    
+    s = st.split("'")[1].strip()
+    
+    #print("token:",s)
+    if len(s) == 0:        
+        return getTokenValue(token)
+    else:
+        return 0
+
+def getIncompleteLines(data, calc):
+    incompleteLines = []
+    for line in data:
+        try:
+            calc(line)
+        except Exception as e:
+            score = computeSyntaxErrorScore(e)
+            if score == 0:
+                incompleteLines.append(line)
+    return incompleteLines
+
+def fixLine(line, calc):
+    candidateTokens = [')','}','>',']']
+   
+    for token in candidateTokens:
+        try:
+            newLine = line + token
+            #print("line:",line,"with token:", token)
+            calc(newLine)  
+            score = getTokenValue(token)
+            break
+        except Exception as e:   
+            score = computeAutoCompleteScore(e, token)            
+            if score != 0: # means we found a match    
+                #print("added token",token)
+                break
+    return newLine, score
+
+# Day 10, part 2: 3103006161 (2.543 secs)
+def day10_2(data):
+    #data = read_input(2021, "101")
+    
+    parser = Lark(grammar, parser='lalr')
+    calc = parser.parse
+
+    incompleteLines = getIncompleteLines(data, calc)         
+    fixedLine = False
+    scores = []
+    
+    for line in incompleteLines:
+        autoCompleteScore = 0
+        fixedLine = False
+        while not fixedLine:           
+            try:
+                calc(line)
+                fixedLine = True                
+            except Exception:
+                line, score = fixLine(line, calc)
+                autoCompleteScore = (5 * autoCompleteScore) + score
+        scores.append(autoCompleteScore)
+
+    scores.sort()
+    #print(scores)
+    #print(scores[math.floor(len(scores)/2)])
+    result = scores[math.floor(len(scores)/2)]      
+  
+    AssertExpectedResult(323613, result)
 
     return result
 
