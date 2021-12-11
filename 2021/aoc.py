@@ -1080,14 +1080,87 @@ def day10_2(data):
 
 ##### Day 11 #####
 
+def printGrid(grid):
+    for row in grid:
+        print(row)
+
+
+def takeStepAt(oldGrid, grid, row, column, flashes):
+    if row < 0 or row > 9 or column < 0 or column > 9:
+        return grid, flashes
+    
+    energy = oldGrid[row][column]
+            
+    if energy + 1 > 9: # FLASH!
+
+        if (row,column) not in flashes:
+            #print("FLASH!", (row, column))
+            flashes.append((row,column))
+
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row + 1, column, flashes)
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row + 1, column + 1, flashes)
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row + 1, column - 1, flashes)            
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row - 1, column, flashes)            
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row - 1, column + 1, flashes)
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row - 1, column - 1, flashes)            
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row, column + 1, flashes)
+            grid, flashes = takeStepAt(grid, copy.deepcopy(grid), row, column - 1, flashes)
+        
+        energy = 0       
+
+    else:
+        energy += 1
+
+    grid[row][column] = energy
+
+    return grid, flashes
+
+def takeStep(grid):
+    flashes = []
+    for row in range(10):
+        for column in range(10):
+            grid, flashes = takeStepAt(copy.deepcopy(grid), grid, row, column, flashes)
+            
+    for (row, column) in flashes:
+        grid[row][column] = 0
+
+    return grid, flashes
+
+# Day 11, part 1: 1735 (1.769 secs)
 def day11_1(data):
     #data = read_input(2021, "111")
+    steps = 100
     
-    for line in data:
-        inputData = line.split(' ')
-    result = 0
-  
-    AssertExpectedResult(0, result)
+    grid = [list(map(int, i)) for i in data]
+    #printGrid(grid)
+
+    totalFlashes = 0
+    for step in range(1, steps+1):
+        #print("step",step)
+        grid, flashes = takeStep(grid)
+        totalFlashes += len(flashes)        
+        #printGrid(grid)
+
+    result = totalFlashes  
+    AssertExpectedResult(1735, result)
+
+    return result
+
+# Day 11, part 2: 400 (6.123 secs)
+def day11_2(data):
+    #data = read_input(2021, "111")
+    steps = 1000    
+    grid = [list(map(int, i)) for i in data]
+
+    syncedFlashesStep = 0
+    for step in range(1, steps+1):
+        grid, flashes = takeStep(grid)
+        if len(flashes) == 100:
+            syncedFlashesStep = step 
+            break        
+
+    result = syncedFlashesStep  
+    AssertExpectedResult(400, result)
 
     return result
 
