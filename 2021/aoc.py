@@ -1166,6 +1166,18 @@ def day11_2(data):
 
 
 
+##### Day 12 #####
+
+def day12_1(data):
+    data = read_input(2021, "121")
+    
+    for line in data:
+        inputData = line.split(" ")   
+
+    result = 0  
+    AssertExpectedResult(0, result)
+    
+
 if __name__ == "__main__":
     main(sys.argv, globals(), AOC_EDITION_YEAR)
 
