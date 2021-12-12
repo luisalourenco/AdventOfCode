@@ -1168,14 +1168,102 @@ def day11_2(data):
 
 ##### Day 12 #####
 
-def day12_1(data):
-    data = read_input(2021, "121")
-    
+def createGraphForCaveSystem(data):
+    graph = dict()
     for line in data:
-        inputData = line.split(" ")   
+        nodes = line.split("-")
+        fromNode = nodes[0]
+        toNode = nodes[1]
+        if fromNode not in graph:
+            graph[fromNode] = []
+        if toNode not in graph:
+            graph[toNode] = []
+        graph[fromNode].append(toNode)
+        graph[toNode].append(fromNode)
+    return graph
 
-    result = 0  
-    AssertExpectedResult(0, result)
+
+@hashable_lru
+def findAllPathsInCaveSysem(graph, start, end, path=[]):
+        path = path + [start]
+        
+        if start == end:
+            return [path]
+        if graph[start] ==  None:
+            return []
+        paths = []
+
+        for node in graph[start]:
+            if node.islower() and node in path:
+                continue
+            newpaths = findAllPathsInCaveSysem(graph, node, end, path)
+            for newpath in newpaths:
+                paths.append(newpath)
+        return paths
+
+@hashable_lru
+def findAllPathsInCaveSysemV2(graph, lowers, start, end, path=[]):
+        path = path + [start]
+        
+        if start == end:
+            return [path]
+        if graph[start] ==  None:
+            return []
+        paths = []
+
+        smallCave = False
+        for node in graph[start]:
+            counter = Counter(path)
+            if node == 'start' and node in path:
+                continue
+            if node == 'end' and node in path:
+                continue
+
+            if node.islower() and counter[node] > 1:
+                continue
+
+            if node.islower():
+                count = 0
+                for lower in lowers:
+                    if counter[lower] == 2:
+                        count +=1
+                if count > 1:        
+                    continue
+            
+            newpaths = findAllPathsInCaveSysemV2(graph, lowers,node, end, path)
+            for newpath in newpaths:
+                paths.append(newpath)
+
+        return paths
+
+def day12_1(data):
+    #data = read_input(2021, "121")   
+
+    graph = createGraphForCaveSystem(data)   
+    paths = findAllPathsInCaveSysem(graph, 'start', 'end')
+    result = len(paths)
+    print(result)
+    AssertExpectedResult(5756, result)
+
+def day12_2(data):
+    #data = read_input(2021, "121")   
+
+    graph = createGraphForCaveSystem(data)   
+    lowers = []
+    for node in graph:
+        if node.islower():
+            lowers.append(node)
+
+    paths = findAllPathsInCaveSysemV2(graph, lowers,'start', 'end')
+    
+    #for path in paths:
+    #    print(path)
+   
+    result = len(paths)
+    print(result)              
+
+    AssertExpectedResult(144603, result)
+
     
 
 if __name__ == "__main__":
