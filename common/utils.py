@@ -13,6 +13,9 @@ class SignalCatchingError(Exception):
 HEAVY_EXERCISE = "nil (too computationally heavy)"
 EXERCISE_TIMEOUT = 120  # secs
 
+def setTimeout(timeout):
+    EXERCISE_TIMEOUT = timeout
+
 def clear():
     # for windows
     if os.name == 'nt':
@@ -49,13 +52,13 @@ def timeout(seconds_before_timeout):
         return wrapper
     return deco
 
-def execute_day(_globals, year, day, part):
+def execute_day(_globals, year, day, part, newTimeout):
     #print("Executing year {0} day {1}, part {2}".format(year, day, part))
     func_name = "day{0}_{1}".format(day, part)
     if func_name in _globals:
         start = timer()
         try:
-            result = timeout(seconds_before_timeout=EXERCISE_TIMEOUT)(
+            result = timeout(seconds_before_timeout=newTimeout)(
                 _globals[func_name])(read_input(year, day))
         except SignalCatchingError:
             result = HEAVY_EXERCISE
@@ -75,7 +78,7 @@ def AssertExpectedResult(expected, result, part = 0):
 def ints(data):
     return [int(n) for n in data]
 
-def main(argv_, globals_, year):
+def main(argv_, globals_, year, timeout = EXERCISE_TIMEOUT):
     start_day = None
     if len(argv_) > 1:
         try:
@@ -92,5 +95,5 @@ def main(argv_, globals_, year):
         end_day = start_day
 
     for day in range(initial_day, end_day + 1):
-        execute_day(globals_, year, day, 1)
-        execute_day(globals_, year, day, 2)
+        execute_day(globals_, year, day, 1, timeout)
+        execute_day(globals_, year, day, 2, timeout)

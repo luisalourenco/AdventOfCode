@@ -34,7 +34,7 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
-from common.utils import read_input, main, clear, AssertExpectedResult, ints  # NOQA: E402
+from common.utils import read_input, main, clear, AssertExpectedResult, ints, setTimeout  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
@@ -1209,27 +1209,22 @@ def findAllPathsInCaveSysemV2(graph, lowers, start, end, path=[]):
             return [path]
         if graph[start] ==  None:
             return []
-        paths = []
-
-        smallCave = False
+        paths = []        
+        
         for node in graph[start]:
-            counter = Counter(path)
+            
+            counter = Counter(node for node in path if node.islower())
             if node == 'start' and node in path:
                 continue
             if node == 'end' and node in path:
                 continue
 
-            if node.islower() and counter[node] > 1:
-                continue
+            if node.islower()and counter[node] > 1:
+                continue   
 
-            if node.islower():
-                count = 0
-                for lower in lowers:
-                    if counter[lower] == 2:
-                        count +=1
-                if count > 1:        
-                    continue
-            
+            if sum(counter.values()) > len(counter)+1:
+                continue               
+
             newpaths = findAllPathsInCaveSysemV2(graph, lowers,node, end, path)
             for newpath in newpaths:
                 paths.append(newpath)
@@ -1247,7 +1242,6 @@ def day12_1(data):
 
 def day12_2(data):
     #data = read_input(2021, "121")   
-
     graph = createGraphForCaveSystem(data)   
     lowers = []
     for node in graph:
@@ -1255,17 +1249,29 @@ def day12_2(data):
             lowers.append(node)
 
     paths = findAllPathsInCaveSysemV2(graph, lowers,'start', 'end')
-    
-    #for path in paths:
-    #    print(path)
    
     result = len(paths)
     print(result)              
 
     AssertExpectedResult(144603, result)
 
+
+##### Day 13 #####
+
+def day13_1(data):
+    data = read_input(2021, "131")   
+
+    for line in data:
+        inputData = line.split(" ")
+    
+    result = 0
+    AssertExpectedResult(5756, result)
+    #data = read_input(2021, "121")   
+
+
     
 
 if __name__ == "__main__":
-    main(sys.argv, globals(), AOC_EDITION_YEAR)
+    # override timeout
+    main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
 
