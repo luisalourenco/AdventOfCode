@@ -36,7 +36,7 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
-from common.utils import read_input, main, clear, AssertExpectedResult, ints, setTimeout  # NOQA: E402
+from common.utils import read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
@@ -1364,7 +1364,7 @@ def day13_2(data):
     #data = read_input(2021, "131")   
 
     foldedPapper = fillPapperAndFold(data, True)
-    printPapper(foldedPapper)
+    printGridsASCII(foldedPapper, '#')
 
     result = "UCLZRAZU"
     AssertExpectedResult("UCLZRAZU", result)

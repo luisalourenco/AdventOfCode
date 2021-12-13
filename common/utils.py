@@ -13,8 +13,33 @@ class SignalCatchingError(Exception):
 HEAVY_EXERCISE = "nil (too computationally heavy)"
 EXERCISE_TIMEOUT = 120  # secs
 
-def setTimeout(timeout):
-    EXERCISE_TIMEOUT = timeout
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+WHITE_SQUARE = "█"
+WHITE_CIRCLE = "•"
+BLUE_CIRCLE = f"{bcolors.OKBLUE}{bcolors.BOLD}•{bcolors.ENDC}"
+RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
+
+def printGridsASCII(grid, printChar):
+    rows = len(grid)
+    columns = len(grid[0])
+
+    for r in range(rows):
+        row = ""
+        for c in range(columns):
+            if grid[r][c] == printChar:
+                row += WHITE_SQUARE
+            else:
+                row += " "
+        print(row)
 
 def clear():
     # for windows
