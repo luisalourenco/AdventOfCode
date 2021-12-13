@@ -24,6 +24,8 @@ from math import pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
+from termcolor import colored
+import termcolor
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2021
@@ -1258,17 +1260,126 @@ def day12_2(data):
 
 ##### Day 13 #####
 
-def day13_1(data):
-    data = read_input(2021, "131")   
+def parseDots(data):
+    Dot = namedtuple('Dot', 'x y')
+    Fold = namedtuple('Fold', 'axis value')
+    foldInstructions = []
+    dots = []
+    i = 0
+    rows = 0
+    columns = 0
 
     for line in data:
-        inputData = line.split(" ")
+        i +=1
+        dotPosition = line.split(",")
+        if len(dotPosition) != 2:
+            break
+        x = int(dotPosition[0])
+        y = int(dotPosition[1])
+        dots.append(Dot(x, y))
+
+        if x > columns:
+            columns = x
+        if y > rows:
+            rows = y
+        #print(i)
+
     
+    for i in range(i, len(data)):
+        line = data[i]
+        input = line.split("fold along ")[1]
+        instruction = input.split("=")
+        foldInstructions.append(Fold(instruction[0], int(instruction[1])))
+    
+    return dots, foldInstructions, rows, columns
+    #print(dots)
+    #print(foldInstructions)
+
+def printPapper(papper):
+    for row in papper:
+        print(row)
+
+def foldUp(papper, value):
+    columns = len(papper[value])
+    i = value - 1
+    foldedPapper = copy.deepcopy(papper)
+    for row in range(value+1, len(papper)):
+        for column in range(columns):
+            if (papper[row][column] == '#'):
+                foldedPapper[i][column] = papper[row][column]
+        i -=1
+
+    return foldedPapper[:value][:columns]
+
+def foldLeft(papper, value):
+    rows = len(papper)    
+    i = value - 1
+    foldedPapper = copy.deepcopy(papper)
+
+    for column in range(value+1, len(papper[0])):
+        for row in range(rows):
+            if (papper[row][column] == '#'):
+                foldedPapper[row][i] = papper[row][column]
+        i -=1
+    
+    return [foldedPapper[i][:value] for i in range(0,rows)]
+
+def followFoldInstructions(foldInstructions, papper, totalFolds):    
+    for fold in foldInstructions:
+        if totalFolds == 0:
+            break
+        if fold.axis == 'x':
+            papper = foldLeft(papper, fold.value)
+        elif fold.axis == 'y':
+            papper = foldUp(papper, fold.value)
+        totalFolds -=1
+    return papper
+
+def fillPapperAndFold(data, foldAll = False):
+    dots, foldInstructions, rows, columns = parseDots(data)
+    papper = [['.' for x in range(columns+1)] for y in range(rows+1)] 
+    
+    for dot in dots:
+        papper[dot.y][dot.x] = '#'    
+    
+    if foldAll:
+        return followFoldInstructions(foldInstructions, papper, 1000)
+    else:
+        return followFoldInstructions(foldInstructions, papper, 1)
+
+def day13_1(data):
+    #data = read_input(2021, "131")   
+    foldedPapper = fillPapperAndFold(data)
     result = 0
-    AssertExpectedResult(5756, result)
-    #data = read_input(2021, "121")   
+    for column in range(len(foldedPapper)):
+        for row in range(len(foldedPapper[0])):
+            if foldedPapper[column][row] == '#':
+                result += 1
+    
+    print(result)
+    AssertExpectedResult(693, result)
 
 
+def day13_2(data):
+    #data = read_input(2021, "131")   
+
+    foldedPapper = fillPapperAndFold(data, True)
+    printPapper(foldedPapper)
+
+    result = "UCLZRAZU"
+    AssertExpectedResult("UCLZRAZU", result)
+
+
+##### Day 14 #####
+
+def day14_1(data):
+    data = read_input(2021, "141")   
+
+    for line in data:
+        inputDate = line.split(" ")
+
+    result = 0
+    AssertExpectedResult(0, result)
     
 
 if __name__ == "__main__":
