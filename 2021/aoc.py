@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-position
 # pylint: disable=consider-using-enumerate-
 
+from timeit import default_timer as timer
 import functools
 import math
 import os
@@ -1378,17 +1379,9 @@ def parseRule(line):
     result = rule[1]
     return (triggers[0], triggers[1], result)
 
-
 def parseAllRules(data):
-    rules = []
-    for line in data:
-        (first, second, res) = parseRule(line)
-        rules.append((first, second, res))
-    return rules
-
-
-def parseAllRulesV2(data):
     rules = defaultdict()
+    counter = defaultdict()
     for line in data:
         (first, second, res) = parseRule(line)
         if first not in rules:
@@ -1397,101 +1390,112 @@ def parseAllRulesV2(data):
             secondDict = rules[first]
         secondDict[second]  = res
         rules[first] = secondDict
-        
-        #rules.append((first, second, res))
-        
-    return rules
+        counter[first+second] = 0
+                
+    return (rules, counter)
 
 
-def applyAllRulesV2(replaceList, pair, rules):
+def printTimeTaken(start, end, msg = ''):
+    print(msg,"Took ({0:.3f} secs)".format(end - start))
+
+def applyAllRules(pair, rules, old, counter, cannotDelete):
     first = pair[0]
-    second = pair[1]
-    
+    second = pair[1]    
     val = rules[first][second]
-    if val is not None:
-        return (pair, first + val + second)
-    else:
-        return []
 
-def applyAllRules(replaceList, pair, rules):
-    
-    replaceList = []
-    for (firstR, secondR, val) in rules:
-        first = pair[0]
-        second = pair[1]
-        if first == firstR and second == secondR:
-            #print("match! adding", first + val + second)
-            return (pair, first + val + second)
-    return replaceList
+    if val is not None: # found matching rule AB -> C
+        
+        times = old[pair]
+        #print("Triggered rule",pair,"->",val, times,"times")
 
-def applyRules(polymer_template, rules):
-    pairs = [polymer_template[i:i+2] for i in range(len(polymer_template)-1)] 
+        # increments C occurences in polymer + times rule AB triggered
+        counter[val] += times
 
-    replaceList = []
-    for pair in pairs:    
-        replaceList.append(applyAllRulesV2(replaceList, pair, rules))
-  
-    polymer_template = ''  
-    for (pair, replacement) in replaceList:
-        polymer_template += replacement[1:]
-    polymer_template = replaceList[0][1][0] + polymer_template
+        if pair not in cannotDelete:
+            # delete AB for next iteration
+            #print("Removing pair",pair)
+            del counter[pair]
+        else:
+            counter[pair] -= times      
 
-    return polymer_template
+        # adds new pair AC for next iteration
+        #print("Adding new pair",first+val)
+        cannotDelete.append(first+val)
+        counter[first+val] += times
 
-def applyRule(polymer_template, replaceList, rule):
-    pairs = [polymer_template[i:i+2] for i in range(len(polymer_template)-1)] 
-    
-    (firstR, secondR, val) = rule
+        # adds new pair CB for next iteration
+        #print("Adding new pair",val+second)
+        cannotDelete.append(val+second)
+        counter[val+second] += times
 
-    for pair in pairs:
-        first = pair[0]
-        second = pair[1]
-        if first == firstR and second == secondR:
-            #print("match! adding", first + val + second)
-            replaceList.append((pair, first + val + second))
-    return replaceList
+    return (counter, cannotDelete)
 
-def day14_1(data):
-    #data = read_input(2021, "141")   
 
+def applyRulesForEachPair(rules, counter):    
+    c = copy.deepcopy(counter)
+    #print("Initial state:", c)
+    cannotDelete = []
+    for (pair, _) in c.items():
+        if len(pair) == 2:    
+            (counter, cannotDelete) = applyAllRules(pair, rules, c, counter, cannotDelete)
+
+    return counter
+
+
+def getPolymerTemplateResult(data, steps):
     polymer_template = data[0]
-    rules = parseAllRulesV2(data[2:])
-    steps = 10
+    (rules, counter) = parseAllRules(data[2:])
+
+    pairs = [polymer_template[i:i+2] for i in range(len(polymer_template)-1)]     
+    counter = Counter(polymer_template)
+    for pair in pairs:
+        counter[pair] = 1    
 
     for step in range(1, steps+1):
-        polymer_template = applyRules(polymer_template, rules)
-        #print(step, polymer_template)
+        #print("After step",step,":")
+        counter = applyRulesForEachPair(rules, counter)
+        #print(counter)
+        #print("-----")
+        #print()
+        
+    minVal = sys.maxsize
+    maxVal = 0
+    for (k,v) in counter.items():
+        if len(k) == 1:
+            minVal = minVal if minVal < v else v
+            maxVal = maxVal if maxVal > v else v
+    return maxVal - minVal
 
-    
-    counter = Counter(polymer_template)
-    minVal = min(counter.values())
-    maxVal = max(counter.values())
-    result = maxVal - minVal
+# Day 14, part 1: 5656 (0.067 secs)
+def day14_1(data):
+    #data = read_input(2021, "141")   
+    result = getPolymerTemplateResult(data, 10)
     print(result)
     AssertExpectedResult(5656, result)
     
 def sort_dict(dict):
     return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
 
+# Day 14, part 2: 12271437788530 (0.015 secs)
 def day14_2(data):
-    data = read_input(2021, "141")   
+    #data = read_input(2021, "141")   
+    result = getPolymerTemplateResult(data, 40)
+    print(result)
+    AssertExpectedResult(12271437788530, result)
 
-    polymer_template = data[0]
-    rules = parseAllRulesV2(data[2:])
-    steps = 20
 
-    for step in range(1, steps+1):
-        polymer_template = applyRules(polymer_template, rules)
-        #print("After step",step,":", polymer_template)
-        print("After step",step,":",sort_dict(Counter(polymer_template)))
+##### Day 15 #####
 
+def day15_1(data):
+    data = read_input(2021, "151")   
+
+    for line in data:
+        inputData = line.split(" ")
     
-    counter = Counter(polymer_template)
-    minVal = min(counter.values())
-    maxVal = max(counter.values())
-    result = maxVal - minVal
+    result = 0
     print(result)
     AssertExpectedResult(0, result)
+
 
 if __name__ == "__main__":
     # override timeout

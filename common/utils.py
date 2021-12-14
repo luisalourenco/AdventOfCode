@@ -1,4 +1,11 @@
 # Taken from https://github.com/scout719/adventOfCode/tree/master/common
+
+# -*- coding: utf-8 -*
+# pylint: disable=import-error
+# pylint: disable=unused-import
+# pylint: disable=wildcard-import
+# pylint: disable=wrong-import-position
+# pylint: disable=consider-using-enumerate-
 from threading import Thread
 import functools
 from timeit import default_timer as timer
@@ -77,13 +84,13 @@ def timeout(seconds_before_timeout):
         return wrapper
     return deco
 
-def execute_day(_globals, year, day, part, newTimeout):
+def execute_day(_globals, year, day, part, new_timeout):
     #print("Executing year {0} day {1}, part {2}".format(year, day, part))
     func_name = "day{0}_{1}".format(day, part)
     if func_name in _globals:
         start = timer()
         try:
-            result = timeout(seconds_before_timeout=newTimeout)(
+            result = timeout(seconds_before_timeout=new_timeout)(
                 _globals[func_name])(read_input(year, day))
         except SignalCatchingError:
             result = HEAVY_EXERCISE
@@ -103,7 +110,7 @@ def AssertExpectedResult(expected, result, part = 0):
 def ints(data):
     return [int(n) for n in data]
 
-def main(argv_, globals_, year, timeout = EXERCISE_TIMEOUT):
+def main(argv_, globals_, year, new_timeout = EXERCISE_TIMEOUT):
     start_day = None
     if len(argv_) > 1:
         try:
@@ -120,5 +127,5 @@ def main(argv_, globals_, year, timeout = EXERCISE_TIMEOUT):
         end_day = start_day
 
     for day in range(initial_day, end_day + 1):
-        execute_day(globals_, year, day, 1, timeout)
-        execute_day(globals_, year, day, 2, timeout)
+        execute_day(globals_, year, day, 1, new_timeout)
+        execute_day(globals_, year, day, 2, new_timeout)
