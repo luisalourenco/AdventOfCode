@@ -1372,15 +1372,126 @@ def day13_2(data):
 
 ##### Day 14 #####
 
+def parseRule(line):
+    rule = line.split(" -> ")
+    triggers = rule[0]
+    result = rule[1]
+    return (triggers[0], triggers[1], result)
+
+
+def parseAllRules(data):
+    rules = []
+    for line in data:
+        (first, second, res) = parseRule(line)
+        rules.append((first, second, res))
+    return rules
+
+
+def parseAllRulesV2(data):
+    rules = defaultdict()
+    for line in data:
+        (first, second, res) = parseRule(line)
+        if first not in rules:
+            secondDict = defaultdict()
+        else:
+            secondDict = rules[first]
+        secondDict[second]  = res
+        rules[first] = secondDict
+        
+        #rules.append((first, second, res))
+        
+    return rules
+
+
+def applyAllRulesV2(replaceList, pair, rules):
+    first = pair[0]
+    second = pair[1]
+    
+    val = rules[first][second]
+    if val is not None:
+        return (pair, first + val + second)
+    else:
+        return []
+
+def applyAllRules(replaceList, pair, rules):
+    
+    replaceList = []
+    for (firstR, secondR, val) in rules:
+        first = pair[0]
+        second = pair[1]
+        if first == firstR and second == secondR:
+            #print("match! adding", first + val + second)
+            return (pair, first + val + second)
+    return replaceList
+
+def applyRules(polymer_template, rules):
+    pairs = [polymer_template[i:i+2] for i in range(len(polymer_template)-1)] 
+
+    replaceList = []
+    for pair in pairs:    
+        replaceList.append(applyAllRulesV2(replaceList, pair, rules))
+  
+    polymer_template = ''  
+    for (pair, replacement) in replaceList:
+        polymer_template += replacement[1:]
+    polymer_template = replaceList[0][1][0] + polymer_template
+
+    return polymer_template
+
+def applyRule(polymer_template, replaceList, rule):
+    pairs = [polymer_template[i:i+2] for i in range(len(polymer_template)-1)] 
+    
+    (firstR, secondR, val) = rule
+
+    for pair in pairs:
+        first = pair[0]
+        second = pair[1]
+        if first == firstR and second == secondR:
+            #print("match! adding", first + val + second)
+            replaceList.append((pair, first + val + second))
+    return replaceList
+
 def day14_1(data):
+    #data = read_input(2021, "141")   
+
+    polymer_template = data[0]
+    rules = parseAllRulesV2(data[2:])
+    steps = 10
+
+    for step in range(1, steps+1):
+        polymer_template = applyRules(polymer_template, rules)
+        #print(step, polymer_template)
+
+    
+    counter = Counter(polymer_template)
+    minVal = min(counter.values())
+    maxVal = max(counter.values())
+    result = maxVal - minVal
+    print(result)
+    AssertExpectedResult(5656, result)
+    
+def sort_dict(dict):
+    return {k: v for k, v in sorted(dict.items(), key=lambda item: item[1])}
+
+def day14_2(data):
     data = read_input(2021, "141")   
 
-    for line in data:
-        inputDate = line.split(" ")
+    polymer_template = data[0]
+    rules = parseAllRulesV2(data[2:])
+    steps = 20
 
-    result = 0
-    AssertExpectedResult(0, result)
+    for step in range(1, steps+1):
+        polymer_template = applyRules(polymer_template, rules)
+        #print("After step",step,":", polymer_template)
+        print("After step",step,":",sort_dict(Counter(polymer_template)))
+
     
+    counter = Counter(polymer_template)
+    minVal = min(counter.values())
+    maxVal = max(counter.values())
+    result = maxVal - minVal
+    print(result)
+    AssertExpectedResult(0, result)
 
 if __name__ == "__main__":
     # override timeout
