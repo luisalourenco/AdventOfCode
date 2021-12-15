@@ -1589,6 +1589,22 @@ def day15_2(data):
     AssertExpectedResult(2872, result)
 
 
+##### Day 16 #####
+
+def day16_1(data):
+    data = read_input(2021, "161")   
+    
+    for line in data:
+        inputData = line.split(" ")
+
+    result = 0    
+    print(result)
+    AssertExpectedResult(0, result)
+
+
+
+
+
 if __name__ == "__main__":
     # override timeout
     main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
