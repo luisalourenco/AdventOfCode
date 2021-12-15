@@ -7,6 +7,7 @@
 # pylint: disable=consider-using-enumerate-
 
 from timeit import default_timer as timer
+from collections import deque
 import functools
 import math
 import os
@@ -21,7 +22,7 @@ import operator
 from itertools import takewhile
 import itertools, collections
 from turtle import Turtle, Screen, heading
-from math import pi, remainder, sqrt
+from math import exp, pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
@@ -39,7 +40,7 @@ sys.path.insert(0, FILE_DIR + "/../../")
 
 from common.utils import read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
-from common.graphUtils import printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -1486,15 +1487,106 @@ def day14_2(data):
 
 ##### Day 15 #####
 
-def day15_1(data):
-    data = read_input(2021, "151")   
 
-    for line in data:
-        inputData = line.split(" ")
+def createLink(map, fromNode, i, j, graph, rows, columns):
+    (x,y,v) = fromNode
     
+    if i >= rows or j >= columns or j < 0 or i < 0:
+        return graph
+
+    toNode = (i, j, map[i][j])
+
+    graph.add_edge((x,y), (i,j), map[i][j])
+
+    #graph[toNode].append(fromNode)
+    return graph
+
+
+def expandMap(map, rows, columns, boundX, boundY):
+    fullMap = [ [ 0 for _ in range(columns) ] for _ in range(rows) ]   
+
+    for i in range(rows):
+        addRow = math.floor(i / boundX)
+        for j in range(columns):            
+            addColumn = math.floor(j / boundY)
+            #print("val:",map[i%boundX][j%boundY], addRow, addColumn)
+            risk = (map[i%boundX][j%boundY] + addColumn + addRow) #% 10
+            #print("risk:",(map[i%boundX][j%boundY] + addColumn + addRow), risk)
+            
+            if risk >= 10:
+                risk = (risk % 10) +1
+            fullMap[i][j] = risk
+
+    '''
+    for l in fullMap:
+        string_ints = [str(int) for int in l]
+        str_of_ints = "".join(string_ints)
+        print(str_of_ints)
+    '''
+
+    return fullMap
+
+def getMap(data, expand = False):
+    map = [ [ 0 for _ in range(len(data[0])) ] for _ in range(len(data)) ] 
+    i = 0
+    for line in data:
+        positions = [int(n) for n in line]
+        map[i] = positions
+        i+=1
+    
+    if expand:
+        return expandMap(map, len(data)*5, len(data[0])*5, len(data), len(data[0]))
+
+    return map
+
+def createGraphForCave(data, expand = False):
+    #graph = dict()
+    graph= Graph()     
+    map = getMap(data, expand)   
+    rows = len(map)
+    columns = len(map[0])   
+    #print(len(map))
+
+    start = (0, 0) #, map[0][0])
+    end = (rows-1, columns-1) #, map[rows-1][columns-1])
+    for i in range(rows):
+        for j in range(columns):
+            fromNode = (i, j, map[i][j])
+            graph = createLink(map, fromNode, i+1, j, graph, rows, columns)
+            graph = createLink(map, fromNode, i, j+1, graph, rows, columns)
+            graph = createLink(map, fromNode, i-1, j, graph, rows, columns)
+            graph = createLink(map, fromNode, i, j-1, graph, rows, columns)    
+
+    return (graph, start, end, map)
+
+
+# Day 15, part 1: None (3.092 secs)
+def day15_1(data):
+    #data = read_input(2021, "151")   
+    path = []
+    (graph, start, end, map) = createGraphForCave(data)
+
+    path = dijsktra(graph, start, end)
+    #print(path)
+
     result = 0
+    for (i,j) in path:
+        #print("(",i,",",j,")",map[i][j])
+        result += map[i][j]
+    result-= map[0][0]    
+    
     print(result)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(508, result)
+
+# Day 15, part 2: None (3.942 secs)
+def day15_2(data):
+    #data = read_input(2021, "151")   
+    (graph, start, end, _) = createGraphForCave(data, True)
+    (_, cost) = graph.a_star_search(start, end)
+    #print(path)    
+    result = cost[end]    
+    print(result)
+    AssertExpectedResult(2872, result)
 
 
 if __name__ == "__main__":
