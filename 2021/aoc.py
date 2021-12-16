@@ -1592,37 +1592,6 @@ def day15_2(data):
 
 ##### Day 16 #####
 
-def resetNumber(mask):
-    number = ['0'] * 36
-    i = 0
-    for bit in mask:
-        if bit != 'X':
-            number[i] = mask[i]
-        i += 1
-    return number
-
-def applyMaskToNumber(mask, value):
-    # kept inverted
-    number = resetNumber(mask)
-
-    # convert to binary then a list
-    binary = list(bin(int(value))) 
-    # keep it inverted           
-    binary.reverse()         
-
-    for i in range(len(binary)-2):
-        if mask[i] != 'X':
-            number[i] = mask[i]
-        else:
-            number[i] = binary[i]            
-    
-    # invert to convert to decimal
-    number.reverse()          
-    # convert to decimal
-    decimal = int(''.join(number),2)
-
-    return decimal
-
 
 def HexToBin(data):
     bin = ''
@@ -1698,7 +1667,7 @@ def processLiteralValuePacket(packet, ops):
     return packet, literal, ops
 
 # Lenght ID = 0
-def processOperatorPacketByFixedLength(packet, ops):
+def processOperatorPacketByFixedLength(packet, ops, type):
     print("Processing ID 0 (by total lenght)")
     lenght = BinToDec(packet[:15])
     packet = packet[15:]
@@ -1707,10 +1676,16 @@ def processOperatorPacketByFixedLength(packet, ops):
     packetsLeft = packet#[:lenght]
     packet = packetsLeft #'' #packet[lenght:]
     print("Packets to process:", packetsLeft)
-    return processTransmission(packetsLeft, ops)
+    t, tt, o = processTransmission(packetsLeft, ops)
+
+    Instruction = namedtuple('Instruction', 'type val')    
+    #o.append( Instruction('op', type) )
+    #ops.insert(1,o)
+    
+    return t,tt,o
 
 # Length ID = 1
-def processOperatorPacketByNumberPackets(packet, ops):
+def processOperatorPacketByNumberPackets(packet, ops, type):
     print("Processing ID 1 (fixed number of packets)")
     packetsLeft = BinToDec(packet[:11])
     print("Packets to process", packet[:11])
@@ -1719,15 +1694,21 @@ def processOperatorPacketByNumberPackets(packet, ops):
     print("Number of packets:", packetsLeft)
 
     total = 0
+    subops = []
     for i in range(packetsLeft):
         print("Processing subpacket", i+1,":", packet)
         packet, t, ops = processTransmission(packet, ops)
+        #subops.append(ops)
         total += t
+    
+    Instruction = namedtuple('Instruction', 'type val')
+    #subops.append( Instruction('op', type) )
+    #ops.insert(1,subops)
     
     return packet, total, ops
 
 # Operator packet
-def processOperatorPacket(packet, ops):
+def processOperatorPacket(packet, ops, type):
     total = 0
     print("***Operator packet***")
     packetLengthId = packet[:1]
@@ -1735,9 +1716,9 @@ def processOperatorPacket(packet, ops):
 
     print("Packet Length ID:",packetLengthId)
     if BinToDec(packetLengthId) == 0:
-        packet, t, ops = processOperatorPacketByFixedLength(packet, ops)
+        packet, t, ops = processOperatorPacketByFixedLength(packet, ops, type)
     elif BinToDec(packetLengthId) == 1:
-        packet, t, ops = processOperatorPacketByNumberPackets(packet, ops)
+        packet, t, ops = processOperatorPacketByNumberPackets(packet, ops, type)
     total += t 
 
     return packet, total, ops
@@ -1758,8 +1739,7 @@ def processOperation(acc, args, packetType, result, ops):
     elif packetType == 1: # product
         result = 1#functools.reduce(operator.mul, [arg for arg in args], 1)
         for arg in args:
-            result *= arg 
-
+            result *= arg
         operation = 'product (*)'
     elif packetType == 2: # min
         result = min(args)
@@ -1832,14 +1812,11 @@ def processTransmission(transmission, ops = []):
     if packeType == 4:
         transmission, literal, ops = processLiteralValuePacket(transmission, ops)       
         print("end with", transmission)
-        transmission, t, ops = processTransmission(transmission, ops)
-    else:
-        
+    else:        
         ops.append( Instruction('op', packeType) )
-        transmission, t, ops = processOperatorPacket(transmission, ops)
-        #ops.append( operatorOps )
-        #ops.append( ops )
-        
+        transmission, t, ops = processOperatorPacket(transmission, ops, packeType)
+
+    transmission, t, ops = processTransmission(transmission, ops)
     
     total += t
 
