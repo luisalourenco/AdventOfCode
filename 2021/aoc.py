@@ -1626,7 +1626,8 @@ def applyMaskToNumber(mask, value):
 
 def HexToBin(data):
     bin = ''
-    print(list(data))
+    #print("string:",data)
+    print("input read:",list(data))
     packetVersion = ''
 
     for c in list(data):
@@ -1669,7 +1670,8 @@ def BinToDec(bin):
     return int(bin, 2)
 
 # Literal Value packet
-def processLiteralValuePacket(packet):
+def processLiteralValuePacket(packet, ops):
+    Instruction = namedtuple('Instruction', 'type val')
     print("***Literal value packet:",packet,"***")
     safeGuard = 100
     literal = ''
@@ -1688,11 +1690,12 @@ def processLiteralValuePacket(packet):
                 packet = ''
             print("Remaining transmission:", packet)
             print("Literal:", BinToDec(literal))
-            return packet, BinToDec(literal)
+            ops.append(Instruction('lit', BinToDec(literal)))
+            return packet, BinToDec(literal), ops
 
         print("Next literal packet:", packet)
 
-    return packet, literal
+    return packet, literal, ops
 
 # Lenght ID = 0
 def processOperatorPacketByFixedLength(packet, ops):
@@ -1741,23 +1744,31 @@ def processOperatorPacket(packet, ops):
 
 
 # Process operations
-def processOperation(ops, args, packetType, result):
+def processOperation(acc, args, packetType, result, ops):
+    Instruction = namedtuple('Instruction', 'type val')
+
     print("Process operation type", packetType,"with operands",args)
+    if len(args) == 0:
+        print("empty args, using acc instead:", acc)
+        args = acc 
 
     if packetType == 0: # sum
         result = sum(args)
         operation = 'sum (+)'
     elif packetType == 1: # product
-        result = functools.reduce(operator.mul, args, 1)
+        result = 1#functools.reduce(operator.mul, [arg for arg in args], 1)
+        for arg in args:
+            result *= arg 
+
         operation = 'product (*)'
     elif packetType == 2: # min
         result = min(args)
         operation = 'min'
-        ops = []
+        acc = []
     elif packetType == 3: # max
         result = max(args)
         operation = 'max'
-        ops = []
+        acc = []
     elif packetType == 5: # gt
         result = 1 if args[0] > args[1] else 0
         operation = 'gt (>)'
@@ -1768,29 +1779,32 @@ def processOperation(ops, args, packetType, result):
         result = 1 if args[0] == args[1] else 0
         operation = 'equal (=)'
 
-    ops.insert(0,result)
+    acc.insert(0,result)   
 
     print("Result is", result,"for operation", operation,"with operands",args,"leftover ops", ops)
-    return result, ops
+    return result, acc
 
 
 # Process operations
 def processAllOperations(ops, result):
-    print("Process all operations",ops)
+    #ops.reverse()
+    print("Process all",len(ops),"operations",ops)
 
     result = 0
+    args = []
+    acc = []
     while len(ops) > 0:
         packetType = None
         instruction = ops.pop()
-        print("Instruction", instruction)
-        args = []
+        print("Instruction", instruction)        
 
         if instruction.type == 'lit':
             args.append(instruction.val)
         else:
             packetType = instruction.val
-            res, ops = processOperation(ops, args, packetType, result)
-            result += res
+            res, acc = processOperation(acc, args, packetType, result, ops)
+            args = []
+            result = res
 
 
     print("Result is", result)
@@ -1816,21 +1830,23 @@ def processTransmission(transmission, ops = []):
     Instruction = namedtuple('Instruction', 'type val')
 
     if packeType == 4:
-        transmission, literal = processLiteralValuePacket(transmission)
-        ops.append(Instruction('lit', literal))
-
+        transmission, literal, ops = processLiteralValuePacket(transmission, ops)       
         print("end with", transmission)
         transmission, t, ops = processTransmission(transmission, ops)
     else:
+        
+        ops.append( Instruction('op', packeType) )
         transmission, t, ops = processOperatorPacket(transmission, ops)
-        ops.append(Instruction('op', packeType))
+        #ops.append( operatorOps )
+        #ops.append( ops )
+        
     
     total += t
 
     return transmission, total, ops
 
 def day16_1(data):
-    #data = read_input(2021, "161")   
+    data = read_input(2021, "161")   
     
     transmission = data[0]
     converted = HexToBin(transmission)
@@ -1844,6 +1860,8 @@ def day16_1(data):
 
 
 # 6364040 too low
+# 46326779219 too low
+# 1495959086337
 def day16_2(data):
     data = read_input(2021, "161")   
     
@@ -1855,7 +1873,7 @@ def day16_2(data):
     result, _ = processAllOperations(ops, result)
 
 
-    print("Sum packet versions:",result)
+    print("Operation result is:",result)
     AssertExpectedResult(0, result)
 
 
