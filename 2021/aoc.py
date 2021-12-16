@@ -15,7 +15,8 @@ import sys
 import time
 import copy
 import re
-import itertools 
+import itertools
+#from typing_extensions import Literal 
 import numpy as np
 from functools import lru_cache
 import operator
@@ -1591,14 +1592,270 @@ def day15_2(data):
 
 ##### Day 16 #####
 
+def resetNumber(mask):
+    number = ['0'] * 36
+    i = 0
+    for bit in mask:
+        if bit != 'X':
+            number[i] = mask[i]
+        i += 1
+    return number
+
+def applyMaskToNumber(mask, value):
+    # kept inverted
+    number = resetNumber(mask)
+
+    # convert to binary then a list
+    binary = list(bin(int(value))) 
+    # keep it inverted           
+    binary.reverse()         
+
+    for i in range(len(binary)-2):
+        if mask[i] != 'X':
+            number[i] = mask[i]
+        else:
+            number[i] = binary[i]            
+    
+    # invert to convert to decimal
+    number.reverse()          
+    # convert to decimal
+    decimal = int(''.join(number),2)
+
+    return decimal
+
+
+def HexToBin(data):
+    bin = ''
+    print(list(data))
+    packetVersion = ''
+
+    for c in list(data):
+        if c == '0':
+            bin += '0000'
+        elif c == '1':
+            bin += '0001'
+        elif c == '2':
+            bin += '0010'
+        elif c == '3':
+            bin += '0011'
+        elif c == '4':
+            bin += '0100'
+        elif c == '5':
+            bin += '0101'
+        elif c == '6':
+            bin += '0110'
+        elif c == '7':
+            bin += '0111'
+        elif c == '8':
+            bin += '1000'
+        elif c == '9':
+            bin += '1001'
+        elif c == 'A':
+            bin += '1010'
+        elif c == 'B':
+            bin += '1011'
+        elif c == 'C':
+            bin += '1100'
+        elif c == 'D':
+            bin += '1101'
+        elif c == 'E':
+            bin += '1110'
+        elif c == 'F':
+            bin += '1111'
+    
+    return bin
+
+def BinToDec(bin):
+    return int(bin, 2)
+
+# Literal Value packet
+def processLiteralValuePacket(packet):
+    print("***Literal value packet:",packet,"***")
+    safeGuard = 100
+    literal = ''
+    while safeGuard > 0:
+        safeGuard -= 1
+        num = packet[:5]
+        lastGroup = True if num[0] == '0' else False
+        packet = packet[5:]
+        literal += num[1:]
+
+        print("Is last group ?",lastGroup )
+        print("Literal bin", literal)
+
+        if lastGroup:
+            if packet.count('0') == len(packet):
+                packet = ''
+            print("Remaining transmission:", packet)
+            print("Literal:", BinToDec(literal))
+            return packet, BinToDec(literal)
+
+        print("Next literal packet:", packet)
+
+    return packet, literal
+
+# Lenght ID = 0
+def processOperatorPacketByFixedLength(packet, ops):
+    print("Processing ID 0 (by total lenght)")
+    lenght = BinToDec(packet[:15])
+    packet = packet[15:]
+    print("Length:", lenght)
+
+    packetsLeft = packet#[:lenght]
+    packet = packetsLeft #'' #packet[lenght:]
+    print("Packets to process:", packetsLeft)
+    return processTransmission(packetsLeft, ops)
+
+# Length ID = 1
+def processOperatorPacketByNumberPackets(packet, ops):
+    print("Processing ID 1 (fixed number of packets)")
+    packetsLeft = BinToDec(packet[:11])
+    print("Packets to process", packet[:11])
+    packet = packet[11:]
+
+    print("Number of packets:", packetsLeft)
+
+    total = 0
+    for i in range(packetsLeft):
+        print("Processing subpacket", i+1,":", packet)
+        packet, t, ops = processTransmission(packet, ops)
+        total += t
+    
+    return packet, total, ops
+
+# Operator packet
+def processOperatorPacket(packet, ops):
+    total = 0
+    print("***Operator packet***")
+    packetLengthId = packet[:1]
+    packet = packet[1:]
+
+    print("Packet Length ID:",packetLengthId)
+    if BinToDec(packetLengthId) == 0:
+        packet, t, ops = processOperatorPacketByFixedLength(packet, ops)
+    elif BinToDec(packetLengthId) == 1:
+        packet, t, ops = processOperatorPacketByNumberPackets(packet, ops)
+    total += t 
+
+    return packet, total, ops
+
+
+# Process operations
+def processOperation(ops, args, packetType, result):
+    print("Process operation type", packetType,"with operands",args)
+
+    if packetType == 0: # sum
+        result = sum(args)
+        operation = 'sum (+)'
+    elif packetType == 1: # product
+        result = functools.reduce(operator.mul, args, 1)
+        operation = 'product (*)'
+    elif packetType == 2: # min
+        result = min(args)
+        operation = 'min'
+        ops = []
+    elif packetType == 3: # max
+        result = max(args)
+        operation = 'max'
+        ops = []
+    elif packetType == 5: # gt
+        result = 1 if args[0] > args[1] else 0
+        operation = 'gt (>)'
+    elif packetType == 6: # lt
+        result = 1 if args[0] < args[1] else 0
+        operation = 'lt (<)'
+    elif packetType == 7: # gt
+        result = 1 if args[0] == args[1] else 0
+        operation = 'equal (=)'
+
+    ops.insert(0,result)
+
+    print("Result is", result,"for operation", operation,"with operands",args,"leftover ops", ops)
+    return result, ops
+
+
+# Process operations
+def processAllOperations(ops, result):
+    print("Process all operations",ops)
+
+    result = 0
+    while len(ops) > 0:
+        packetType = None
+        instruction = ops.pop()
+        print("Instruction", instruction)
+        args = []
+
+        if instruction.type == 'lit':
+            args.append(instruction.val)
+        else:
+            packetType = instruction.val
+            res, ops = processOperation(ops, args, packetType, result)
+            result += res
+
+
+    print("Result is", result)
+    return result, ops
+
+# Packet processing main procedure
+def processTransmission(transmission, ops = []):   
+    if len(transmission) == 0:
+        return '', 0, ops
+    
+    total = 0
+    print()
+    print("Processing packet ", transmission)
+    packetVersion = BinToDec(transmission[:3]) # take first 3 bits
+    packeType = BinToDec(transmission[3:6]) # take first 3 bits
+    transmission = transmission[6:]
+
+    print("Packet Version", packetVersion)
+    print("Packet Type", packeType)
+
+    total += packetVersion
+    result = 0
+    Instruction = namedtuple('Instruction', 'type val')
+
+    if packeType == 4:
+        transmission, literal = processLiteralValuePacket(transmission)
+        ops.append(Instruction('lit', literal))
+
+        print("end with", transmission)
+        transmission, t, ops = processTransmission(transmission, ops)
+    else:
+        transmission, t, ops = processOperatorPacket(transmission, ops)
+        ops.append(Instruction('op', packeType))
+    
+    total += t
+
+    return transmission, total, ops
+
 def day16_1(data):
+    #data = read_input(2021, "161")   
+    
+    transmission = data[0]
+    converted = HexToBin(transmission)
+    
+    result = 0
+    _, result, ops = processTransmission(converted)
+
+
+    print("Sum packet versions:",result)
+    AssertExpectedResult(951, result)
+
+
+# 6364040 too low
+def day16_2(data):
     data = read_input(2021, "161")   
     
-    for line in data:
-        inputData = line.split(" ")
+    transmission = data[0]
+    converted = HexToBin(transmission)
+    
+    result = 0
+    _, result, ops = processTransmission(converted, [])
+    result, _ = processAllOperations(ops, result)
 
-    result = 0    
-    print(result)
+
+    print("Sum packet versions:",result)
     AssertExpectedResult(0, result)
 
 
