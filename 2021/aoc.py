@@ -52,20 +52,7 @@ from itertools import islice
 # pylint: enable=import-error
 # pylint: enable=wrong-import-position
 
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
 
-WHITE_SQUARE = "█"
-WHITE_CIRCLE = "•"
-BLUE_CIRCLE = f"{bcolors.OKBLUE}{bcolors.BOLD}•{bcolors.ENDC}"
-RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
 
 ################# Advent of Code - 2021 Edition #################
 
@@ -1907,6 +1894,7 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
     processingOperator = []
 
     ops = []
+    depth = 0
     while len(packetsStream) > 0:
 
         printd()
@@ -1919,9 +1907,6 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
         printd("Packet Type", packetType)
 
         total += packetVersion
-
-        #if len(processingOperator) > 0:
-        #    processingOperator[-1] -= 1
 
         if packetType == 4:
             packetsStream, literal, ops, length = processLiteralValuePacket(packetsStream, ops, depth)    
@@ -1973,13 +1958,18 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
                 processingOperator.append((lenghtID, packetsLeft))
                 #print("new op",processingOperator)
 
+        
         if len(processingOperator) != 0:
             t, val = processingOperator[-1]
             if len(processingOperator) > 0 and val == 0:
                 processingOperator.pop()
                 #print("removing op", (t,val), "leaving",processingOperator)
                 print(")", end = ' ')
-
+        
+        
+        #print(")", end = ' ')
+        depth+=1
+    
     if len(processingOperator) != 0:
         t, val = processingOperator[-1]
         while len(processingOperator) > 0 and val <= 0:
@@ -1987,6 +1977,7 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
             processingOperator.pop()
             #print("removing op", (t,val), "leaving",processingOperator)
             print(")", end = ' ')
+    
     
     print()
     print(ops)
@@ -1997,7 +1988,7 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
 
 
 
-grammarInfixExpr = """
+grammarPrefixExpr = """
 ?start: calc_expr
 
 ?calc_expr: INT -> number
@@ -2022,62 +2013,29 @@ class Eval2(Transformer):
     def calc_op(self, *args):
         op = args[0]
         operands = args[1:]   
-        
-        print(args)
 
         if op == '+':
-            return functools.reduce(operator.add, operands) 
+            result = functools.reduce(operator.add, operands) 
             #return sum(operands)
         elif op == 'min':
-            return min(operands)
+          
+            result = min(operands)
         elif op == 'max':
-            return max(operands)
+            result = max(operands)
         elif op == '>':
-            return operands[0] > operands[1]
+            result = 1 if operands[0] > operands[1] else 0
         elif op == '<':
-            return operands[0] < operands[1]
+            result = 1 if operands[0] < operands[1] else 0
         elif op == '=':
-            return operands[0] == operands[1]  
+            result = 1 if operands[0] == operands[1] else 0
         elif op == '*':
-            return functools.reduce(operator.mul, operands)
+            result = functools.reduce(operator.mul, operands)
+
+        print(args,"-->", result)
+        return result
         
+    number = v_args(inline=True)(int)
 
-    def NUMBER(self, num):
-        return int(num)
-
-class Eval(Transformer):
-
-    def start(self, args):
-        print(args)
-        return args[0]
-   
-    def calc_op(self, args):
-        op = args[0]
-        
-        if op == '+':
-            return sum(args[1:])
-        elif op == '*':
-            return functools.reduce(operator.mul, [arg for arg in args[1:]], 1)
-        elif op == 'min':
-            return min(args[1:])
-        elif op == 'max':
-            return max(args[1:])
-        elif op == '>':
-            return args[1] > args[2]
-        elif op == '<':
-            return args[1] < args[2]
-        elif op == '=':
-            return args[1] == args[2]  
-        
-
-    number = int
-    #def NUMBER(self, num):
-    #    return int(num)
-
-#@v_args(inline=True) 
-#class CalculateTree(Transformer):
-#    from operator import add, mul, min, max, eq, lt, gt
-#    number = int
 
 
 def runTestsDay16():
@@ -2134,13 +2092,14 @@ def day16_2(data):
     print("Operation result is:",result)
 
 
-    calc_parser = Lark(grammarInfixExpr, parser='lalr', transformer=Eval2())
+    calc_parser = Lark(grammarPrefixExpr, parser='lalr', transformer=Eval2())
     calc = calc_parser.parse
 
     str = '( + ( * ( + 13 3 15 ) ( + 14 3 5 ) ( + 4 12 10 ) ( * ( = 1398 3746 ) 3130 ) ( min 224560 136 12024489 ) 517270 2 ( * 213 115 186 225 54 ) ( * ( < 97 171 ) 140 ) ( + 4162186587 ) 6684131 ( * 149 60 ) ( * 213 10 7 ) 10 ( * ( < 887685 23 ) 3924 ) ( * ( max ( + ( + ( max ( + ( min ( * ( max ( * ( max ( * ( * ( min ( * ( + ( * ( * ( max ( * 4087 ) 2047 ( * 1256 ( > ( + 9 10 12 ) ( + 14 11 15 ) ( * 1657 ( < 232 6 ) ( max 7 3818 37218785 46712960 ) ( max 51492 54252 13 9637 3673 ) ( * ( > ( + 7 6 13 ) ( + 13 4 13 ) 25 ( + ( * 11 9 8 ) ( * 2 2 12 ) ( * 8 6 13 ) ( * 55844 ( > 49 313815 ) ( max 3923 15 925937357972 ) ( * ( < 2068 2068 ) 716758659 ) 509679249895 ( min 303 200 211471 17 1859699 ) ( min 32948 13810293 1060 3 ) ( * ( > 7201310 7201310 ) 802492 ( * ( > 1008504 1614 ) 63476 ( * ( = ( + 15 5 9 ) ( + 8 12 7 ) 352360 ( * ( < ( + 9 10 14 ) ( + 11 5 8 ) 3278 ( max 20677 103 ) ( * 119 ( = 189 189 ) ( * 25382 ( > 3729 334701 ) ( * 68 ) ( * 135 171 32 251 ) ( min 2381 2645 ) ( + 1715 227327288 ) ( + 4 17253 9 ) ( * 2485 ( < 11 151523 ) ( * ( > 245459830 12341 ) 1 ) ( * 39533 ( = 15033999 25441 ) ( max 22 ) ( min 12 ) 140679419 ( + 188 152 84716 213 32351 ) ( + 29 5 31224 8 ) 647867 ( * 52864 ( > 48615 48615 ) 214996849 ( * 92 ( < 151 151 ) 696031 ( * 610123 ( < ( + 10 12 9 ) ( + 14 4 8 ) ) ) ) ) ) ) ) ) ) ) ) ) ))))))))))))))))))))))))))))))'
     
-    str='(=(+ 1 3)(* 2 2))'
+    #str='(+ ( * 2 3 ) 4 )'
 
+    # 1495959086337
     print(calc(str))
 
     
@@ -2250,6 +2209,21 @@ def day17_2(data):
     result = count
     print("result is:",result)
     AssertExpectedResult(1928, result)
+
+
+##### Day 18 #####
+
+
+def day18_1(data):
+    data = read_input(2021, "181")   
+    
+    for line in data:
+        inputData = line.split(" ")
+    
+    result = 0
+    print("result is:",result)
+    AssertExpectedResult(0, result)
+
 
 
 if __name__ == "__main__":
