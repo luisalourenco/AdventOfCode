@@ -1610,13 +1610,14 @@ def processLiteralValuePacket(packet, ops, depth):
     printd("***Literal value packet:",packet,"***")
     safeGuard = 100
     literal = ''
+    length = 0
     while safeGuard > 0:
         safeGuard -= 1
         num = packet[:5]
         lastGroup = True if num[0] == '0' else False
         packet = packet[5:]
         literal += num[1:]
-
+        length += 5
         printd("Is last group ?",lastGroup )
         printd("Literal bin", literal)
 
@@ -1625,14 +1626,22 @@ def processLiteralValuePacket(packet, ops, depth):
                 packet = ''
             printd("Remaining transmission:", packet)
             printd("Literal:", BinToDec(literal))
-            ops.append(Instruction('lit', BinToDec(literal)))
+
+            #print(ops)
+            if len(ops) != 0:
+                #print("ops",ops)
+                l = ops.pop()
+                l.append(Instruction('lit', BinToDec(literal)))
+                ops.append(l)
+            else:
+                ops.append([Instruction('lit', BinToDec(literal))])
 
             print(BinToDec(literal), end = ' ')
-            return packet, BinToDec(literal), ops
+            return packet, BinToDec(literal), ops, length
 
         printd("Next literal packet:", packet)
 
-    return packet, literal, ops
+    return packet, literal, ops, length
 
 # Lenght ID = 0
 def processOperatorPacketByFixedLength(packet, ops, type, depth):
@@ -1849,7 +1858,7 @@ def processTransmission(transmission, ops = [], depth = 1):
     Instruction = namedtuple('Instruction', 'type val')
 
     if packeType == 4:
-        transmission, literal, ops = processLiteralValuePacket(transmission, ops, depth)    
+        transmission, literal, ops, _ = processLiteralValuePacket(transmission, ops, depth)    
         ops.append( (Instruction('lit', literal), depth) )
         
         printd("end with", transmission)
@@ -1866,7 +1875,26 @@ def processTransmission(transmission, ops = [], depth = 1):
 
     return transmission, total, ops
 
+def updateProcessingOperator(processingOperator, size = 0):
+    #print("update processing op",processingOperator,size)
+    if len(processingOperator) == 0:
+        return processingOperator
+    
+    type, val = processingOperator[-1]
+    
+    if type == 1:   
+        processingOperator.pop()     
+        #print("decrease one")
+        processingOperator.append((type, val - 1))
+    #elif type == 0:
+    #    processingOperator.append((type, val - size))
 
+    for i in range(len(processingOperator)):
+        t, v = processingOperator[i]
+        if t == 0:
+            processingOperator[i] = (t, v - size)
+
+    return processingOperator
 
 # Packet processing main procedure
 def processTransmissionV2(packetsStream, ops = [], depth = 1):   
@@ -1878,26 +1906,27 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
     Instruction = namedtuple('Instruction', 'type val')
     processingOperator = []
 
+    ops = []
     while len(packetsStream) > 0:
 
         printd()
         printd("Processing packet ", packetsStream)
         packetVersion = BinToDec(packetsStream[:3]) # take first 3 bits
-        packeType = BinToDec(packetsStream[3:6]) # take first 3 bits
+        packetType = BinToDec(packetsStream[3:6]) # take first 3 bits
         packetsStream = packetsStream[6:]
 
         printd("Packet Version", packetVersion)
-        printd("Packet Type", packeType)
+        printd("Packet Type", packetType)
 
         total += packetVersion
 
-        if len(processingOperator) > 0:
-            processingOperator[-1] -= 1
+        #if len(processingOperator) > 0:
+        #    processingOperator[-1] -= 1
 
-        if packeType == 4:
-            packetsStream, literal, ops = processLiteralValuePacket(packetsStream, ops, depth)    
-        else:        
-
+        if packetType == 4:
+            packetsStream, literal, ops, length = processLiteralValuePacket(packetsStream, ops, depth)    
+            processingOperator = updateProcessingOperator(processingOperator, 6 + length)
+        else:       
             printd("***Operator packet***")
             packetLengthId = packetsStream[:1]
             packetsStream = packetsStream[1:]
@@ -1905,41 +1934,155 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
             printd("Packet Length ID:", packetLengthId)
 
             print("(", end = ' ')
+            
+            if len(ops) == 0:
+                ops.append([Instruction('op', packetType)])
+            else:    
+                l = ops.pop()
+                l.append([Instruction('op', packetType)])
+                ops.append(l)
 
-            #if packeType == 2 or packeType == 3:
-            #    print(getOperationStr(packeType),"(", end = ' ')
-            #else:
-            print(getOperationStr(packeType), end = ' ')
+            print(getOperationStr(packetType), end = ' ')
 
-            if BinToDec(packetLengthId) == 0:
-                processingOperator.append(1)
-                packetsStream, ops = processOperatorPacketByFixedLengthV2(packetsStream, ops, packeType, depth+1)
-            elif BinToDec(packetLengthId) == 1:
+            lenghtID = BinToDec(packetLengthId)
+
+            if lenghtID == 0:                
+                printd("Processing ID 0 (by total lenght)")
+                lenght = BinToDec(packetsStream[:15])
+                packetsStream = packetsStream[15:]
+                printd("Length:", lenght)
+
+                processingOperator = updateProcessingOperator(processingOperator, 15 + lenght + 6 + 1)
+
+                packetsLeft = packetsStream#[:lenght]
+                packetsStream = packetsLeft #'' #packet[lenght:]
+                printd("Packets to process:", packetsLeft)
+
+                processingOperator.append((lenghtID, lenght))
+                #print("new op",processingOperator)
+
+            elif lenghtID == 1:
                 printd("Processing ID 1 (fixed number of packets)")
                 packetsLeft = BinToDec(packetsStream[:11])
                 printd("Packets to process", packetsStream[:11])
                 packetsStream = packetsStream[11:]
 
+                processingOperator = updateProcessingOperator(processingOperator, 11+6+1)
+
                 printd("Number of packets:", packetsLeft)
-                processingOperator.append(packetsLeft)
+                processingOperator.append((lenghtID, packetsLeft))
+                #print("new op",processingOperator)
 
         if len(processingOperator) != 0:
-            if processingOperator[-1] == 0:
+            t, val = processingOperator[-1]
+            if len(processingOperator) > 0 and val == 0:
                 processingOperator.pop()
-               # if packeType == 2 or packeType == 3:
-               #     print(getOperationStr(packeType),"", end = ' ')
+                #print("removing op", (t,val), "leaving",processingOperator)
                 print(")", end = ' ')
+
+    if len(processingOperator) != 0:
+        t, val = processingOperator[-1]
+        while len(processingOperator) > 0 and val <= 0:
+            t, val = processingOperator[-1]
+            processingOperator.pop()
+            #print("removing op", (t,val), "leaving",processingOperator)
+            print(")", end = ' ')
+    
+    print()
+    print(ops)
+                
         
 
     return packetsStream, total, ops
 
 
 
+grammarInfixExpr = """
+?start: calc_expr
+
+?calc_expr: INT -> number
+         | calc_op
+calc_op: "(" OPERATOR calc_expr* ")"
+OPERATOR: "+" |  "*" | "min" | "max"| "=" | ">" | "<"
+
+%import common.INT
+%import common.NUMBER 
+%import common.WS_INLINE
+%ignore WS_INLINE  
+%import common.WS
+%ignore WS
+"""
+
+@v_args(inline=True) 
+class Eval2(Transformer):
+    def start(self, args):
+        #print(args)
+        return args[0]
+
+    def calc_op(self, *args):
+        op = args[0]
+        operands = args[1:]   
+        
+        print(args)
+
+        if op == '+':
+            return functools.reduce(operator.add, operands) 
+            #return sum(operands)
+        elif op == 'min':
+            return min(operands)
+        elif op == 'max':
+            return max(operands)
+        elif op == '>':
+            return operands[0] > operands[1]
+        elif op == '<':
+            return operands[0] < operands[1]
+        elif op == '=':
+            return operands[0] == operands[1]  
+        elif op == '*':
+            return functools.reduce(operator.mul, operands)
+        
+
+    def NUMBER(self, num):
+        return int(num)
+
+class Eval(Transformer):
+
+    def start(self, args):
+        print(args)
+        return args[0]
+   
+    def calc_op(self, args):
+        op = args[0]
+        
+        if op == '+':
+            return sum(args[1:])
+        elif op == '*':
+            return functools.reduce(operator.mul, [arg for arg in args[1:]], 1)
+        elif op == 'min':
+            return min(args[1:])
+        elif op == 'max':
+            return max(args[1:])
+        elif op == '>':
+            return args[1] > args[2]
+        elif op == '<':
+            return args[1] < args[2]
+        elif op == '=':
+            return args[1] == args[2]  
+        
+
+    number = int
+    #def NUMBER(self, num):
+    #    return int(num)
+
+#@v_args(inline=True) 
+#class CalculateTree(Transformer):
+#    from operator import add, mul, min, max, eq, lt, gt
+#    number = int
 
 
 def runTestsDay16():
     data = read_input(2021, "16Tests")  
-    expected = [3,54,7,9,1,0,0,1,10,5000000000,1495959086337]
+    expected = [3,54,7,9,1,0,0,1,10,5000000000,3,1495959086337]
 
     i = 0
     for line in data:
@@ -1962,8 +2105,10 @@ def day16_1(data):
     transmission = data[0]
     converted = HexToBinV2(transmission)
     
+    #setDebugMode(True)
     result = 0
-    _, result, ops = processTransmission(converted)
+    #_, result, ops = processTransmission(converted)
+    #setDebugMode(False)
 
     print()
     print("Sum packet versions:",result)
@@ -1987,6 +2132,18 @@ def day16_2(data):
 
     print()
     print("Operation result is:",result)
+
+
+    calc_parser = Lark(grammarInfixExpr, parser='lalr', transformer=Eval2())
+    calc = calc_parser.parse
+
+    str = '( + ( * ( + 13 3 15 ) ( + 14 3 5 ) ( + 4 12 10 ) ( * ( = 1398 3746 ) 3130 ) ( min 224560 136 12024489 ) 517270 2 ( * 213 115 186 225 54 ) ( * ( < 97 171 ) 140 ) ( + 4162186587 ) 6684131 ( * 149 60 ) ( * 213 10 7 ) 10 ( * ( < 887685 23 ) 3924 ) ( * ( max ( + ( + ( max ( + ( min ( * ( max ( * ( max ( * ( * ( min ( * ( + ( * ( * ( max ( * 4087 ) 2047 ( * 1256 ( > ( + 9 10 12 ) ( + 14 11 15 ) ( * 1657 ( < 232 6 ) ( max 7 3818 37218785 46712960 ) ( max 51492 54252 13 9637 3673 ) ( * ( > ( + 7 6 13 ) ( + 13 4 13 ) 25 ( + ( * 11 9 8 ) ( * 2 2 12 ) ( * 8 6 13 ) ( * 55844 ( > 49 313815 ) ( max 3923 15 925937357972 ) ( * ( < 2068 2068 ) 716758659 ) 509679249895 ( min 303 200 211471 17 1859699 ) ( min 32948 13810293 1060 3 ) ( * ( > 7201310 7201310 ) 802492 ( * ( > 1008504 1614 ) 63476 ( * ( = ( + 15 5 9 ) ( + 8 12 7 ) 352360 ( * ( < ( + 9 10 14 ) ( + 11 5 8 ) 3278 ( max 20677 103 ) ( * 119 ( = 189 189 ) ( * 25382 ( > 3729 334701 ) ( * 68 ) ( * 135 171 32 251 ) ( min 2381 2645 ) ( + 1715 227327288 ) ( + 4 17253 9 ) ( * 2485 ( < 11 151523 ) ( * ( > 245459830 12341 ) 1 ) ( * 39533 ( = 15033999 25441 ) ( max 22 ) ( min 12 ) 140679419 ( + 188 152 84716 213 32351 ) ( + 29 5 31224 8 ) 647867 ( * 52864 ( > 48615 48615 ) 214996849 ( * 92 ( < 151 151 ) 696031 ( * 610123 ( < ( + 10 12 9 ) ( + 14 4 8 ) ) ) ) ) ) ) ) ) ) ) ) ) ))))))))))))))))))))))))))))))'
+    
+    str='(=(+ 1 3)(* 2 2))'
+
+    print(calc(str))
+
+    
     AssertExpectedResult(0, result)
 
 

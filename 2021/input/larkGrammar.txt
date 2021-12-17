@@ -1,0 +1,10 @@
+?start: calc_expr
+
+?calc_expr: NUMBER | calc_op
+calc_op: "(" OPERATOR calc_expr* ")"
+OPERATOR: "+" | "-" | "*" | "/" | "min" | "max"| "="
+
+%import common.CNAME -> NAME
+%import common.NUMBER
+%import common.WS_INLINE
+%ignore WS_INLINE
