@@ -39,7 +39,9 @@ sys.path.insert(0, FILE_DIR + "/")
 sys.path.insert(0, FILE_DIR + "/../")
 sys.path.insert(0, FILE_DIR + "/../../")
 
-from common.utils import read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
+DEBUG_MODE = False
+
+from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import HandheldMachine
@@ -1592,48 +1594,12 @@ def day15_2(data):
 
 ##### Day 16 #####
 
-
-def HexToBin(data):
-    bin = ''
-    #print("string:",data)
-    print("input read:",list(data))
-    packetVersion = ''
-
-    for c in list(data):
-        if c == '0':
-            bin += '0000'
-        elif c == '1':
-            bin += '0001'
-        elif c == '2':
-            bin += '0010'
-        elif c == '3':
-            bin += '0011'
-        elif c == '4':
-            bin += '0100'
-        elif c == '5':
-            bin += '0101'
-        elif c == '6':
-            bin += '0110'
-        elif c == '7':
-            bin += '0111'
-        elif c == '8':
-            bin += '1000'
-        elif c == '9':
-            bin += '1001'
-        elif c == 'A':
-            bin += '1010'
-        elif c == 'B':
-            bin += '1011'
-        elif c == 'C':
-            bin += '1100'
-        elif c == 'D':
-            bin += '1101'
-        elif c == 'E':
-            bin += '1110'
-        elif c == 'F':
-            bin += '1111'
-    
-    return bin
+def HexToBinV2(data):
+    print()
+    print("Input read:", data)
+    b = bin(int(data, 16))
+    filler = len(data)*4
+    return b[2:].zfill(filler)
 
 def BinToDec(bin):
     return int(bin, 2)
@@ -1641,7 +1607,7 @@ def BinToDec(bin):
 # Literal Value packet
 def processLiteralValuePacket(packet, ops, depth):
     Instruction = namedtuple('Instruction', 'type val')
-    print("***Literal value packet:",packet,"***")
+    printd("***Literal value packet:",packet,"***")
     safeGuard = 100
     literal = ''
     while safeGuard > 0:
@@ -1651,32 +1617,37 @@ def processLiteralValuePacket(packet, ops, depth):
         packet = packet[5:]
         literal += num[1:]
 
-        print("Is last group ?",lastGroup )
-        print("Literal bin", literal)
+        printd("Is last group ?",lastGroup )
+        printd("Literal bin", literal)
 
         if lastGroup:
             if packet.count('0') == len(packet):
                 packet = ''
-            print("Remaining transmission:", packet)
-            print("Literal:", BinToDec(literal))
-            #ops.append(Instruction('lit', BinToDec(literal)))
+            printd("Remaining transmission:", packet)
+            printd("Literal:", BinToDec(literal))
+            ops.append(Instruction('lit', BinToDec(literal)))
+
+            print(BinToDec(literal), end = ' ')
             return packet, BinToDec(literal), ops
 
-        print("Next literal packet:", packet)
+        printd("Next literal packet:", packet)
 
     return packet, literal, ops
 
 # Lenght ID = 0
 def processOperatorPacketByFixedLength(packet, ops, type, depth):
-    print("Processing ID 0 (by total lenght)")
+    printd("Processing ID 0 (by total lenght)")
     lenght = BinToDec(packet[:15])
     packet = packet[15:]
-    print("Length:", lenght)
+    printd("Length:", lenght)
 
     packetsLeft = packet#[:lenght]
     packet = packetsLeft #'' #packet[lenght:]
-    print("Packets to process:", packetsLeft)
+    printd("Packets to process:", packetsLeft)
+
+    print("(", end = ' ')
     t, tt, o = processTransmission(packetsLeft, ops, depth)
+    print(")", end = ' ')
 
     Instruction = namedtuple('Instruction', 'type val')    
     #o.append( Instruction('op', type) )
@@ -1684,23 +1655,46 @@ def processOperatorPacketByFixedLength(packet, ops, type, depth):
     
     return t,tt,o
 
+# Lenght ID = 0
+def processOperatorPacketByFixedLengthV2(packet, ops, type, depth):
+    printd("Processing ID 0 (by total lenght)")
+    lenght = BinToDec(packet[:15])
+    packet = packet[15:]
+    printd("Length:", lenght)
+
+    packetsLeft = packet#[:lenght]
+    packet = packetsLeft #'' #packet[lenght:]
+    printd("Packets to process:", packetsLeft)
+
+    #t, tt, o = processTransmission(packetsLeft, ops, depth)
+
+    return packetsLeft, ops
+
+    #Instruction = namedtuple('Instruction', 'type val')    
+    #o.append( Instruction('op', type) )
+    #ops.insert(1,o)
+    
+    #return t,tt,o
+
 # Length ID = 1
 def processOperatorPacketByNumberPackets(packet, ops, type, depth):
-    print("Processing ID 1 (fixed number of packets)")
+    printd("Processing ID 1 (fixed number of packets)")
     packetsLeft = BinToDec(packet[:11])
-    print("Packets to process", packet[:11])
+    printd("Packets to process", packet[:11])
     packet = packet[11:]
 
-    print("Number of packets:", packetsLeft)
+    printd("Number of packets:", packetsLeft)
 
     total = 0
     subops = []
     #ddepth = depth+1
+    print("(", end = '')
     for i in range(packetsLeft):
-        print("Processing subpacket", i+1,":", packet)
+        printd("Processing subpacket", i+1,":", packet)
         packet, t, ops = processTransmission(packet, ops, depth)
         #subops.append(ops)
         total += t
+    print(")", end = '')
     
     Instruction = namedtuple('Instruction', 'type val')
     #subops.append( Instruction('op', type) )
@@ -1708,14 +1702,34 @@ def processOperatorPacketByNumberPackets(packet, ops, type, depth):
     
     return packet, total, ops
 
+
+# Length ID = 1
+def processOperatorPacketByNumberPacketsV2(packet, ops, type, depth):
+    printd("Processing ID 1 (fixed number of packets)")
+    packetsLeft = BinToDec(packet[:11])
+    printd("Packets to process", packet[:11])
+    packet = packet[11:]
+
+    printd("Number of packets:", packetsLeft)
+
+    total = 0
+    subops = []
+    for i in range(packetsLeft):
+        printd("Processing subpacket", i+1,":", packet)
+        packet, t, ops = processTransmission(packet, ops, depth)
+        total += t
+    
+    
+    return packet, total, ops
+
 # Operator packet
 def processOperatorPacket(packet, ops, type, depth):
     total = 0
-    print("***Operator packet***")
+    printd("***Operator packet***")
     packetLengthId = packet[:1]
     packet = packet[1:]
 
-    print("Packet Length ID:",packetLengthId)
+    printd("Packet Length ID:",packetLengthId)
     if BinToDec(packetLengthId) == 0:
         packet, t, ops = processOperatorPacketByFixedLength(packet, ops, type, depth+1)
     elif BinToDec(packetLengthId) == 1:
@@ -1725,13 +1739,29 @@ def processOperatorPacket(packet, ops, type, depth):
     return packet, total, ops
 
 
+def getOperationStr(packetType):
+    if packetType == 0: # sum
+        return '+'
+    elif packetType == 1: # product
+        return '*'
+    elif packetType == 2: # min
+        return 'min'
+    elif packetType == 3: # max
+        return 'max'
+    elif packetType == 5: # gt
+        return '>'
+    elif packetType == 6: # lt
+        return '<'
+    elif packetType == 7: # gt
+        return '='
+
 # Process operations
 def processOperation(acc, args, packetType, result, ops):
     Instruction = namedtuple('Instruction', 'type val')
 
-    print("Process operation type", packetType,"with operands",args)
+    printd("Process operation type", packetType,"with operands",args)
     if len(args) == 0:
-        print("empty args, using acc instead:", acc)
+        printd("empty args, using acc instead:", acc)
         args = acc 
 
     if packetType == 0: # sum
@@ -1762,6 +1792,7 @@ def processOperation(acc, args, packetType, result, ops):
 
     acc.insert(0,result)   
 
+    print()
     print("Result is", result,"for operation", operation,"with operands",args,"leftover ops", ops)
     return result, acc
 
@@ -1769,7 +1800,7 @@ def processOperation(acc, args, packetType, result, ops):
 # Process operations
 def processAllOperations(ops, result):
     #ops.reverse()
-    print("Process all",len(ops),"operations",ops)
+    printd("Process all",len(ops),"operations",ops)
 
     result = 0
     args = []
@@ -1779,12 +1810,12 @@ def processAllOperations(ops, result):
         
         packetType = None
         instruction, depth = ops.pop()
-        print("Instruction", instruction,"depth:", depth)        
+        printd("Instruction", instruction,"depth:", depth)        
 
         if instruction.type == 'lit':
-            print("depth:",opDepth, depth)
-            if opDepth == depth or opDepth +1 == depth:
-                args.append(instruction.val)  
+            printd("depth:",opDepth, depth)
+            #if opDepth == depth or opDepth +1 == depth:
+            args.append(instruction.val)  
 
         if instruction.type == 'op':
             opDepth+=1
@@ -1795,6 +1826,7 @@ def processAllOperations(ops, result):
 
 
     print("Result is", result)
+    print()
     return result, ops
 
 # Packet processing main procedure
@@ -1803,14 +1835,14 @@ def processTransmission(transmission, ops = [], depth = 1):
         return '', 0, ops
     
     total = 0
-    print()
-    print("Processing packet ", transmission)
+    printd()
+    printd("Processing packet ", transmission)
     packetVersion = BinToDec(transmission[:3]) # take first 3 bits
     packeType = BinToDec(transmission[3:6]) # take first 3 bits
     transmission = transmission[6:]
 
-    print("Packet Version", packetVersion)
-    print("Packet Type", packeType)
+    printd("Packet Version", packetVersion)
+    printd("Packet Type", packeType)
 
     total += packetVersion
     result = 0
@@ -1820,9 +1852,12 @@ def processTransmission(transmission, ops = [], depth = 1):
         transmission, literal, ops = processLiteralValuePacket(transmission, ops, depth)    
         ops.append( (Instruction('lit', literal), depth) )
         
-        print("end with", transmission)
+        printd("end with", transmission)
     else:        
         ops.append( (Instruction('op', packeType), depth) )
+
+        print(getOperationStr(packeType), end = ' ')
+
         transmission, t, ops = processOperatorPacket(transmission, ops, packeType, depth)
 
     transmission, t, ops = processTransmission(transmission, ops)
@@ -1831,6 +1866,77 @@ def processTransmission(transmission, ops = [], depth = 1):
 
     return transmission, total, ops
 
+
+
+# Packet processing main procedure
+def processTransmissionV2(packetsStream, ops = [], depth = 1):   
+    if len(packetsStream) == 0:
+        return '', 0, ops
+    
+    total = 0    
+    result = 0
+    Instruction = namedtuple('Instruction', 'type val')
+    processingOperator = []
+
+    while len(packetsStream) > 0:
+
+        printd()
+        printd("Processing packet ", packetsStream)
+        packetVersion = BinToDec(packetsStream[:3]) # take first 3 bits
+        packeType = BinToDec(packetsStream[3:6]) # take first 3 bits
+        packetsStream = packetsStream[6:]
+
+        printd("Packet Version", packetVersion)
+        printd("Packet Type", packeType)
+
+        total += packetVersion
+
+        if len(processingOperator) > 0:
+            processingOperator[-1] -= 1
+
+        if packeType == 4:
+            packetsStream, literal, ops = processLiteralValuePacket(packetsStream, ops, depth)    
+        else:        
+
+            printd("***Operator packet***")
+            packetLengthId = packetsStream[:1]
+            packetsStream = packetsStream[1:]
+
+            printd("Packet Length ID:", packetLengthId)
+
+            print("(", end = ' ')
+
+            #if packeType == 2 or packeType == 3:
+            #    print(getOperationStr(packeType),"(", end = ' ')
+            #else:
+            print(getOperationStr(packeType), end = ' ')
+
+            if BinToDec(packetLengthId) == 0:
+                processingOperator.append(1)
+                packetsStream, ops = processOperatorPacketByFixedLengthV2(packetsStream, ops, packeType, depth+1)
+            elif BinToDec(packetLengthId) == 1:
+                printd("Processing ID 1 (fixed number of packets)")
+                packetsLeft = BinToDec(packetsStream[:11])
+                printd("Packets to process", packetsStream[:11])
+                packetsStream = packetsStream[11:]
+
+                printd("Number of packets:", packetsLeft)
+                processingOperator.append(packetsLeft)
+
+        if len(processingOperator) != 0:
+            if processingOperator[-1] == 0:
+                processingOperator.pop()
+               # if packeType == 2 or packeType == 3:
+               #     print(getOperationStr(packeType),"", end = ' ')
+                print(")", end = ' ')
+        
+
+    return packetsStream, total, ops
+
+
+
+
+
 def runTestsDay16():
     data = read_input(2021, "16Tests")  
     expected = [3,54,7,9,1,0,0,1,10,5000000000,1495959086337]
@@ -1838,11 +1944,12 @@ def runTestsDay16():
     i = 0
     for line in data:
         t = line
-        converted = HexToBin(t)    
+        converted = HexToBinV2(t)
         result = 0
-        _, result, ops = processTransmission(converted, [])
-        result, _ = processAllOperations(ops, result)
-        print("Operation result is:",result)
+        _, result, ops = processTransmissionV2(converted, [])
+        #result, _ = processAllOperations(ops, result)
+        print()
+        printd("Operation result is:",result)
         if expected[i] == result:
             print("Example", t,"passed!")
         else:
@@ -1853,12 +1960,12 @@ def day16_1(data):
     data = read_input(2021, "161")   
     
     transmission = data[0]
-    converted = HexToBin(transmission)
+    converted = HexToBinV2(transmission)
     
     result = 0
     _, result, ops = processTransmission(converted)
 
-
+    print()
     print("Sum packet versions:",result)
     AssertExpectedResult(951, result)
 
@@ -1872,15 +1979,16 @@ def day16_2(data):
     data = read_input(2021, "161")   
     
     transmission = data[0]
-    converted = HexToBin(transmission)
+    converted = HexToBinV2(transmission)
     
     result = 0
-    _, result, ops = processTransmission(converted, [])
-    result, _ = processAllOperations(ops, result)
+    _, result, ops = processTransmissionV2(converted, [])
+    #result, _ = processAllOperations(ops, result)
 
-
+    print()
     print("Operation result is:",result)
     AssertExpectedResult(0, result)
+
 
 
 
@@ -1919,18 +2027,18 @@ def fireProbe(probe, velocity, minX, maxX, minY, maxY):
 
         if checkIfProbeInTargetArea((probeX, probeY), minX, maxX, minY, maxY):
             count +=1
-            #print("Within target area! Max pos:", maxYPostition)
+            #printd("Within target area! Max pos:", maxYPostition)
             return maxYPostition, velocityX, velocityY, i, count
 
         if checkIfProbeWillNoLongerReachArea((probeX, probeY), minX, maxX, minY, maxY):
-            #print("Will not reach target area!", (probeX, probeY), (velocityX, velocityY ) )
+            #printd("Will not reach target area!", (probeX, probeY), (velocityX, velocityY ) )
             return None,None,None,None, 0
     return 0,0,0,0,0
         
 
 # Day 17, part 1: None (42.221 secs)
 def day17_1(data):
-    #data = read_input(2021, "171")   
+    data = read_input(2021, "171")   
     
     targetArea = data[0].split(" ")
     minX = int(targetArea[2].split("..")[0][2:])
@@ -1964,7 +2072,7 @@ def day17_1(data):
 
 # Day 17, part 2: None (38.974 secs)
 def day17_2(data):
-    #data = read_input(2021, "171")   
+    data = read_input(2021, "171")   
     
     targetArea = data[0].split(" ")
     minX = int(targetArea[2].split("..")[0][2:])
@@ -1973,7 +2081,6 @@ def day17_2(data):
     maxY = int(targetArea[3].split("..")[1])
 
     print(minX,maxX,minY, maxY)
-
     count = 0
     for x in range(-300,500):
         for y in range(-300,500):

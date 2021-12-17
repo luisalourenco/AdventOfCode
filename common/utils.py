@@ -19,6 +19,7 @@ class SignalCatchingError(Exception):
 
 HEAVY_EXERCISE = "nil (too computationally heavy)"
 EXERCISE_TIMEOUT = 120  # secs
+DEBUG_MODE = False
 
 class bcolors:
     HEADER = '\033[95m'
@@ -34,6 +35,15 @@ WHITE_SQUARE = "█"
 WHITE_CIRCLE = "•"
 BLUE_CIRCLE = f"{bcolors.OKBLUE}{bcolors.BOLD}•{bcolors.ENDC}"
 RED_SMALL_SQUARE = f"{bcolors.FAIL}{bcolors.BOLD}■{bcolors.ENDC}"
+
+
+def setDebugMode(mode):
+    globals()['DEBUG_MODE'] = mode
+
+def printd(*args):
+    if DEBUG_MODE:
+        print(args)
+
 
 def printGridsASCII(grid, printChar):
     rows = len(grid)
