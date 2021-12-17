@@ -1886,19 +1886,106 @@ def day16_2(data):
 
 ##### Day 17 #####
 
+def checkIfProbeInTargetArea(probe, minX, maxX, minY, maxY):
+    probeX, probeY = probe
 
+    #print("probe X",probeX,">=", minX,probeX >= minX)
+    #print("probe X",probeY,"<=", maxX,probeX <= maxX)
+    #print("probe Y",probeY,">=", minY,probeY >= minY)
+    #print("probe Y",probeY,"<=", maxY, probeY <= maxY)
+    return probeX >= minX and probeX <= maxX and probeY >= minY and probeY <= maxY
+
+def checkIfProbeWillNoLongerReachArea(probe, minX, maxX, minY, maxY):
+    probeX, probeY = probe
+    return probeX >= maxX #or probeY <= minY
+
+def fireProbe(probe, velocity, minX, maxX, minY, maxY):
+    step = 300
+    maxYPostition = 0
+    probeX, probeY = probe
+    velocityX, velocityY = velocity
+
+    count = 0
+    for i in range(step):
+        #print("step",i,"probe position:", probeX, probeY)
+        probeX += velocityX
+        probeY += velocityY
+        if velocityX != 0:
+            velocityX += -1 if velocityX > 0 else 1
+        velocityY -= 1
+
+        if probeY > maxYPostition:
+            maxYPostition = probeY
+
+        if checkIfProbeInTargetArea((probeX, probeY), minX, maxX, minY, maxY):
+            count +=1
+            #print("Within target area! Max pos:", maxYPostition)
+            return maxYPostition, velocityX, velocityY, i, count
+
+        if checkIfProbeWillNoLongerReachArea((probeX, probeY), minX, maxX, minY, maxY):
+            #print("Will not reach target area!", (probeX, probeY), (velocityX, velocityY ) )
+            return None,None,None,None, 0
+    return 0,0,0,0,0
+        
+
+# Day 17, part 1: None (42.221 secs)
 def day17_1(data):
-    data = read_input(2021, "171")   
+    #data = read_input(2021, "171")   
     
-    for line in data:
-        inputData = line.split(" ")
+    targetArea = data[0].split(" ")
+    minX = int(targetArea[2].split("..")[0][2:])
+    maxX = int(targetArea[2].split("..")[1][:-1])
+    minY = int(targetArea[3].split("..")[0][2:])
+    maxY = int(targetArea[3].split("..")[1])
 
-    result = 0
-
-
+    
+    maxPosY = 0
+    foundVel = (0,0)
+    stop = False
+    for x in range(10000):
+        for y in range(10000):
+            yy, velocityX, velocityY, step,_ = fireProbe((0,0), (x,y), minX, maxX, minY, maxY)
+            if yy == None:
+                stop = True
+                break
+            if yy > maxPosY:
+                maxPosY = yy
+                foundVel = (x,y)
+                vel = (velocityX, velocityY)
+                sstep = step 
+        if stop:
+            break
+    
+    print("Found initial velocity", foundVel,"with highest Y", maxPosY,"velocity", vel,"at step",sstep)    
+    result = maxPosY
     print("result is:",result)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(3160, result)
 
+
+# Day 17, part 2: None (38.974 secs)
+def day17_2(data):
+    #data = read_input(2021, "171")   
+    
+    targetArea = data[0].split(" ")
+    minX = int(targetArea[2].split("..")[0][2:])
+    maxX = int(targetArea[2].split("..")[1][:-1])
+    minY = int(targetArea[3].split("..")[0][2:])
+    maxY = int(targetArea[3].split("..")[1])
+
+    print(minX,maxX,minY, maxY)
+
+    count = 0
+    for x in range(-300,500):
+        for y in range(-300,500):
+            yy, _, _, _,c = fireProbe((0,0), (x,y), minX, maxX, minY, maxY)
+            if yy == None:
+                continue
+            if c != 0:  
+                count +=1
+    
+    result = count
+    print("result is:",result)
+    AssertExpectedResult(1928, result)
 
 
 if __name__ == "__main__":
