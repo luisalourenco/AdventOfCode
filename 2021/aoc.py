@@ -1598,6 +1598,7 @@ def processLiteralValuePacket(packet, ops, depth):
     safeGuard = 100
     literal = ''
     length = 0
+
     while safeGuard > 0:
         safeGuard -= 1
         num = packet[:5]
@@ -1605,6 +1606,7 @@ def processLiteralValuePacket(packet, ops, depth):
         packet = packet[5:]
         literal += num[1:]
         length += 5
+
         printd("Is last group ?",lastGroup )
         printd("Literal bin", literal)
 
@@ -1862,7 +1864,9 @@ def processTransmission(transmission, ops = [], depth = 1):
 
     return transmission, total, ops
 
-def updateProcessingOperator(processingOperator, size = 0):
+
+
+def updateProcessingOperator(processingOperator, size):
     #print("update processing op",processingOperator,size)
     if len(processingOperator) == 0:
         return processingOperator
@@ -1873,43 +1877,51 @@ def updateProcessingOperator(processingOperator, size = 0):
         processingOperator.pop()     
         #print("decrease one")
         processingOperator.append((type, val - 1))
-    #elif type == 0:
-    #    processingOperator.append((type, val - size))
+
 
     for i in range(len(processingOperator)):
         t, v = processingOperator[i]
         if t == 0:
-            processingOperator[i] = (t, v - size)
+            #print("decrease", v-size,"for",processingOperator[i])
+            if v - size < 0:
+                processingOperator[i] = (t, 0)
+            else:
+                processingOperator[i] = (t, v - size)
 
     return processingOperator
 
+
+def processHeader(packetsStream, total):
+    printd()
+    printd("Processing packet ", packetsStream)
+    packetVersion = BinToDec(packetsStream[:3]) # take first 3 bits
+    packetType = BinToDec(packetsStream[3:6]) # take first 3 bits
+    packetsStream = packetsStream[6:]
+
+    printd("Packet Version", packetVersion)
+    printd("Packet Type", packetType)
+
+    total += packetVersion
+
+    return packetsStream, total, packetType
+
 # Packet processing main procedure
 def processTransmissionV2(packetsStream, ops = [], depth = 1):   
-    if len(packetsStream) == 0:
-        return '', 0, ops
     
     total = 0    
-    result = 0
     Instruction = namedtuple('Instruction', 'type val')
+    # structure to help know when to close parenthesis
     processingOperator = []
 
-    ops = []
-    depth = 0
+    ops = [] #not being used
+    depth = 0 #also useless
     while len(packetsStream) > 0:
 
-        printd()
-        printd("Processing packet ", packetsStream)
-        packetVersion = BinToDec(packetsStream[:3]) # take first 3 bits
-        packetType = BinToDec(packetsStream[3:6]) # take first 3 bits
-        packetsStream = packetsStream[6:]
-
-        printd("Packet Version", packetVersion)
-        printd("Packet Type", packetType)
-
-        total += packetVersion
+        # header has length 6
+        packetsStream, total, packetType = processHeader(packetsStream, total)
 
         if packetType == 4:
-            packetsStream, literal, ops, length = processLiteralValuePacket(packetsStream, ops, depth)    
+            packetsStream, _, ops, length = processLiteralValuePacket(packetsStream, ops, depth)    
             processingOperator = updateProcessingOperator(processingOperator, 6 + length)
         else:       
             printd("***Operator packet***")
@@ -1922,10 +1934,10 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
             
             if len(ops) == 0:
                 ops.append([Instruction('op', packetType)])
-            else:    
-                l = ops.pop()
-                l.append([Instruction('op', packetType)])
-                ops.append(l)
+            #else:    
+            #    l = ops.pop()
+            #    l.append([Instruction('op', packetType)])
+            #    ops.append(l)
 
             print(getOperationStr(packetType), end = ' ')
 
@@ -1937,11 +1949,11 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
                 packetsStream = packetsStream[15:]
                 printd("Length:", lenght)
 
-                processingOperator = updateProcessingOperator(processingOperator, 15 + lenght + 6 + 1)
+                # lenght of this packet including its subpackets is header + lenghtID + 15 for the subpackets length 
+                #processingOperator = updateProcessingOperator(processingOperator, 15 + lenght + 6 + 1)
+                processingOperator = updateProcessingOperator(processingOperator, 15 + 6 + 1)
 
-                packetsLeft = packetsStream#[:lenght]
-                packetsStream = packetsLeft #'' #packet[lenght:]
-                printd("Packets to process:", packetsLeft)
+                printd("Packets to process:", packetsStream)
 
                 processingOperator.append((lenghtID, lenght))
                 #print("new op",processingOperator)
@@ -1952,6 +1964,7 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
                 printd("Packets to process", packetsStream[:11])
                 packetsStream = packetsStream[11:]
 
+                # lenght of this packet including its subpackets is header + lenghtID + 11 for the number of subpackets
                 processingOperator = updateProcessingOperator(processingOperator, 11+6+1)
 
                 printd("Number of packets:", packetsLeft)
@@ -1961,24 +1974,28 @@ def processTransmissionV2(packetsStream, ops = [], depth = 1):
         
         if len(processingOperator) != 0:
             t, val = processingOperator[-1]
+            while len(processingOperator) > 0:
+                t, val = processingOperator[-1]
+                if val == 0:                    
+                    processingOperator.pop()
+                    #print("removing op", (t,val), "leaving",processingOperator)
+                    print(")", end = ' ')
+                else:
+                    break
+            '''
             if len(processingOperator) > 0 and val == 0:
                 processingOperator.pop()
-                #print("removing op", (t,val), "leaving",processingOperator)
+                #print("removing op", (t,val), " and closing ), leaving",processingOperator)
                 print(")", end = ' ')
-        
+            '''
         
         #print(")", end = ' ')
         depth+=1
     
-    if len(processingOperator) != 0:
-        t, val = processingOperator[-1]
-        while len(processingOperator) > 0 and val <= 0:
-            t, val = processingOperator[-1]
-            processingOperator.pop()
-            #print("removing op", (t,val), "leaving",processingOperator)
-            print(")", end = ' ')
+    print()
+    print(processingOperator)
     
-    
+
     print()
     print(ops)
                 
@@ -2079,7 +2096,7 @@ def day16_1(data):
 def day16_2(data):
     runTestsDay16()
     
-    data = read_input(2021, "161")   
+    #data = read_input(2021, "161")   
     
     transmission = data[0]
     converted = HexToBinV2(transmission)
@@ -2095,7 +2112,7 @@ def day16_2(data):
     calc_parser = Lark(grammarPrefixExpr, parser='lalr', transformer=Eval2())
     calc = calc_parser.parse
 
-    str = '( + ( * ( + 13 3 15 ) ( + 14 3 5 ) ( + 4 12 10 ) ( * ( = 1398 3746 ) 3130 ) ( min 224560 136 12024489 ) 517270 2 ( * 213 115 186 225 54 ) ( * ( < 97 171 ) 140 ) ( + 4162186587 ) 6684131 ( * 149 60 ) ( * 213 10 7 ) 10 ( * ( < 887685 23 ) 3924 ) ( * ( max ( + ( + ( max ( + ( min ( * ( max ( * ( max ( * ( * ( min ( * ( + ( * ( * ( max ( * 4087 ) 2047 ( * 1256 ( > ( + 9 10 12 ) ( + 14 11 15 ) ( * 1657 ( < 232 6 ) ( max 7 3818 37218785 46712960 ) ( max 51492 54252 13 9637 3673 ) ( * ( > ( + 7 6 13 ) ( + 13 4 13 ) 25 ( + ( * 11 9 8 ) ( * 2 2 12 ) ( * 8 6 13 ) ( * 55844 ( > 49 313815 ) ( max 3923 15 925937357972 ) ( * ( < 2068 2068 ) 716758659 ) 509679249895 ( min 303 200 211471 17 1859699 ) ( min 32948 13810293 1060 3 ) ( * ( > 7201310 7201310 ) 802492 ( * ( > 1008504 1614 ) 63476 ( * ( = ( + 15 5 9 ) ( + 8 12 7 ) 352360 ( * ( < ( + 9 10 14 ) ( + 11 5 8 ) 3278 ( max 20677 103 ) ( * 119 ( = 189 189 ) ( * 25382 ( > 3729 334701 ) ( * 68 ) ( * 135 171 32 251 ) ( min 2381 2645 ) ( + 1715 227327288 ) ( + 4 17253 9 ) ( * 2485 ( < 11 151523 ) ( * ( > 245459830 12341 ) 1 ) ( * 39533 ( = 15033999 25441 ) ( max 22 ) ( min 12 ) 140679419 ( + 188 152 84716 213 32351 ) ( + 29 5 31224 8 ) 647867 ( * 52864 ( > 48615 48615 ) 214996849 ( * 92 ( < 151 151 ) 696031 ( * 610123 ( < ( + 10 12 9 ) ( + 14 4 8 ) ) ) ) ) ) ) ) ) ) ) ) ) ))))))))))))))))))))))))))))))'
+    str = '( + ( * 3955 ( > 34 63391 ) ) ( * 19891 ( < 3659 726292 ) ) ( * 30 66 ) ( min 46326753392 ) ( * ( < 13350959 13350959 ) 3018536299 ) ( * ( < ( + 15 4 14 ) ( + 9 3 15 ) ) 887739 ) ( * ( = 23676752 428050169849 ) 36880979723 ) ( * 44408 ( > 3899 11878767 ) ) 14 ( * 18 123 226 33 ) ( min 208278644 1940294 ) ( min 21735 25248 11 16664941 ) ( * 102 ( < 103 421 ) ) ( + 4 ) ( * ( > ( + 8 8 12 ) ( + 13 9 12 ) ) 224 ) 1246 ( * 597125 ( < 1206 1206 ) ) ( * 182 225 150 ) ( * 154 ) ( min 3345821278 1916610329 2686 37270 1 ) ( * ( > ( + 7 5 3 ) ( + 2 9 12 ) ) 39841 ) ( * ( > 228943232 994147 ) 243 ) ( max 6 1181 51522 5802101 ) ( * ( > 945 945 ) 185114413 ) 10866823 ( max 12238353 1149801 3633 65270 29336 ) ( * ( > 101769 101769 ) 194 ) 246 ( * ( > 63636 100 ) 42862 ) ( + 27 253 33004 12 13 ) ( + 9 10577 2715303377 6784402919 ) ( * 80 ( = 1586 181 ) ) ( * 9219 ( < 47941 15 ) ) ( max 969238 8 115 ) ( * ( + 13 5 14 ) ( + 11 15 5 ) ( + 8 7 10 ) ) 39967 ( + 97236182 549 ) 2677 ( * 5009620 ( < 27507 108 ) ) 3 ( * 166 ( < ( + 11 4 5 ) ( + 15 10 2 ) ) ) ( * 191 35 67 39 187 ) 5 ( max ( max ( * ( * ( min ( min ( min ( min ( * ( * ( max ( + ( max ( + ( max ( max ( * ( + ( * ( + 841484756498 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ( * ( = 1884171771 1884171771 ) 1469052151 ) ( + ( * 8 10 9 ) ( * 15 11 7 ) ( * 15 9 11 ) ) ( max 56493 ) 2 ( + 70 210 2996 ) 10 ( max 186 2737 ) ( * ( = ( + 14 3 12 ) ( + 10 3 10 ) ) 2350 ) ( min 111 599922 39761 ) ) '
     
     #str='(+ ( * 2 3 ) 4 )'
 
@@ -2216,12 +2233,14 @@ def day17_2(data):
 
 def day18_1(data):
     data = read_input(2021, "181")   
-    
+    setDebugMode(True)
+
     for line in data:
         inputData = line.split(" ")
     
     result = 0
     print("result is:",result)
+    setDebugMode(False)
     AssertExpectedResult(0, result)
 
 
