@@ -6,6 +6,7 @@
 # pylint: disable=wrong-import-position
 # pylint: disable=consider-using-enumerate-
 
+from io import DEFAULT_BUFFER_SIZE
 from timeit import default_timer as timer
 from collections import deque
 import functools
@@ -2231,12 +2232,209 @@ def day17_2(data):
 ##### Day 18 #####
 
 
+
+def f(pair):
+
+    printd(pair)
+
+    if pair == []:
+        return pair
+    
+    if isinstance(pair[0], int) and isinstance(pair[1], int):
+        return pair
+
+    l = []
+    r = []
+    if isinstance(pair[0], list):
+        l = pair[0]
+    if isinstance(pair[1], list):
+        r = pair[1]
+
+    ll = f(l)
+    rr = f(r)
+
+    return ll if len(ll) > len(rr) else rr
+
+def explodePair(pair):
+    '''
+     [ [6 ,[5, [4, [3,2] ] ] ], 1]  ---> [ 6, [5, [7, 0] ] ], 3]
+    {0: [(None, 1)], 1: [(6, None)], 2: [(5, None)], 3: [(4, None)], 4: [(3, 2)]}
+
+    el, er = pair[4]
+
+    search first pair in innerest level with Left value + el
+    search first pair in innerest level with Right value + er
+    
+    '''
+
+    level = 4
+    if level not in pair:
+        print("nothing to explode!")
+    
+    (l,r,s) = pair[level].pop(0)
+    print("exploding",(l,r,s))
+
+    foundLeft = None
+    foundRight = None
+ 
+    while level > 0:
+        print(level,":", pair[level])
+        level -= 1        
+        analysing_pairs = pair[level]
+
+        if len(analysing_pairs) != 0:
+            (ll, rr, ss) = analysing_pairs[s]
+
+            if ll != None and foundLeft == None:
+                foundLeft = ll
+                analysing_pairs[s] = (ll + l, rr, ss)
+
+            if rr != None and foundRight == None:
+                foundRight = rr
+                analysing_pairs[s] = (ll, rr + r, ss)
+
+            if foundRight != None and foundLeft != None:
+                break    
+    
+    level = -1
+    # search lefts from initial to last level
+    if foundRight == None:
+        while level < 4:
+            level += 1        
+            analysing_pairs = pair[level]
+
+            if len(analysing_pairs) != 0:
+                (ll, rr, ss) = analysing_pairs[-1]
+                if ll != None and foundRight == None:
+                    foundRight = ll
+                    analysing_pairs[-1] = (ll + r, rr, ss)
+                    break
+                #if rr != None and foundRight == None:
+                #    foundRight = rr
+                #    analysing_pairs[-1] = (ll, rr + r)
+                #if foundRight != None and foundLeft != None:
+                #    break  
+
+
+    (ll, rr, ss) = pair[3].pop(s)
+    if ll == None:
+        p = (0, rr, s)
+    elif rr == None:
+        p = (ll, 0, s)
+    else:
+        p = (ll, rr, s)
+    pair[3].insert(s, p)
+
+    
+    return pair
+
+def splitPair(pair):
+    return 0
+
+def reduce(pair):
+    explodePair(pair)
+    splitPair(pair)
+    return pair
+  
+
+# [[3,[2,[8,0]]], [9,[5,[4,[3,2]]]]]
+def parseSnailFishNumberStr(snailfish_number):
+    level = -1
+    pairs = {}
+    isLeft = False 
+    isRight = False
+    pair = (None, None, None)
+    switchSide = False
+    for c in snailfish_number:
+        if c == '[':
+            isLeft = True
+            isRight = False
+
+            (l,r, s) = pair
+            if l != None:
+                pairs[level].append((l,r,0))
+
+            pair = (None, None, None)
+            level += 1
+            if level not in pairs:
+                pairs[level] = []
+           
+        elif c == ']':
+            isLeft = True
+            isRight = False
+            l,r,s = pair
+            level -= 1
+            if l == None and r == None:
+                continue
+            else:                
+                pairs[level+1].append((l,r,0))
+            
+        elif c == ' ':
+            continue
+        elif  c == ',':
+            isLeft = False
+            isRight = True
+        else:
+            l,r,s = pair
+            if isLeft:
+                l = int(c)
+                pair = (l,r,s)
+                isLeft = False
+                isRight = True
+            elif isRight: # exploding pair
+                r = int(c)
+                pair = (l,r,s)
+
+                #print("check:", pairs[level-1], level-1, len(pairs[level-1]))
+                if level > 0 and len(pairs[level-1]) == 2:
+                    side = 1
+                else:
+                    side = 0
+
+                pairs[level].append((l,r,side))
+                pair = (None, None, None)
+                isLeft = True
+                isRight = False
+
+    return pairs
+
+
+
+import json
+def parseSnailFishNumbers(data):
+
+    for snailfish_number in data:
+        print(snailfish_number)
+        pairs = parseSnailFishNumberStr(snailfish_number)
+        print(pairs)
+        print("explosion:",explodePair(pairs))
+        print()
+        
+        
+
 def day18_1(data):
     data = read_input(2021, "181")   
     setDebugMode(True)
 
+    parseSnailFishNumbers(data)
+    
+    
+    result = 0
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
+
+
+##### Day 19 #####
+
+
+def day19_1(data):
+    data = read_input(2021, "191")   
+    setDebugMode(True)
+
     for line in data:
         inputData = line.split(" ")
+    
     
     result = 0
     print("result is:",result)
