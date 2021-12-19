@@ -17,13 +17,14 @@ import time
 import copy
 import re
 import itertools
+from typing import ChainMap
 #from typing_extensions import Literal 
 import numpy as np
 from functools import lru_cache
 import operator
 from itertools import takewhile
 import itertools, collections
-from turtle import Turtle, Screen, heading
+from turtle import Turtle, Screen, heading, left
 from math import exp, pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
@@ -42,6 +43,7 @@ sys.path.insert(0, FILE_DIR + "/../../")
 
 DEBUG_MODE = False
 
+from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
@@ -2232,29 +2234,6 @@ def day17_2(data):
 ##### Day 18 #####
 
 
-
-def f(pair):
-
-    printd(pair)
-
-    if pair == []:
-        return pair
-    
-    if isinstance(pair[0], int) and isinstance(pair[1], int):
-        return pair
-
-    l = []
-    r = []
-    if isinstance(pair[0], list):
-        l = pair[0]
-    if isinstance(pair[1], list):
-        r = pair[1]
-
-    ll = f(l)
-    rr = f(r)
-
-    return ll if len(ll) > len(rr) else rr
-
 def explodePair(pair):
     '''
      [ [6 ,[5, [4, [3,2] ] ] ], 1]  ---> [ 6, [5, [7, 0] ] ], 3]
@@ -2328,14 +2307,6 @@ def explodePair(pair):
     
     return pair
 
-def splitPair(pair):
-    return 0
-
-def reduce(pair):
-    explodePair(pair)
-    splitPair(pair)
-    return pair
-  
 
 # [[3,[2,[8,0]]], [9,[5,[4,[3,2]]]]]
 def parseSnailFishNumberStr(snailfish_number):
@@ -2399,24 +2370,186 @@ def parseSnailFishNumberStr(snailfish_number):
     return pairs
 
 
+# attempt with tree structure
+class Node:
+    def __init__(self, value=None, parent=None, depth = None):
+        self.value = value   
+        self.parent = parent
+        self.left = None 
+        self.right = None 
+        self.depth = depth
+
+    def addLeft(self, node):
+        self.left = node
+
+    def addRight(self, node):
+        self.right = node
+
+    def postorder(self):
+        
+        if self.left != None:
+            self.left.postorder()
+        if self.right != None:
+            self.right.postorder()
+        print(self.depth, ":", self.value)
+
+class Tree:
+    def __init__(self):
+        self.root = None
+
+    def build_tree(self, data_list, depth = 0):
+
+        '''
+        def t(lst, d):
+            isLeft = True
+            for e in lst:        
+                if isinstance(e, list):
+                    t(e, d+1)
+                print(d,",", 'L' if isLeft else 'R',":",e,"parent:",lst)
+                isLeft = False
+        
+        '''
+        # value=None, parent=None, depth = None)
+        self.root = Node(data_list, None, 0)
+        isLeft = True
+        for elem in data_list:
+            if isinstance(elem, list):
+                self.build_tree(elem, depth +1)
+            if isLeft:
+                self.root.addLeft(Node(elem, data_list, depth))
+                isLeft = False
+            else:
+                self.root.addRight(Node(elem, data_list, depth))
+
+    def postorder(self):
+        self.root.postorder()
+       
+
 
 import json
+# parse into a tree
 def parseSnailFishNumbers(data):
 
     for snailfish_number in data:
+        lst = json.loads(snailfish_number)
+        snail_tree = Tree()
+        snail_tree.build_tree(lst)
+        print(snail_tree)
+
+        snail_tree.postorder()
+        
+        
+        #print(tree)
         print(snailfish_number)
-        pairs = parseSnailFishNumberStr(snailfish_number)
-        print(pairs)
-        print("explosion:",explodePair(pairs))
+        #pairs = parseSnailFishNumberStr(snailfish_number)
+        #print(pairs)
+        #print("explosion:",explodePair(pairs))
         print()
         
-        
+from recordclass import recordclass
+# parse into tuples with tree-like structure
+def parseSnailInputv2(lst, d, pairs):
+    SNumber = recordclass('SNumber', 'val side parent')
+
+    if d == 4:
+        return pairs
+    isLeft = True
+    for e in lst:        
+        if isinstance(e, list):
+            parseSnailInputv2(e, d+1, pairs)
+        if d not in pairs:
+            pairs[d] = []
+        pairs[d].append( SNumber(e, 'L' if isLeft else 'R', lst))
+        print(d,",", 'L' if isLeft else 'R',":",e,"parent:",lst)
+        isLeft = False
+    
+    return pairs
+
+
+def updateParent(candidate, exploding_pair):
+    if candidate.val == exploding_pair.parent and candidate.side == exploding_pair.side:
+        print("reset exploding pair in",candidate)
+        lst = []
+        for c in candidate.val:
+
+            if c == exploding_pair.val:
+                lst.append(0)
+            else:
+                lst.append(c)
+        candidate.val = lst
+
+# based on tuple solution with tree-like structure, WIP
+def explodePairV2(pairs):
+    level = 3
+    exploding_pair = None
+
+    if level not in pairs:
+        print("nothing to explode!")
+        return
+    
+    for e in pairs[level]:
+        if isinstance(e.val, list):
+            exploding_pair = e
+            break
+
+    if exploding_pair == None:    
+        print("nothing to explode!")
+        return
+    
+
+    # remove first exploding pair
+    # (pair, side, parent)
+    pairs[level].remove(exploding_pair)
+    #exploding_pair = pairs[level].pop(0)
+
+    print("exploding", exploding_pair)
+    updatedLeft = False 
+    updatedRight = False
+    stopCycle = False
+    while level > 0:
+        level -= 1
+
+        for candidate in pairs[level]:
+            print("candidate:", candidate)
+
+            updateParent(candidate, exploding_pair)
+
+            if candidate.side == 'L' and isinstance(candidate.val, int) and not updatedLeft:
+                candidate.val = candidate.val + exploding_pair.val[0]
+                updatedLeft = True
+            if candidate.side == 'R' and isinstance(candidate.val, int) and not updatedRight:
+                candidate.val = candidate.val + exploding_pair.val[1]
+                updatedRight = True
+            
+            if updatedLeft and updatedRight:
+                stopCycle = True
+                break
+        if stopCycle:
+            break
+
+    return pairs
+
 
 def day18_1(data):
     data = read_input(2021, "181")   
     setDebugMode(True)
 
-    parseSnailFishNumbers(data)
+    pairs = {}
+    for snailfish_number in data:
+        snail_number = json.loads(snailfish_number)
+        print(snail_number)
+        pairs = parseSnailInputv2(snail_number,0,pairs)
+        print()
+        pp = explodePairV2(pairs)
+        print("exploded to")
+        printDict(pp)
+
+        print()
+        printDict(pairs)
+        print()
+
+    
+    #parseSnailFishNumbers(data)
     
     
     result = 0
@@ -2427,13 +2560,186 @@ def day18_1(data):
 
 ##### Day 19 #####
 
+def printDict(d):
+
+    for k,v in d.items():
+        for e in v:
+            print(k,e)
+
+
+# rotations
+# x,y,z
+# -x,y,z
+# -x,y,z
+
+# x,z,y
+# y,x,z
+# y,z,x
+# z,x,y
+# z,y,x
+
+
+def parseScanners(data):
+    scanners = defaultdict()
+    bounds = defaultdict()
+    parseFirstLine = True 
+    
+
+    for line in data:
+        if line == '':
+            parseFirstLine = True
+            if scanner not in bounds:
+                bounds[scanner] = []
+            bounds[scanner].append( ('x',minX, maxX))
+            bounds[scanner].append( ('y', minY, maxY))
+            bounds[scanner].append( ('z', minZ, maxZ))
+
+            continue
+        if parseFirstLine:
+            scanner = int(line.split("--- scanner ")[1].split(" ")[0])
+            parseFirstLine = False
+            maxX = -sys.maxsize
+            maxY = -sys.maxsize
+            maxZ = -sys.maxsize
+
+            minX = sys.maxsize
+            minY = sys.maxsize
+            minZ = sys.maxsize
+        else:
+            coords = line.split(",")
+            x = int(coords[0])
+            y = int(coords[1])
+            z = int(coords[2])
+            
+            if x > maxX:
+                maxX = x
+            if y > maxY:
+                maxY = y
+            if z > maxZ:
+                maxZ = z
+            
+            if x < minX:
+                minX = x
+            if y < minY:
+                minY = y
+            if z < minZ:
+                minZ = z
+
+            if scanner not in scanners:
+                scanners[scanner] = []
+            scanners[scanner].append((x,y,z))
+
+    return scanners, bounds
+
+'''
+    There are three valid forward axes (x, y, z)
+    For each forward axis, there are 2 valid signs (+, -)
+
+    For each forward axis, there are two valid up axes (if forward is x then up must be y or z)
+    For each up axis, there are 2 valid signs (+, -)
+
+    For each forward/up axis pair, there is only one valid right axis
+'''
+
+def beacons_rotations(beacons):
+    rotations = [[] for i in range(24)]
+    
+    for (x,y,z) in beacons:
+        # positive x
+        rotations[0].append( (+x, +y, +z) )
+        rotations[1].append( (+x, -z, +y) )
+        rotations[2].append( (+x, -y, -z) )
+        rotations[3].append( (+x, +z, -y) )
+        # negative x
+        rotations[4].append( (-x, -y, +z) )
+        rotations[5].append( (-x, +z, +y) )
+        rotations[6].append( (-x, +y, -z) )
+        rotations[7].append( (-x, -z, -y) )
+        # positive y
+        rotations[8].append( (+y, +x, +z) )
+        rotations[9].append( (+y, -z, +x) )
+        rotations[10].append( (+y, -x, -z) )
+        rotations[11].append( (+y, +z, -x) )
+        # negative y
+        rotations[12].append( (-y, -x, +z) )
+        rotations[13].append( (-y, +z, +x) )
+        rotations[14].append( (-y, +x, -z) )
+        rotations[15].append( (-y, -z, -x) )
+        # positive z
+        rotations[16].append( (+z, +y, +x) )
+        rotations[17].append( (+z, -x, +y) )
+        rotations[18].append( (+z, -y, -x) )
+        rotations[19].append( (+z, +x, -y) )
+        # negative z
+        rotations[20].append( (-z, -y, +x) )
+        rotations[21].append( (-z, +x, +y) )
+        rotations[22].append( (-z, +y, -x) )
+        rotations[23].append( (-z, -x, -y) )
+    return rotations
+
+def findPosition(scanners, bounds):
+    lower = -2000
+    higher = 2000
+
+    commonBeacons = []
+    (label, minX, maxX) = bounds[0][0]
+    (label, minY, maxY) = bounds[0][1]
+    (label, minZ, maxZ) = bounds[0][2]
+    # (forward, up, right)
+    
+    for i in range(1,len(scanners)):
+        beacons = scanners[i]
+
+        for dx in range(lower, higher):
+            for dy in range(lower, higher):
+                for dz in range(lower, higher):
+
+                    for (x,y,z) in beacons:
+                        # check if beacon absolute position is within scanner 1 reach
+                        if minX <= (x + dx) <= maxX and \
+                        minY <= (y + dy) <= maxY and \
+                        minZ <= (z + dz ) <= maxZ:
+                            commonBeacons.append((x,y,z))
+                    if len(commonBeacons) != 0:
+                        print("finding scanner",i,"position: found", len(commonBeacons),"for position", (dx,dy,dz))
+                    commonBeacons = []
+
+def findOverlappingScanner(scanners):
+        overlappingScanners = []
+   
+    #for scanner in scanners[1]: #scanners.items():
+        # find all possible rotations for the scanner's beacons
+        rotations = beacons_rotations(scanners[1])
+        #print(rotations)
+
+        for beacons in rotations:
+            count = 0
+            matched = []
+            for origin in scanners[0]:
+            #print("list of beacons to test:", beacons)
+                for beacon in beacons:
+                    #print("getting distance between beacon",beacon,"and",origin)
+                    distance = get_euclidian_distance(origin,beacon)
+                    if distance <= 1000:
+                        count+= 1
+                        matched.append(beacon)
+                        #print("found!",beacons)
+                if count >= 12:
+                    print("MATCH",matched)
+                    overlappingScanners.append(1)
+
+        return overlappingScanners
 
 def day19_1(data):
     data = read_input(2021, "191")   
     setDebugMode(True)
 
-    for line in data:
-        inputData = line.split(" ")
+    scanners, bounds = parseScanners(data)
+    printDict(bounds)
+    overlapping = findOverlappingScanner(scanners)
+    print(overlapping)
+
+    #print(scanners)
     
     
     result = 0
