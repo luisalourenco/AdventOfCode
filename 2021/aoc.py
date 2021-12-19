@@ -2567,18 +2567,6 @@ def printDict(d):
             print(k,e)
 
 
-# rotations
-# x,y,z
-# -x,y,z
-# -x,y,z
-
-# x,z,y
-# y,x,z
-# y,z,x
-# z,x,y
-# z,y,x
-
-
 def parseScanners(data):
     scanners = defaultdict()
     bounds = defaultdict()
@@ -2656,27 +2644,28 @@ def beacons_rotations(beacons):
         rotations[6].append( (-x, +y, -z) )
         rotations[7].append( (-x, -z, -y) )
         # positive y
-        rotations[8].append( (+y, +x, +z) )
-        rotations[9].append( (+y, -z, +x) )
-        rotations[10].append( (+y, -x, -z) )
-        rotations[11].append( (+y, +z, -x) )
+        rotations[8].append( (+y, +z, +x) )
+        rotations[9].append( (+y, -x, +z) )
+        rotations[10].append( (+y, -z, -x) )
+        rotations[11].append( (+y, +x, -z) )
         # negative y
-        rotations[12].append( (-y, -x, +z) )
-        rotations[13].append( (-y, +z, +x) )
-        rotations[14].append( (-y, +x, -z) )
-        rotations[15].append( (-y, -z, -x) )
+        rotations[12].append( (-y, -z, +x) )
+        rotations[13].append( (-y, +x, +z) )
+        rotations[14].append( (-y, +z, -x) )
+        rotations[15].append( (-y, -x, -z) )
         # positive z
-        rotations[16].append( (+z, +y, +x) )
-        rotations[17].append( (+z, -x, +y) )
-        rotations[18].append( (+z, -y, -x) )
-        rotations[19].append( (+z, +x, -y) )
+        rotations[16].append( (+z, +x, +y) )
+        rotations[17].append( (+z, -y, +x) )
+        rotations[18].append( (+z, -x, -y) )
+        rotations[19].append( (+z, +y, -x) )
         # negative z
-        rotations[20].append( (-z, -y, +x) )
-        rotations[21].append( (-z, +x, +y) )
-        rotations[22].append( (-z, +y, -x) )
-        rotations[23].append( (-z, -x, -y) )
+        rotations[20].append( (-z, -x, +y) )
+        rotations[21].append( (-z, +y, +x) )
+        rotations[22].append( (-z, +x, -y) )
+        rotations[23].append( (-z, -y, -x) )
     return rotations
 
+# brute force version, not going to work!
 def findPosition(scanners, bounds):
     lower = -2000
     higher = 2000
@@ -2704,42 +2693,101 @@ def findPosition(scanners, bounds):
                         print("finding scanner",i,"position: found", len(commonBeacons),"for position", (dx,dy,dz))
                     commonBeacons = []
 
-def findOverlappingScanner(scanners):
-        overlappingScanners = []
+
+def findOverlappingScanner(scanner_id, scanners, known_distances):
+    overlappingScanners = dict()
    
-    #for scanner in scanners[1]: #scanners.items():
+    for (k,scanner) in scanners.items():
+        if k == scanner_id:
+            continue
+
+        nextScanner = False
         # find all possible rotations for the scanner's beacons
-        rotations = beacons_rotations(scanners[1])
+        rotations = beacons_rotations(scanner)
         #print(rotations)
 
+        # test each rotation possible
         for beacons in rotations:
-            count = 0
-            matched = []
-            for origin in scanners[0]:
-            #print("list of beacons to test:", beacons)
+            d = []
+            distances_beacons = dict()
+
+            # for this rotation compute all distances between each beacon
+            for origin in beacons:
                 for beacon in beacons:
-                    #print("getting distance between beacon",beacon,"and",origin)
-                    distance = get_euclidian_distance(origin,beacon)
-                    if distance <= 1000:
-                        count+= 1
-                        matched.append(beacon)
-                        #print("found!",beacons)
-                if count >= 12:
-                    print("MATCH",matched)
-                    overlappingScanners.append(1)
+                    if origin == beacon:
+                        continue
 
-        return overlappingScanners
+                    distance = get_euclidian_distance(origin, beacon)
 
+                    if origin not in distances_beacons:
+                        distances_beacons[origin] = set()
+                    distances_beacons[origin].add(distance)                    
+                        
+            # find common distances sets between scanner 0 and this scanner
+            for (beacon, distances) in distances_beacons.items():
+                for (beaconOriginal, distancesOriginal) in known_distances.items():
+
+                    common_beacons = distances.intersection(distancesOriginal)
+                    if len(common_beacons) >= 11:
+                        #print("MATCH",k, common_beacons, len(common_beacons))
+                        (xx,yy,zz) = beacon
+                        (x,y,z) = beaconOriginal
+                        
+                        d.append((beaconOriginal, beacon)) 
+                        
+                        # 68,-1246,-43
+                        #return overlappingScanners
+            #nextScanner = True
+        if k not in overlappingScanners:
+            overlappingScanners[k] = []
+        overlappingScanners[k] = d
+        if nextScanner:
+            break
+
+    return overlappingScanners
+
+# given a list of known beacons generates a dictionary of all distances between each known beacon 
+def known_beacons_distances(known_beacons):   
+    mapping = dict()
+    for beacon1 in known_beacons:
+        for beacon2 in known_beacons:
+            if beacon1 == beacon2:
+                continue
+
+            dist = get_euclidian_distance(beacon1, beacon2)
+
+            if beacon1 not in mapping:
+                mapping[beacon1] = set()
+            mapping[beacon1].add(dist)
+
+    return mapping
+
+# 561, 562 too high
 def day19_1(data):
     data = read_input(2021, "191")   
     setDebugMode(True)
 
-    scanners, bounds = parseScanners(data)
-    printDict(bounds)
-    overlapping = findOverlappingScanner(scanners)
-    print(overlapping)
+    scanners, bounds = parseScanners(data)    
 
-    #print(scanners)
+    final = dict()
+    for i in range(len(scanners)):
+        known_beacons = scanners[i]
+        known_distances = known_beacons_distances(known_beacons)
+        overlapping = findOverlappingScanner(i, scanners, known_distances)
+        
+        for (k, lst) in overlapping.items():
+            if k not in final:
+                final[k] = []
+            final[k].append(lst)
+    
+    s = set()
+    
+    for (k,l) in final.items():
+        for ll in l:
+            for (b1,b2) in ll:
+                #print("beacon:",beacon)
+                s.add(b1)
+    print(len(s))
     
     
     result = 0
@@ -2747,6 +2795,24 @@ def day19_1(data):
     setDebugMode(False)
     AssertExpectedResult(0, result)
 
+
+
+##### Day 20 #####
+
+
+
+def day20_1(data):
+    data = read_input(2021, "201")   
+    setDebugMode(True)
+
+    for line in data:
+        inputData = line.split(" ")
+    
+    
+    result = 0
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
 
 
 if __name__ == "__main__":
