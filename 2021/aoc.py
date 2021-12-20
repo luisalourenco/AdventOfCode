@@ -29,6 +29,7 @@ from math import exp, pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
+from numpy.lib.arraypad import pad
 from termcolor import colored
 import termcolor
 
@@ -2800,16 +2801,209 @@ def day19_1(data):
 ##### Day 20 #####
 
 
+def buildImageGrid(data, offsetX = 0, offsetY = 0):
+    data = copy.deepcopy(data)
+   
+    rows = len(data)
+    columns = len(data[0])
 
+    grid = [ [ ('.') for i in range((columns+offsetX)) ] for j in range((rows+offsetY)) ]    
+    
+    for x in range(rows):
+        for y in range(columns):
+            grid[x+offsetX][y+offsetY] = data[x][y]
+
+    #printMap(map)
+    return grid
+
+
+def add_padding_to_image(inputImage, infinite_pixel, padding_size):
+    padded_image = []
+    padding_line = [ infinite_pixel for _ in range(len(inputImage[0]) + (padding_size * 2)) ] 
+    padding_sides = [ infinite_pixel for _ in range(padding_size) ] 
+
+    for _ in range(padding_size):
+        padded_image.append(copy.deepcopy(padding_line))
+    
+    for line in inputImage:
+        padded_image.append(copy.deepcopy(padding_sides) + copy.deepcopy(line) + copy.deepcopy(padding_sides))
+    
+    for _ in range(padding_size):
+        padded_image.append(copy.deepcopy(padding_line))
+
+    return padded_image
+
+
+def do_enhance_algorithm(inputImage, outputImage, enchancement_algorithm, i, j, current_pixel):
+    rows = len(inputImage)
+    columns = len(inputImage[0])
+
+    if i < 0 or i == rows-1 or j < 0 or j == columns-1:
+        pixel = current_pixel
+    else:
+        pixel = inputImage[i][j]
+
+    printd("Enchancing pixel",pixel,"at",i,j)
+    first_segment = []
+    second_segment = []
+    third_segment = []
+    
+    if i == 0 and j == 0:
+        first_segment =  [current_pixel, current_pixel, current_pixel]
+        second_segment = [current_pixel] + inputImage[i][j:j+2]  
+        third_segment = [current_pixel] + inputImage[i+1][j:j+2] 
+    elif i == 0 and j == columns-1:
+        first_segment =  [current_pixel, current_pixel, current_pixel]
+        second_segment = inputImage[i][j-1:j+1] + [current_pixel]
+        third_segment = inputImage[i+1][j-1:j+1] + [current_pixel]
+    elif i == rows-1 and j == 0:
+        first_segment =  [current_pixel] + inputImage[i-1][j:j+2]
+        second_segment = [current_pixel] + inputImage[i][j:j+2]  
+        third_segment = [current_pixel, current_pixel, current_pixel]
+    elif i == rows-1 and j == columns-1:
+        first_segment =  inputImage[i-1][j-1:j+1] + [current_pixel]
+        second_segment = inputImage[i][j-1:j+1] + [current_pixel]
+        third_segment = [current_pixel, current_pixel, current_pixel]
+    elif i == 0:
+        first_segment =  [current_pixel, current_pixel, current_pixel] 
+        second_segment = inputImage[i][j-1:j+2]  
+        third_segment =  inputImage[i+1][j-1:j+2] 
+    elif j == 0:
+        first_segment = [current_pixel] + inputImage[i-1][j:j+2] 
+        second_segment = [current_pixel] + inputImage[i][j:j+2]  
+        third_segment = [current_pixel] + inputImage[i+1][j:j+2] 
+    elif i == rows-1:
+        first_segment =  inputImage[i-1][j-1:j+2]   
+        second_segment =  inputImage[i][j-1:j+2]  
+        third_segment = [current_pixel, current_pixel, current_pixel]  
+    elif j == columns-1:
+        first_segment = inputImage[i-1][j-1:j+1] + [current_pixel]
+        second_segment =  inputImage[i][j-1:j+1] + [current_pixel]
+        third_segment =  inputImage[i+1][j-1:j+1] + [current_pixel]
+    else:
+        first_segment =  inputImage[i-1][j-1:j+2]
+        second_segment = inputImage[i][j-1:j+2]  
+        third_segment = inputImage[i+1][j-1:j+2]
+    
+    printd("Building position binary based on 9 pixels:")
+    printd("First segment",first_segment )
+    printd("Second segment",second_segment)
+    printd("Third segment", third_segment )
+
+    inputPixels = first_segment + second_segment + third_segment 
+    printd("Position binary is",inputPixels)
+
+    inputPixelsStr = ''.join(inputPixels)            
+    inputPixelsBinary = inputPixelsStr.replace('.','0').replace('#','1')             
+    position = int(inputPixelsBinary,2)
+    printd("Determining position in algorithm:", inputPixelsBinary,"translates to position",position)
+            
+    outputPixel = enchancement_algorithm[position]
+    printd("Output Pixel is",outputPixel)
+    printd()
+
+    if not (i < 0 or i == rows or j < 0 or j == columns):
+        outputImage[i][j] = outputPixel
+
+    return outputImage
+
+
+
+def enhance_image(inputImage, enchancement_algorithm, step, padding_size, infinite_pixel):   
+    offsetX = padding_size
+    offsetY = padding_size    
+
+    current_pixel = infinite_pixel
+
+    if infinite_pixel == '.':  
+        infinite_pixel = enchancement_algorithm[0]
+        printd("INFINITE PIXEL even:",enchancement_algorithm[0])
+    else: 
+        printd("INFINITE PIXEL odd:",enchancement_algorithm[len(enchancement_algorithm)-1])
+        infinite_pixel = enchancement_algorithm[len(enchancement_algorithm)-1]
+
+   
+    rows = len(inputImage) 
+    columns = len(inputImage[0]) 
+
+    # adds padding to input image
+    inputImage = add_padding_to_image(copy.deepcopy(inputImage), current_pixel, padding_size)
+
+    rows = len(inputImage)
+    columns = len(inputImage[0])
+    outputImage = copy.deepcopy(inputImage)    
+         
+    printd(rows)
+    printd(columns)
+    #printMap(inputImage)
+
+    offsetX-=int(padding_size/2)
+    offsetY-=int(padding_size/2)
+
+    # apply a step in enchance algorithm
+    #for i in range(offsetX, rows - offsetX): 
+    #    for j in range(offsetY, columns - offsetY):
+    for i in range(0, rows): 
+        for j in range(0, columns):
+            outputImage = do_enhance_algorithm(inputImage, outputImage, enchancement_algorithm, i, j, current_pixel)
+
+    return outputImage, infinite_pixel
+
+
+# 6822 too high
+# 6437 too high
+# 5818 too high
+# 5801 wrong
+# 6056
+# 5232
+# 5498 right answer
 def day20_1(data):
-    data = read_input(2021, "201")   
-    setDebugMode(True)
+    #data = read_input(2021, "201")   
+    #setDebugMode(True)
 
-    for line in data:
-        inputData = line.split(" ")
+    enchancement_algorithm = data[0]
+    inputImage = buildImageGrid(data[2:])
+    #printMap(inputImage)
+
+    steps = 2
+    outputImage = copy.deepcopy(inputImage)
+    padding_size = 2
+    infinite_pixel = '.'
+
+    for step in range(steps):
+        outputImage, infinite_pixel = enhance_image(outputImage, enchancement_algorithm, step, padding_size, infinite_pixel)
+        #printMap(outputImage)
+        lit_pixels = sum( [ row.count('#') for row in outputImage])
+        printd("Lit pixels is:",lit_pixels)   
     
     
-    result = 0
+    result = lit_pixels
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
+
+
+def day20_2(data):
+    #data = read_input(2021, "201")   
+    #setDebugMode(True)
+
+    enchancement_algorithm = data[0]
+    inputImage = buildImageGrid(data[2:])
+    #printMap(inputImage)
+
+    steps = 50
+    outputImage = copy.deepcopy(inputImage)
+    padding_size = 2
+    infinite_pixel = '.'
+
+    for step in range(steps):
+        outputImage, infinite_pixel = enhance_image(outputImage, enchancement_algorithm, step, padding_size, infinite_pixel)
+        #printMap(outputImage)
+        lit_pixels = sum( [ row.count('#') for row in outputImage])
+        printd("Lit pixels is:",lit_pixels)   
+    
+    
+    result = lit_pixels
     print("result is:",result)
     setDebugMode(False)
     AssertExpectedResult(0, result)
