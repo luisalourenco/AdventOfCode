@@ -2748,7 +2748,7 @@ def find_overlapping_scanner(scanner_id, scanners, known_distances):
     return overlappingScanners
 
 
-def find_overlapping_scanner_v2(scanner_id, testing_scanner, scanners):
+def find_overlapping_scanner_v2(scanner_id, testing_scanner, scanners, composite):
     overlappingScanners = dict()
    
     #for (k,scanner) in scanners.items():
@@ -2767,31 +2767,30 @@ def find_overlapping_scanner_v2(scanner_id, testing_scanner, scanners):
             distances_beacons = dict()
 
             # for this rotation compute all points differences between composite scanner
-            for (x,y,z) in scanners[scanner_id]:
+            for (x,y,z) in composite:#scanners[scanner_id]:
                 for (xx,yy,zz) in beacons:
                     if (x,y,z) == (xx,yy,zz):
                         continue                    
 
-                    if (x,y,z) not in distances_beacons:
-                        distances_beacons[(x,y,z)] = set()
-                    distances_beacons[(x,y,z)].add( (x-xx, y-yy, z-zz) )                    
+                    if (xx,yy,zz) not in distances_beacons:
+                        distances_beacons[(xx,yy,zz)] = set()
+                    distances_beacons[(xx,yy,zz)].add( (x-xx, y-yy, z-zz) )                    
                         
             # find common distances sets between reference scanner and this scanner
             s = []
-            # (68, -1246, -43)
-            for beacon in scanners[scanner_id]:
-                #print(distances_beacons[beacon])
+
+            for beacon in beacons:
                 #print(s)
                 s += list(distances_beacons[beacon])
                 (beacon, count) = Counter(s).most_common()[0]
                 if count == 12:
-                    print("Found matching scanner in position",beacon)
+                    printd("Found matching scanner in position",beacon)
                     points = []
-                    #for (b, d) in distances_beacons.items():
-                    #    if beacon in d:
-                    #        points.append(b)
+                    for (b, d) in distances_beacons.items():
+                        if beacon in d:
+                            points.append(b)
 
-                    return testing_scanner, beacons, count, points
+                    return testing_scanner, beacons, count, beacon
                 
     return None
 
@@ -2812,44 +2811,65 @@ def known_beacons_distances(known_beacons):
 
     return mapping
 
-# 561, 562 too high
+
+def manhattan_distance(p1, p2):
+    (x,y,z) = p1 
+    (xx,yy,zz) = p2
+    return abs(xx - x) + abs(yy - y) + abs(zz - z)
+
+# 365
 def day19_1(data):
-    data = read_input(2021, "191")   
-    setDebugMode(True)
+    #data = read_input(2021, "191")   
+    #setDebugMode(True)
 
     scanners, bounds = parse_scanners(data)    
 
-    final = dict()
     total = 0
-    composite_scanner = scanners[0]
+    composite_scanner = (scanners[0])
+    printd("composite",composite_scanner)
     
-    c = 20
-    
+    positions = dict()
     found = set()
     # for each scanner
     for i in range(len(scanners)):
-        tested = set()
+
         # find overlapping scanner
-        while len(found) != len(scanners) and c > 0 and len(tested) != len(scanners):
-                c-=1
-                for test_scanner in range(len(scanners)):
-                    if test_scanner in found:
-                        continue
-                    overlapping = find_overlapping_scanner_v2(i, test_scanner, scanners)
-                    tested.add(test_scanner)
-                    if overlapping != None: 
-                        k, beacons, count, point = overlapping
-                        total+= count
-                        found.add(test_scanner)
+        for test_scanner in range(len(scanners)):
+                if test_scanner in found:
+                    continue
+                overlapping = find_overlapping_scanner_v2(i, test_scanner, scanners, composite_scanner)
+
+                if overlapping != None: 
+                    k, beacons, count, point = overlapping
+                    total+= count
+                    found.add(test_scanner)
                     
-                        print("res", overlapping)
-                    print(tested)
+                    printd("res", overlapping)
+                    (xx,yy,zz) = point
+
+                    composite_scanner +=  [(x+xx, y+yy, z+zz) for (x,y,z) in beacons] 
+                    composite_scanner = list(set(composite_scanner))
+                    
+                    if test_scanner not in positions:
+                        positions[test_scanner] = point
+
+                #print(tested)
     
-    
-    result = total
-    print("result is:",result)
+    l = composite_scanner
+    print(positions)
+    max = 0
+    for (_, point1) in positions.items():
+        for (_, point2) in positions.items():
+            distance = manhattan_distance(point1, point2)
+            if distance > max:
+                max = distance
+
+
+    result = len(l)
+    print("result is:", result)
+    print("max distance is:", max)
     setDebugMode(False)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(365, result)
 
 
 
@@ -2996,8 +3016,6 @@ def enhance_image(inputImage, enchancement_algorithm, step, padding_size, infini
     offsetY-=int(padding_size/2)
 
     # apply a step in enchance algorithm
-    #for i in range(offsetX, rows - offsetX): 
-    #    for j in range(offsetY, columns - offsetY):
     for i in range(0, rows): 
         for j in range(0, columns):
             outputImage = do_enhance_algorithm(inputImage, outputImage, enchancement_algorithm, i, j, current_pixel)
@@ -3005,13 +3023,7 @@ def enhance_image(inputImage, enchancement_algorithm, step, padding_size, infini
     return outputImage, infinite_pixel
 
 
-# 6822 too high
-# 6437 too high
-# 5818 too high
-# 5801 wrong
-# 6056
-# 5232
-# 5498 right answer
+# Day 20, part 1: None (0.176 secs)
 def day20_1(data):
     #data = read_input(2021, "201")   
     #setDebugMode(True)
@@ -3035,9 +3047,9 @@ def day20_1(data):
     result = lit_pixels
     print("result is:",result)
     setDebugMode(False)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(5498, result)
 
-
+# Day 20, part 2: None (11.070 secs)
 def day20_2(data):
     #data = read_input(2021, "201")   
     #setDebugMode(True)
@@ -3059,6 +3071,23 @@ def day20_2(data):
     
     
     result = lit_pixels
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(16014, result)
+
+
+##### Day 21 #####
+
+
+def day21_1(data):
+    data = read_input(2021, "211")   
+    setDebugMode(True)
+
+    for line in data:
+        inputData = line.split(" ")
+    
+
+    result = 0
     print("result is:",result)
     setDebugMode(False)
     AssertExpectedResult(0, result)
