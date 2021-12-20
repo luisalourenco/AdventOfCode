@@ -2568,7 +2568,7 @@ def printDict(d):
             print(k,e)
 
 
-def parseScanners(data):
+def parse_scanners(data):
     scanners = defaultdict()
     bounds = defaultdict()
     parseFirstLine = True 
@@ -2695,7 +2695,7 @@ def findPosition(scanners, bounds):
                     commonBeacons = []
 
 
-def findOverlappingScanner(scanner_id, scanners, known_distances):
+def find_overlapping_scanner(scanner_id, scanners, known_distances):
     overlappingScanners = dict()
    
     for (k,scanner) in scanners.items():
@@ -2724,7 +2724,7 @@ def findOverlappingScanner(scanner_id, scanners, known_distances):
                         distances_beacons[origin] = set()
                     distances_beacons[origin].add(distance)                    
                         
-            # find common distances sets between scanner 0 and this scanner
+            # find common distances sets between reference scanner and this scanner
             for (beacon, distances) in distances_beacons.items():
                 for (beaconOriginal, distancesOriginal) in known_distances.items():
 
@@ -2747,6 +2747,55 @@ def findOverlappingScanner(scanner_id, scanners, known_distances):
 
     return overlappingScanners
 
+
+def find_overlapping_scanner_v2(scanner_id, testing_scanner, scanners):
+    overlappingScanners = dict()
+   
+    #for (k,scanner) in scanners.items():
+    for _ in range(1):
+        #if k == scanner_id:
+        #    continue
+        
+        nextScanner = False
+        # find all possible rotations for the scanner's beacons
+        rotations = beacons_rotations(scanners[testing_scanner])
+        #print(rotations)
+
+        # test each rotation possible
+        for beacons in rotations:
+            d = []
+            distances_beacons = dict()
+
+            # for this rotation compute all points differences between composite scanner
+            for (x,y,z) in scanners[scanner_id]:
+                for (xx,yy,zz) in beacons:
+                    if (x,y,z) == (xx,yy,zz):
+                        continue                    
+
+                    if (x,y,z) not in distances_beacons:
+                        distances_beacons[(x,y,z)] = set()
+                    distances_beacons[(x,y,z)].add( (x-xx, y-yy, z-zz) )                    
+                        
+            # find common distances sets between reference scanner and this scanner
+            s = []
+            # (68, -1246, -43)
+            for beacon in scanners[scanner_id]:
+                #print(distances_beacons[beacon])
+                #print(s)
+                s += list(distances_beacons[beacon])
+                (beacon, count) = Counter(s).most_common()[0]
+                if count == 12:
+                    print("Found matching scanner in position",beacon)
+                    points = []
+                    #for (b, d) in distances_beacons.items():
+                    #    if beacon in d:
+                    #        points.append(b)
+
+                    return testing_scanner, beacons, count, points
+                
+    return None
+
+
 # given a list of known beacons generates a dictionary of all distances between each known beacon 
 def known_beacons_distances(known_beacons):   
     mapping = dict()
@@ -2768,30 +2817,36 @@ def day19_1(data):
     data = read_input(2021, "191")   
     setDebugMode(True)
 
-    scanners, bounds = parseScanners(data)    
+    scanners, bounds = parse_scanners(data)    
 
     final = dict()
+    total = 0
+    composite_scanner = scanners[0]
+    
+    c = 20
+    
+    found = set()
+    # for each scanner
     for i in range(len(scanners)):
-        known_beacons = scanners[i]
-        known_distances = known_beacons_distances(known_beacons)
-        overlapping = findOverlappingScanner(i, scanners, known_distances)
-        
-        for (k, lst) in overlapping.items():
-            if k not in final:
-                final[k] = []
-            final[k].append(lst)
+        tested = set()
+        # find overlapping scanner
+        while len(found) != len(scanners) and c > 0 and len(tested) != len(scanners):
+                c-=1
+                for test_scanner in range(len(scanners)):
+                    if test_scanner in found:
+                        continue
+                    overlapping = find_overlapping_scanner_v2(i, test_scanner, scanners)
+                    tested.add(test_scanner)
+                    if overlapping != None: 
+                        k, beacons, count, point = overlapping
+                        total+= count
+                        found.add(test_scanner)
+                    
+                        print("res", overlapping)
+                    print(tested)
     
-    s = set()
     
-    for (k,l) in final.items():
-        for ll in l:
-            for (b1,b2) in ll:
-                #print("beacon:",beacon)
-                s.add(b1)
-    print(len(s))
-    
-    
-    result = 0
+    result = total
     print("result is:",result)
     setDebugMode(False)
     AssertExpectedResult(0, result)
