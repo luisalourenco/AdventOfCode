@@ -32,6 +32,7 @@ from collections import defaultdict
 from numpy.lib.arraypad import pad
 from termcolor import colored
 import termcolor
+import random
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2021
@@ -3080,17 +3081,196 @@ def day20_2(data):
 
 
 def day21_1(data):
-    data = read_input(2021, "211")   
-    setDebugMode(True)
+    #data = read_input(2021, "211")   
+    #setDebugMode(True)
 
-    for line in data:
-        inputData = line.split(" ")
+  
+    player1_start = int(data[0].split(": ")[1]) 
+    player2_start = int(data[1].split(": ")[1]) 
+  
+
+    c = 0
+    die_rolls = 0
+    players = [player1_start, player2_start]
+    scores = [0,0]
+    player_turn = 0
+    rolls = range(1,101)
+    die_position = 0
+
+    print("Player 1", players[0])
+    print("Player 2", players[1])
+    while scores[0] < 1000 and scores[1] < 1000 and c < 10000:
+        c+=1     
+        rolled = []
+        for _ in range(3):
+            #roll = random.randint(1, 100) 
+            roll = rolls[die_position]
+            die_position = (die_position + 1)%100
+            rolled.append(roll)
+            new_pos = (players[player_turn] + roll)% 10
+            if new_pos == 0:
+                new_pos = 10
+            players[player_turn] = new_pos
+            die_rolls += 1
+        
+        scores[player_turn] += new_pos
+        printd("Player",player_turn+1,"rolls", rolled,"and moves to space", players[player_turn],"for a total score of",scores[player_turn])
+        
+        
+        player_turn = (player_turn+1) %2
+
+    print(scores)
     
 
-    result = 0
+    result = min(scores) * die_rolls
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(752745, result)
+
+
+def play_dirac_dice_game(players, player_turn, die, scores, wins):
+    c = 0
+
+    printd("New game universe!")
+    printd("Player 1", players[0])
+    printd("Player 2", players[1])
+    printd("Current scores:", scores)
+    while scores[0] < 21 and scores[1] < 21 and c < 1000000:
+        c+=1     
+        rolled = [1,2,3]
+        for i in range(3):
+            new_pos = (players[player_turn] + i)% 10
+            if new_pos == 0:
+                new_pos = 10
+            players[player_turn] = new_pos
+            scores[player_turn] += new_pos
+            new_scores = play_dirac_dice_game(copy.deepcopy(players), player_turn, i, copy.deepcopy(scores), wins)
+            wins[new_scores]+=1
+              
+        #scores[player_turn] += new_pos                
+        
+        printd("Player",player_turn+1,"rolls", rolled,"and moves to space", players[player_turn],"for a total score of",scores[player_turn])
+
+        player_turn = (player_turn+1) %2  
+    
+    return 0 if scores[0] > scores[1] else 1
+
+#@lru_cache(maxsize=10000)
+def run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter, curr_player, cache, wins):
+        
+        printd("player 1 position", player_1)
+        printd("player 2 position", player_2)
+        printd("player 1 score", score_1)
+        printd("player 2 score", score_2)
+        printd("die", die)
+        printd("iteration", iter)
+        printd("current player (converted)", curr_player+1)
+        printd("wins", wins)
+        #cache stores (win_1, win_2) per (player_1,player_2,score_1,score_2) position-score combination
+
+        key = (player_1, player_2, score_1, score_2)
+        # check score, base case
+        if score_1 > 21:
+            printd("Player 1 wins!")
+            if key in cache:
+                return cache[key]
+            else:
+                return (wins[0] + 1, wins[1])
+        elif score_2 > 21:
+            printd("Player 2 wins!")
+            if key in cache:
+                return cache[key]
+            else:
+                return (wins[0], wins[1] + 1)               
+        
+
+        # adjust initial position and score according to current player
+        if curr_player == 0:
+            pos = player_1
+        else:
+            pos = player_2             
+        
+        # get new position
+        pos = (pos + die) % 10
+        if pos == 0:
+            pos = 10
+
+        # update correct player's position
+        if curr_player == 0:
+            player_1 = pos
+        else:
+            player_2 = pos
+        
+        # roll next die
+        die = (die + 1) %3
+        if die == 0:
+            die = 3        
+        
+        # final play for this palyer, switch and update score
+        if iter%3 == 0:
+
+            #update score accordingly
+            if curr_player == 0:
+                score_1 += pos
+            else:
+                score_2 += pos
+            
+            # switch player
+            new_curr_player = (curr_player+1)%2
+
+        else:
+            new_curr_player = curr_player
+
+        res = [0,0]
+        if key not in cache:
+            (w1, w2) = run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter+1, new_curr_player, cache, wins)
+            cache[key] =  [w1, w2]
+            res = [w1, w2]                          
+        else:
+            res = cache[key]           
+        
+        wins[0] += res[0]
+        wins[1] += res[1]
+
+        print(cache)       
+        print("curent player is", curr_player, wins)
+        return (wins[0], wins[1])
+
+
+def day21_2(data):
+    data = read_input(2021, "211")   
+    setDebugMode(True)
+  
+    player1_start = int(data[0].split(": ")[1]) 
+    player2_start = int(data[1].split(": ")[1])   
+    players = [player1_start, player2_start]
+
+    cache = {}
+    result = run_main_dirac_dice_game(player1_start, player2_start, 1, 0, 0, 1, 0, cache, [0,0])
+    print(result)
+
     print("result is:",result)
     setDebugMode(False)
     AssertExpectedResult(0, result)
+
+
+
+##### Day 22 #####
+
+
+def day22_1(data):
+    data = read_input(2021, "211")   
+    setDebugMode(True)
+  
+    for line in data:
+        inputData = line.split(" ")
+
+    result = 0
+
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
+
 
 
 if __name__ == "__main__":
