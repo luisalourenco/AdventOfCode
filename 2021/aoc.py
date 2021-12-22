@@ -7,6 +7,7 @@
 # pylint: disable=consider-using-enumerate-
 
 from io import DEFAULT_BUFFER_SIZE
+from threading import current_thread
 from timeit import default_timer as timer
 from collections import deque
 import functools
@@ -3156,8 +3157,12 @@ def play_dirac_dice_game(players, player_turn, die, scores, wins):
     return 0 if scores[0] > scores[1] else 1
 
 #@lru_cache(maxsize=10000)
-def run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter, curr_player, cache, wins):
-        
+def run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter, cache):
+        if iter%2 == 0:
+            curr_player = 1
+        else:
+            curr_player = 0
+
         printd("player 1 position", player_1)
         printd("player 2 position", player_2)
         printd("player 1 score", score_1)
@@ -3165,23 +3170,22 @@ def run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter, cu
         printd("die", die)
         printd("iteration", iter)
         printd("current player (converted)", curr_player+1)
-        printd("wins", wins)
         #cache stores (win_1, win_2) per (player_1,player_2,score_1,score_2) position-score combination
 
-        key = (player_1, player_2, score_1, score_2)
+        key = (player_1, player_2, score_1, score_2, die)
         # check score, base case
         if score_1 > 21:
             printd("Player 1 wins!")
             if key in cache:
                 return cache[key]
             else:
-                return (wins[0] + 1, wins[1])
+                return (1, 0)
         elif score_2 > 21:
             printd("Player 2 wins!")
             if key in cache:
                 return cache[key]
             else:
-                return (wins[0], wins[1] + 1)               
+                return (0, 1)               
         
 
         # adjust initial position and score according to current player
@@ -3204,37 +3208,29 @@ def run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter, cu
         # roll next die
         die = (die + 1) %3
         if die == 0:
-            die = 3        
-        
-        # final play for this palyer, switch and update score
-        if iter%3 == 0:
+            die = 3               
+       
 
-            #update score accordingly
+        win1 = 0
+        win2 = 0
+        for i in range(3):
             if curr_player == 0:
                 score_1 += pos
             else:
                 score_2 += pos
-            
-            # switch player
-            new_curr_player = (curr_player+1)%2
 
-        else:
-            new_curr_player = curr_player
+            if key not in cache:
+                (w1, w2) = run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter+1, cache)
+                cache[key] =  [w1, w2]                         
+            else:
+                (w1, w2) = cache[key] 
+            win1 += w1
+            win2 += w2   
 
-        res = [0,0]
-        if key not in cache:
-            (w1, w2) = run_main_dirac_dice_game(player_1, player_2, die, score_1, score_2, iter+1, new_curr_player, cache, wins)
-            cache[key] =  [w1, w2]
-            res = [w1, w2]                          
-        else:
-            res = cache[key]           
         
-        wins[0] += res[0]
-        wins[1] += res[1]
-
         print(cache)       
-        print("curent player is", curr_player, wins)
-        return (wins[0], wins[1])
+           
+        return (w1, w2)
 
 
 def day21_2(data):
@@ -3246,7 +3242,7 @@ def day21_2(data):
     players = [player1_start, player2_start]
 
     cache = {}
-    result = run_main_dirac_dice_game(player1_start, player2_start, 1, 0, 0, 1, 0, cache, [0,0])
+    result = run_main_dirac_dice_game(player1_start, player2_start, 1, 0, 0, 1, cache)
     print(result)
 
     print("result is:",result)
@@ -3257,21 +3253,199 @@ def day21_2(data):
 
 ##### Day 22 #####
 
+def parse_reboot_steps(data):
+    steps = []
+    for line in data:
+        input_data = line.split(" ")
+        operation = input_data[0]
+        coords = input_data[1].split(",")
+        x = ints(coords[0].split("=")[1].split(".."))
+        y = ints(coords[1].split("=")[1].split(".."))
+        z = ints(coords[2].split("=")[1].split(".."))
+        steps.append((operation, x,y,z))
+    return steps
+
+
+def process_reboot_steps(steps, map):
+    for (operation, x_points, y_points, z_points) in steps:
+        printd("Processing", x_points, y_points, z_points)
+        if -50 <= x_points[0] <= 50 and -50 <= x_points[1] <= 50 and \
+            -50 <= y_points[0] <= 50 and -50 <= y_points[1] <= 50 and \
+            -50 <= z_points[0] <= 50 and -50 <= z_points[1] <= 50:
+   
+            for x in range(x_points[0], x_points[1]+1):
+                for y in range(y_points[0], y_points[1]+1):
+                    for z in range(z_points[0], z_points[1]+1):
+                        if -50 <= x <= 50 and -50 <= y <= 50 and -50 <= z <= 50:                          
+                            if operation == 'on':
+                                map[x][y][z] = 1
+                            else:
+                                map[x][y][z] = 0
+    return map
 
 def day22_1(data):
-    data = read_input(2021, "211")   
-    setDebugMode(True)
-  
-    for line in data:
-        inputData = line.split(" ")
+    #data = read_input(2021, "221")   
+    #setDebugMode(True)
 
-    result = 0
+    columns = 100
+    rows = 100
+    extra = 100
 
+    map = [ [ [ 0 for k in range(extra) ] for i in range(columns) ] for j in range(rows) ] 
+    steps = parse_reboot_steps(data)
+    map = process_reboot_steps(steps, map)  
+
+    result = 0    
+    for x in range(rows):
+        for y in range(columns): 
+            for z in range(extra):
+                if map[x][y][z] == 1:
+                    result+=1 
+      
     print("result is:",result)
     setDebugMode(False)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(615700, result)
 
 
+def point_within_boundaries(min, max, bound_min, bound_max, is_off):
+
+    if bound_min == sys.maxsize:
+        bound_min = min
+    if bound_max == -sys.maxsize:
+        bound_max = max
+
+    if min < bound_min and max < bound_min: # out of bounds
+        return False, None, None
+    elif min > bound_max and max > bound_max: # out of bounds
+        return False, None, None
+
+    elif min >= bound_min and max <= bound_max: # completly
+        if is_off:
+            return True, min, max
+        else:
+            return True, bound_min, bound_max
+    elif min <= bound_max and min <= bound_min and max >= bound_min and max <= bound_max: # partially matches left side
+        if is_off:
+            return True, bound_min, max
+        else:
+            return True, min, bound_max    
+    elif min >= bound_min and min <= bound_max and max > bound_max: # partially matches right side
+        if is_off:
+            return True, min, bound_max
+        else:
+            return True, bound_min, max
+    else:
+        return False, None, None
+    
+ 
+    
+
+# checks and updates cubes on list
+def check_cubes(cubes_on, check_min, check_max, is_off = False):
+    new_cubes_on_x = []
+    for (min, max) in cubes_on:        
+        (point_within, m, M) = point_within_boundaries(check_min, check_max, min, max, is_off)
+                
+        if not point_within:
+            if not is_off: # means it's a new cube
+                new_cubes_on_x.append((check_min, check_max))
+        else: # it means it intersects a cube, so update the bounds of the intersected cube to merge both
+            new_cubes_on_x.append((m, M))
+
+        print((point_within, m, M),"is off:",is_off, new_cubes_on_x)
+    return new_cubes_on_x
+
+
+def process_reboot_steps_v2(steps, map):
+    min_x = sys.maxsize
+    max_x = -sys.maxsize
+    min_y = sys.maxsize
+    max_y = -sys.maxsize
+    min_z = sys.maxsize
+    max_z = -sys.maxsize
+    total_on = 0
+    total_off = 0
+    cubes_on_x = [(min_x, max_x)]
+    cubes_on_y = [(min_y, max_y)]
+    cubes_on_z = [(min_z, max_z)]
+    cubes_off_x = []
+    cubes_off_y = []
+    cubes_off_z = []
+    for (operation, x_points, y_points, z_points) in steps:
+        print()
+        printd("Processing [",operation,"] x:", x_points,"y:", y_points, "z:",z_points)
+        off_x = 0
+        off_y = 0
+        off_z = 0
+        if operation == 'on':
+            #check intersection with on cubes
+            cubes_on_x = check_cubes(cubes_on_x, x_points[0], x_points[1])
+            cubes_on_y = check_cubes(cubes_on_y, y_points[0], y_points[1])
+            cubes_on_z = check_cubes(cubes_on_z, z_points[0], z_points[1])
+            
+        if operation == 'off':
+            if len(cubes_off_x) > 0 and len(cubes_off_y) > 0 and len(cubes_off_z) > 0:
+                print("before off:", cubes_off_x, cubes_off_y, cubes_off_z)    
+            
+            #check intersection with on cubes to generate list of off cubes
+            cubes_off_x += check_cubes(cubes_on_x, x_points[0], x_points[1], True)
+            cubes_off_y += check_cubes(cubes_on_y, y_points[0], y_points[1], True)
+            cubes_off_z += check_cubes(cubes_on_z, z_points[0], z_points[1], True)
+            
+            if len(cubes_off_x) > 0 and len(cubes_off_y) > 0 and len(cubes_off_z) > 0:
+                print("after off:", cubes_off_x, cubes_off_y, cubes_off_z)    
+
+        total_on = 0
+        total_off = 0
+        if len(cubes_on_x) > 0:
+            print("on:", "x:",cubes_on_x,"y:", cubes_on_y,"z:", cubes_on_z)   
+            for cubes in cubes_on_x:
+                (m, M) = cubes
+                x = M - m
+            for cubes in cubes_on_y:
+                (m, M) = cubes
+                y = M - m
+            for cubes in cubes_on_z:
+                (m, M) = cubes
+                z = M - m
+            total_on = x*y*z
+
+        if len(cubes_off_x) > 0 and len(cubes_off_y) > 0 and len(cubes_off_z) > 0:
+            #print("off:", cubes_off_x, cubes_off_y, cubes_off_z)       
+            for cubes in cubes_off_x:
+                (m, M) = cubes
+                x = M - m
+            for cubes in cubes_off_y:
+                (m, M) = cubes
+                y = M - m
+            for cubes in cubes_off_z:
+                (m, M) = cubes
+                z = M - m
+            total_off = x*y*z
+        print("volume of on cubes:", total_on)
+        print("volume of off cubes:", total_off)
+        print("on cubes total:", total_on-total_off)
+
+    return total_on - total_off
+
+def day22_2(data):
+    data = read_input(2021, "221")   
+    setDebugMode(True)
+
+    columns = 100
+    rows = 100
+    extra = 100
+
+    map = [ [ [ 0 for k in range(extra) ] for i in range(columns) ] for j in range(rows) ] 
+    steps = parse_reboot_steps(data)
+    result = process_reboot_steps_v2(steps, map)  
+      
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(615700, result)
+
+# 7181801405827879
+# 2758514936282235
 
 if __name__ == "__main__":
     # override timeout
