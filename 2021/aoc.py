@@ -50,7 +50,7 @@ from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
 from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
-from common.aocVM import HandheldMachine
+from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
 from itertools import islice
@@ -2462,8 +2462,10 @@ def parseSnailInputv2(lst, d, pairs):
             parseSnailInputv2(e, d+1, pairs)
         if d not in pairs:
             pairs[d] = []
-        pairs[d].append( SNumber(e, 'L' if isLeft else 'R', lst))
-        print(d,",", 'L' if isLeft else 'R',":",e,"parent:",lst)
+        
+        if isinstance(e, list):            
+            pairs[d].append( SNumber(e, 'L' if isLeft else 'R', lst))
+            print(d,",", 'L' if isLeft else 'R',":",e,"parent:",lst)
         isLeft = False
     
     return pairs
@@ -2500,7 +2502,7 @@ def explodePairV2(pairs):
         return
     
 
-    # remove first exploding pair
+    # remove exploding pair
     # (pair, side, parent)
     pairs[level].remove(exploding_pair)
     #exploding_pair = pairs[level].pop(0)
@@ -2543,6 +2545,7 @@ def day18_1(data):
         print(snail_number)
         pairs = parseSnailInputv2(snail_number,0,pairs)
         print()
+        
         pp = explodePairV2(pairs)
         print("exploded to")
         printDict(pp)
@@ -3371,13 +3374,28 @@ def process_reboot_steps_v2(steps, map):
     cubes_off_x = []
     cubes_off_y = []
     cubes_off_z = []
+
+    cubes1 = []
+    cubes2 = AABBTree()
+    total_on1 = 0
+    
     for (operation, x_points, y_points, z_points) in steps:
         print()
         printd("Processing [",operation,"] x:", x_points,"y:", y_points, "z:",z_points)
         off_x = 0
         off_y = 0
         off_z = 0
+        off = 0
+        cube = AABB([(x_points[0], x_points[1]), (y_points[0], y_points[1]), (z_points[0], z_points[1])])
+        
         if operation == 'on':
+            while len(cubes1) > 0:
+                c = cubes1.pop()
+                #print("merging:", cube,"with",c)
+                cube = c.merge(cube, c)
+                #print("merging result:", cube)
+            total_on1 = cube.volume
+            cubes1.append(cube)
             #check intersection with on cubes
             cubes_on_x = check_cubes(cubes_on_x, x_points[0], x_points[1])
             cubes_on_y = check_cubes(cubes_on_y, y_points[0], y_points[1])
@@ -3426,7 +3444,16 @@ def process_reboot_steps_v2(steps, map):
         print("volume of off cubes:", total_off)
         print("on cubes total:", total_on-total_off)
 
-    return total_on - total_off
+
+    #off = 0
+    #for c in cubes1.overlap_aabbs(cubes2):
+    #    off += c.volume
+
+
+    return total_on1 - off
+
+from aabbtree import AABB
+from aabbtree import AABBTree
 
 def day22_2(data):
     data = read_input(2021, "221")   
@@ -3446,6 +3473,92 @@ def day22_2(data):
 
 # 7181801405827879
 # 2758514936282235
+# 10847358839581788
+
+
+
+##### Day 23 #####
+
+# 17438
+# 17212 wrong
+# 19250
+# 12539 low
+# 27286 high
+# 15430
+# 15450
+# 15436
+# 17214
+
+# 16256 -8
+def day23_1(data):
+    data = read_input(2021, "231")   
+    setDebugMode(True)
+
+    energy_levels = { 'A':1, 'B': 10, 'C':100, 'D':1000 }
+    hallway = ['.'] * 11
+    burrows = []
+    
+    first_row = [line for line in data[2].split('#') if line.strip() != '']
+    second_row = [line for line in data[3].split('#') if line.strip() != '']
+    
+    burrows.append(first_row)
+    burrows.append(second_row)
+    print(first_row)
+    print(second_row)
+    for b in burrows:
+        print(b)
+
+
+    A = [8,3,9]
+    B = [3,2,3,5]
+    C = [3,5,5]
+    D = [5,9]
+
+
+    result = 0
+    result += sum([energy_levels['A'] * moves for moves in A])
+    print(sum([energy_levels['B'] * moves for moves in B]))
+    result += sum([energy_levels['B'] * moves for moves in B])
+    result += sum([energy_levels['C'] * moves for moves in C])
+    result += sum([energy_levels['D'] * moves for moves in D])
+      
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(615700, result)
+
+
+##### Day 24 #####
+
+
+def day24_1(data):
+    #data = read_input(2021, "241")   
+    setDebugMode(True)
+
+    machine = ALUVM(data)
+    
+    input_data = [int(x) for x in str(12345678901234)] 
+
+    '''
+    for i in range(11111111111111, sys.maxsize):
+        print("testing", i)
+        if str(i).count('0') == 0 and len(str(i)) == 14:
+            input_data.append(i)
+        if len(str(i)) > 14:
+            break
+    '''
+
+    for data in input_data:
+        input_data.reverse()
+        machine.run(input_data)
+        print("Final state:")
+        machine.get_state()
+        machine.reset()
+    
+
+    result = 0      
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
 
 if __name__ == "__main__":
     # override timeout

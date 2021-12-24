@@ -1,0 +1,8 @@
+Here's another way to look at it.
+
+Assume you have a shape_a and shape_b that intersect.
+
+Let's say you have to find the intersection point in one dimension, so that means each "shape" is just a line segment. Can you find the intersection between (a_min, a_max) and (b_min, b_max) ?
+Now look at it the intersection in 2 dimensions. Is it possible you can you use the methodology you did from 1D, and transfer it over to 2D?
+What about 3D?
+As for breaking it down into smaller cuboids, the smaller cuboids are just the cuboids that were part of the original shape, but NOT part of the intersection. Perhaps you can go from 1D -> 2D -> 3D again and recognize a pattern?
