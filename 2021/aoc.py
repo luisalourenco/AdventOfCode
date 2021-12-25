@@ -18,7 +18,7 @@ import time
 import copy
 import re
 import itertools
-from typing import ChainMap
+from typing import ChainMap, DefaultDict
 #from typing_extensions import Literal 
 import numpy as np
 from functools import lru_cache
@@ -3479,17 +3479,9 @@ def day22_2(data):
 
 ##### Day 23 #####
 
-# 17438
-# 17212 wrong
-# 19250
-# 12539 low
-# 27286 high
-# 15430
-# 15450
-# 15436
-# 17214
 
-# 16256 -8
+
+# done by hand using online tool to simulate
 def day23_1(data):
     data = read_input(2021, "231")   
     setDebugMode(True)
@@ -3528,25 +3520,42 @@ def day23_1(data):
 
 
 ##### Day 24 #####
+from z3 import *
 
+def compute_input_number(part):
+    solver = Optimize()
 
+    A = [15,10,12,10,14,-11,10,-16,-9,11,-8,-8,-10,-9]
+    C = [13,16,2,8,11,6,12,2,2,15,1,10,14,10]
+    z = 0
+    num = 0
+    for i in range(14):
+        w = Int(f'w{i}')
+        solver.add(And(w >= 1, w <= 9))
+        z = If(z % 26 + A[i] == w, z / 26, z * 26 + w + C[i])
+        num = num * 10 + w
+
+    solver.add(z == 0)
+    
+    if part == 1:
+        solver.maximize(num)
+    else:
+        solver.minimize(num)
+    solver.check() == sat
+
+    return solver.model().eval(num)
+
+# Day 24, part 1: None (6.237 secs)
 def day24_1(data):
     #data = read_input(2021, "241")   
     setDebugMode(True)
 
-    machine = ALUVM(data)
-    
-    input_data = [int(x) for x in str(12345678901234)] 
-
-    '''
-    for i in range(11111111111111, sys.maxsize):
-        print("testing", i)
-        if str(i).count('0') == 0 and len(str(i)) == 14:
-            input_data.append(i)
-        if len(str(i)) > 14:
-            break
-    '''
-
+    machine = ALUVM(data)    
+    num = compute_input_number(1)
+    # use result from previous method here
+    input_data = [int(x) for x in str(num)] 
+ 
+    #validates the input obtained in Z3
     for data in input_data:
         input_data.reverse()
         machine.run(input_data)
@@ -3554,11 +3563,120 @@ def day24_1(data):
         machine.get_state()
         machine.reset()
     
-
-    result = 0      
+    result = num     
     print("result is:",result)
     setDebugMode(False)
     AssertExpectedResult(0, result)
+
+# Day 24, part 2: None (3.600 secs)
+def day24_2(data):
+    #data = read_input(2021, "241")   
+    setDebugMode(True)
+
+    machine = ALUVM(data)    
+    num = compute_input_number(2)
+
+    # use result from previous method here
+    input_data = [int(x) for x in str(num)] 
+ 
+    #validates the input obtained in Z3    
+    for data in input_data:
+        input_data.reverse()
+        machine.run(input_data)
+        print("Final state:")
+        machine.get_state()
+        machine.reset()    
+
+    result = num 
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(0, result)
+
+
+##### Day 25 #####
+
+
+def can_move_to_position(map, i, j):
+    printd(i,j, map[i][j] == '.')
+    return map[i][j] == '.'
+
+def move_sea_cucumbers(sea_cucumber_type, map):
+    columns = len(map[0])
+    rows = len(map)
+    new_map =  [['.' for x in range(columns)] for y in range(rows)] 
+
+    for i in range(rows):
+        for j in range(columns):        
+            if map[i][j] != '.': # sea_cucumber_type:
+                printd()
+                printd("found", map[i][j],"at",i,j)
+                if map[i][j] != sea_cucumber_type:
+                    printd("sea cucumber will not make a move yet!")
+                    new_map[i][j] = map[i][j]
+                else:                
+                    new_i = i 
+                    new_j = j
+
+                    if sea_cucumber_type == '>':
+                        new_j = (j + 1) % columns
+                    elif sea_cucumber_type == 'v':
+                        new_i = (i + 1) % rows
+
+                    printd("checking if",sea_cucumber_type,"can move to", new_i,new_j)
+                    if can_move_to_position(map, new_i, new_j):
+                        printd("sea cucumber moved!")
+                        new_map[new_i][new_j] = sea_cucumber_type
+                    else:
+                        printd("sea cucumber could NOT move!")
+                        new_map[i][j] = sea_cucumber_type
+    return new_map
+
+def move_all_sea_cucumbers(map):
+    step = 1
+    columns = len(map[0])
+    rows = len(map)
+     
+    can_stop = False
+    new_map = copy.deepcopy(map)
+    while not can_stop:
+        prev_map = copy.deepcopy(new_map)
+        new_map = move_sea_cucumbers('>', new_map)
+        new_map = move_sea_cucumbers('v', new_map)
+        #printMap(new_map)
+        count = 0
+        for x in range(rows):
+            for y in range(columns): 
+                if prev_map[x][y] == new_map[x][y]:
+                    count+=1
+        if count == rows*columns:
+            print("same maps at step", step)
+            break
+        step += 1
+    return step
+
+# Day 25, part 1: None (17.637 secs)
+def day25_1(data):
+    data = read_input(2021, "251")   
+    #setDebugMode(True)
+
+
+    columns = len(data[0])
+    rows = len(data)
+    map =  [['.' for x in range(columns)] for y in range(rows)] 
+
+    for j in range(columns):
+        for i in range(rows):
+            map[i][j] = data[i][j]
+    
+    printMap(map)
+
+    step = move_all_sea_cucumbers(map)    
+
+    result = step      
+    print("result is:",result)
+    setDebugMode(False)
+    AssertExpectedResult(518, result)
+
 
 if __name__ == "__main__":
     # override timeout
