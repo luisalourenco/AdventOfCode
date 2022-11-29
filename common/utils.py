@@ -111,7 +111,15 @@ def execute_day(_globals, year, day, part, new_timeout):
 
 def read_input(year, day):
     file_dir = os.path.dirname(os.path.realpath(__file__))
-    with open("{0}/../{1}/input/day{2}".format(file_dir, year, day), "r") as fileReader:
+    
+    filename = filename = f"day{day}"
+    if year == 2022:
+        if len(str(day)) == 1:
+            filename = f"day_0{day}"
+        else:
+            filename = f"day_{day}"
+        
+    with open("{0}/../{1}/input/{2}".format(file_dir, year, filename), "r") as fileReader:
         return [line.rstrip('\n') for line in fileReader]
 
 def AssertExpectedResult(expected, result, part = 0):

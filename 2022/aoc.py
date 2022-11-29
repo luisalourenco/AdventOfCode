@@ -67,7 +67,7 @@ from itertools import islice
 #Day 1, part 1: 
 #Day 1, part 2: 
 def day1_1(data):
-    #data = read_input(2022, "1")    
+    #data = read_input(2022, "01_teste")    
     result = 0
     
     for line in data:

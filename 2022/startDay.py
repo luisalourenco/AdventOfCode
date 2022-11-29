@@ -28,5 +28,10 @@ print(f"Initializing day {day}")
     #os.mkdir(f"day{day}")
 os.chdir(f"input")
 r = requests.get(f"https://adventofcode.com/2022/day/{day}/input", cookies = cj)
-with open(f"day{day}","w") as f:
+if len(str(day)) == 1:
+    filename = f"day_0{day}"
+else:
+    filename = f"day_{day}"
+    
+with open(filename,"w") as f:
     f.write(r.text)
