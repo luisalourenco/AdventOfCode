@@ -64,17 +64,45 @@ from itertools import islice
 #region
 ##### Day 1 #####
 
-#Day 1, part 1: 
-#Day 1, part 2: 
+#Day 1, part 1: 73211 (0.056 secs)
+#Day 1, part 2: 213958 (0.006 secs)
 def day1_1(data):
     #data = read_input(2022, "01_teste")    
     result = 0
-    
+    max_calories = 0
     for line in data:
-        n = int(line)
-        result += n      
+        if line != '':
+            n = int(line)
+            result += n   
+        else:
+            if result > max_calories:
+                max_calories = result
+            result = 0           
     
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(73211, max_calories)
+    return max_calories
+
+
+def day1_2(data):
+    #data = read_input(2022, "01t")    
+    result = 0
+    max_calories = 0
+    elves = []
+    for line in data:
+        if line != '':
+            n = int(line)
+            result += n   
+        else:
+            elves.append(result)
+            if result > max_calories:
+                max_calories = result
+            result = 0
+
+    elves.sort(reverse=True)
+    # this is not the same as above :wat:
+    #sorted(elves, reverse=True) 
+    result = sum(elves[:3])
+    AssertExpectedResult(213958, result)
     return result
 
 #endregion
