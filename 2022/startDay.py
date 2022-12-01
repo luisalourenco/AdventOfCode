@@ -27,7 +27,13 @@ print(f"Initializing day {day}")
 #if not os.path.exists(f"day{day}"):
     #os.mkdir(f"day{day}")
 os.chdir(f"input")
-r = requests.get(f"https://adventofcode.com/2022/day/{day}/input", cookies = cj)
+
+headers = {
+    'User-Agent': 'https://github.com/luisalourenco',
+}
+
+
+r = requests.get(f"https://adventofcode.com/2022/day/{day}/input", headers=headers, cookies = cj)
 if len(str(day)) == 1:
     filename = f"day_0{day}"
 else:

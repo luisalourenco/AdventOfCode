@@ -61,8 +61,7 @@ from itertools import islice
 
 ################# Advent of Code - 2022 Edition #################
 
-#region
-##### Day 1 #####
+#region ##### Day 1 #####
 
 #Day 1, part 1: 73211 (0.056 secs)
 #Day 1, part 2: 213958 (0.006 secs)

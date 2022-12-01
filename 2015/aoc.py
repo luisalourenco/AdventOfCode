@@ -24,7 +24,7 @@ from itertools import groupby
 import codecs
 from tsp_solver.greedy import solve_tsp
 from tsp_solver.util import path_cost
-from collections import namedtuple
+from collections import namedtuple, Counter
 
 
 
@@ -1401,27 +1401,135 @@ def day16_2(data):
 '''
     Day 17: No Such Thing as Too Much
 '''
-#WIP
-def fillContainers(containers, eggnogLiters):
-    containers = sorted(containers, key=int)
-    count = 0
 
-    sum = 0
- 
+def fillContainers(containers, eggnogLiters, part2 = False):
+    containers.sort()
+    combinations = []
+    minContainers = 0
+    i = 2
+    while i < len(containers)-1:
+        for l in itertools.combinations(containers,i):      
+            if sum(list(l)) > eggnogLiters:
+                continue
+            if sum(list(l)) == eggnogLiters:                                  
+                if part2 and minContainers == 0:
+                    minContainers = i
+                if l not in combinations:
+                    if part2 and i == minContainers:
+                        combinations.append(list(l)) 
+                    elif not part2:
+                        combinations.append(list(l)) 
+        i += 1
+    return len(combinations)
 
-    return count
-
+#Day 17, part 1: 4372 (0.267 secs)
 def day17_1(data):
-    eggnogLiters = 25
-    
-    containers = [20, 15, 10, 5, 5]
+    data = read_input(2015, "17")
+    eggnogLiters = 150    
+    #eggnogLiters = 25
+    #containers = [20, 15, 10, 5, 5]
+    containers = []
+    for line in data:
+        containers.append(int(line))
+
     result = fillContainers(containers, eggnogLiters)
-    
-    result = 0
+    AssertExpectedResult(4372, result)   
     return result
 
+#Day 17, part 2: 4 (0.186 secs)
+def day17_2(data):
+    data = read_input(2015, "17")
+    eggnogLiters = 150    
+    containers = []
+    for line in data:
+        containers.append(int(line))
 
+    result = fillContainers(containers, eggnogLiters, part2 = True)
+    AssertExpectedResult(4, result)   
+    return result
 
+#### Day 18
+
+def countOnNeighbours(grid, posX, posY):
+    directionsDelta = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1), (1, 1),(-1, -1)]
+    if posX == 0:
+        if (-1,0) in directionsDelta:
+            directionsDelta.remove((-1,0))
+        if (-1,-1) in directionsDelta:   
+            directionsDelta.remove((-1,-1))
+        if (-1,1) in directionsDelta:
+            directionsDelta.remove((-1,1))
+    if posX == len(grid)-1:
+        if (1,0) in directionsDelta:
+            directionsDelta.remove((1,0))
+        if (1,-1) in directionsDelta:
+            directionsDelta.remove((1,-1))
+        if (1,1) in directionsDelta:
+            directionsDelta.remove((1,1))
+    if posY == 0:
+        if (0,-1) in directionsDelta:
+            directionsDelta.remove((0,-1))
+        if (-1,-1) in directionsDelta:
+            directionsDelta.remove((-1,-1))
+        if (1,-1) in directionsDelta:
+            directionsDelta.remove((1,-1))
+    if posY == len(grid[0])-1:
+        if (0,1) in directionsDelta:
+            directionsDelta.remove((0,1))
+        if (1,1) in directionsDelta:
+            directionsDelta.remove((1,1))
+        if (-1,1) in directionsDelta:
+            directionsDelta.remove((-1,1))
+
+    #print(directionsDelta)
+
+    on = 0
+    for x,y in directionsDelta:
+    #    print("deltas:",x,y)
+        if grid[posY+y][posX+x] == '#':
+            on +=1
+
+    return on
+
+# 3896 too high
+def day18_1(data):
+    data = read_input(2015, "181")
+    result = 0
+    
+    map = buildMapGrid(data, initValue='.')
+    rows = len(data)
+    columns = len(data[0])    
+
+    cycle = 0
+    cycles = 1
+    newGrid = map.copy()
+    printMap(map)
+    while cycle < cycles:
+        for y in range(rows):
+            for x in range(columns): 
+                #print("x,y:",x,y)
+                onNeighbours = countOnNeighbours(map,x,y)
+                print("x,y:",x,y,onNeighbours)
+                if map[y][x] == '#':
+                    if onNeighbours == 2 or onNeighbours == 3:
+                        newGrid[y][x] = '#'
+                    else:
+                        newGrid[y][x] = '.'
+                else:
+                    if onNeighbours == 3:
+                        newGrid[y][x] = '#'
+                    else:
+                        newGrid[y][x] = '.'
+        map = newGrid.copy()
+        printMap(map)
+        cycle += 1
+
+    for y in range(rows):
+        for x in range(columns): 
+            if map[y][x] == '#':
+                result += 1
+    AssertExpectedResult(0, result)   
+    return result
 
 
 

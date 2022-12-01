@@ -47,7 +47,7 @@ def printMap(map, fileMode = True):
         file1.close() 
 
 
-def buildMapGrid(data):
+def buildMapGrid(data, initValue=''):
     data = copy.deepcopy(data)
     '''
     file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -57,7 +57,7 @@ def buildMapGrid(data):
     rows = len(data)
     columns = len(data[0])
 
-    map = [ [ ('') for i in range(columns) ] for j in range(rows) ]    
+    map = [ [ (initValue) for i in range(columns) ] for j in range(rows) ]    
     
     for y in range(rows):
         for x in range(columns):
