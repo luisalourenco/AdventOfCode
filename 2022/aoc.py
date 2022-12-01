@@ -107,6 +107,26 @@ def day1_2(data):
 
 #endregion
 
+#region
+##### Day 2 #####
+
+#Day 2, part 1: 
+#Day 2, part 2: 
+def day2_1(data):
+    #data = read_input(2022, "02t")    
+    result = 0
+    for line in data:
+        n = int(line)
+        result += n   
+         
+    
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+
 
 if __name__ == "__main__":
     # override timeout
