@@ -106,21 +106,118 @@ def day1_2(data):
 
 #endregion
 
-#region
-##### Day 2 #####
+#region ##### Day 2 #####
 
-#Day 2, part 1: 
-#Day 2, part 2: 
+def compute_round_score(opponent_play, my_play, part2 = False):
+    round_score = 0
+    # A,X - Rock
+    # B,Y - Paper
+    # C,Z - Scissors
+    play = ''
+    if part2:
+        if my_play == 'X':
+            round_score = 0
+            if opponent_play == 'A':
+                play = 'C'
+            if opponent_play == 'B':
+                play = 'A'
+            if opponent_play == 'C':
+                play = 'B'
+        if my_play == 'Y':
+            round_score = 3
+            if opponent_play == 'A':
+                play = 'A'
+            if opponent_play == 'B':
+                play = 'B'
+            if opponent_play == 'C':
+                play = 'C'  
+        if my_play == 'Z':
+            round_score = 6
+            if opponent_play == 'A':
+                play = 'B'
+            if opponent_play == 'B':
+                play = 'C'
+            if opponent_play == 'C':
+                play = 'A'        
+    else:
+        if my_play == 'X':
+            if opponent_play == 'A':
+                round_score = 3
+            if opponent_play == 'B':
+                round_score = 0
+            if opponent_play == 'C':
+                round_score = 6
+            
+        if my_play == 'Y':
+            if opponent_play == 'A':
+                round_score = 6
+            if opponent_play == 'B':
+                round_score = 3
+            if opponent_play == 'C':
+                round_score = 0
+            
+        if my_play == 'Z':
+            if opponent_play == 'A':
+                round_score = 0
+            if opponent_play == 'B':
+                round_score = 6
+            if opponent_play == 'C':
+                round_score = 3 
+                
+    return round_score, play
+
+#Day 2, part 1: 11150 (0.064 secs)
+#Day 2, part 2: 8295 (0.013 secs)
 def day2_1(data):
     #data = read_input(2022, "02t")    
-    result = 0
+    # A,X - Rock
+    # B,Y - Paper
+    # C,Z - Scissors
+    scores = {'A': 1, 'X': 1, 'B': 2, 'Y': 2, 'C': 3, 'Z': 3}
+    round_score = 0
+    score = 0
     for line in data:
-        n = int(line)
-        result += n   
-         
+        play = line.split(' ')
+        my_score, _ = compute_round_score(play[0], play[1])
+        score += (my_score + scores[play[1]])
+            
     
-    AssertExpectedResult(0, result)
-    return result
+    AssertExpectedResult(11150, score)
+    return score
+
+def day2_2(data):
+    #data = read_input(2022, "02t")    
+    result = 0
+    # A,X - Rock
+    # B,Y - Paper
+    # C,Z - Scissors
+    scores = {'A': 1, 'X': 1, 'B': 2, 'Y': 2, 'C': 3, 'Z': 3}
+    round_score = 0
+    score = 0
+    for line in data:
+        play = line.split(' ')
+        my_score, my_play = compute_round_score(play[0], play[1], part2 = True)        
+        score += (my_score + scores[my_play])            
+    
+    AssertExpectedResult(8295, score)
+    return score
+
+#endregion
+
+#region ##### Day 3 #####
+
+#Day 3, part 1: 
+#Day 3, part 2: 
+def day3_1(data):
+    #data = read_input(2022, "03t")    
+    
+    score = 0
+    for line in data:
+        play = line.split(' ')
+                  
+    
+    AssertExpectedResult(0, score)
+    return score
 
 #endregion
 
