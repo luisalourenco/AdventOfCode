@@ -1567,13 +1567,120 @@ def day18_2(data):
 
 #### Day 19
 
+def get_new_molecule(molecule, i, rep, double_rep):
+    if i == 0:
+        if double_rep:
+            new_molecule = rep + molecule[i+2:]
+        else:
+            new_molecule = rep + molecule[i+1:]
+    elif i == len(molecule)-1:
+        new_molecule = molecule[:i-1] + rep
+    else:
+        if double_rep:
+            before = molecule[:i]
+            after = molecule[i+2:]
+        else:
+            before = molecule[:i]
+            after = molecule[i+1:]       
+        new_molecule = before + rep + after
+    return new_molecule
+
+def count_distinct_molecules(molecule, replacements):
+    molecules = set()
+    
+    for key in replacements.keys():
+        if len(key) == 2:
+            double_rep = True
+        else:
+            double_rep = False
+        reps = replacements[key]
+        indices = [index for index in range(len(molecule)) if molecule.startswith(key, index)]
+
+        for rep in reps:
+            for i in indices:
+                molecules.add(get_new_molecule(molecule, i, rep, double_rep))
+        
+        #print("key:",key, indices)
+    return len(molecules)
+    
+#603 too high
+#567 too high
+#Day 19, part 1: 509 (0.021 secs)
 def day19_1(data):
     #data = read_input(2015, "191")
     result = 0
+    molecule = data[-1]
+
+    replacements = {}
+    for line in data[:-2]:
+        replacement = line.split(' => ')
+        if replacement[0] not in replacements:
+            replacements[replacement[0]] = []
+        replacements[replacement[0]].append(replacement[1])
     
-    
-    AssertExpectedResult(821, result)   
+    #print(replacements)
+    #print(molecule)
+    result = count_distinct_molecules(molecule, replacements)
+    AssertExpectedResult(509, result)   
     return result
+
+
+def make_distinct_molecules(medicine_molecule, replacements, molecule, molecules):
+    
+    print(molecules)
+    print(molecule)
+
+    if len(molecule) > len(medicine_molecule):
+        return 0
+    
+    if molecule == medicine_molecule:
+        print("BINGO")
+        return 1
+        
+    for key in replacements.keys():
+        if len(key) == 2:
+            double_rep = True
+        else:
+            double_rep = False
+        reps = replacements[key]
+        indices = [index for index in range(len(molecule)) if molecule.startswith(key, index)]
+
+        min_steps = sys.maxsize
+        for rep in reps:
+            for i in indices:
+                new_molecule = get_new_molecule(molecule, i, rep, double_rep)
+                if new_molecule in molecules:
+                    return 0
+                molecules.add(new_molecule)
+                
+                steps = 1 + make_distinct_molecules(medicine_molecule, replacements, new_molecule, molecules)
+                if steps < min_steps:
+                    min_steps = steps
+        
+        #print("key:",key, indices)
+    return min_steps
+
+
+
+def day19_2(data):
+    data = read_input(2015, "191")
+    result = 0
+    medicine_molecule = data[-1]
+    molecule = 'e'
+    molecules = set()
+
+    replacements = {}
+    for line in data[:-2]:
+        replacement = line.split(' => ')
+        if replacement[0] not in replacements:
+            replacements[replacement[0]] = []
+        replacements[replacement[0]].append(replacement[1])
+    
+
+    result = make_distinct_molecules(medicine_molecule, replacements, molecule, molecules)
+    AssertExpectedResult(509, result)   
+    return result
+
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
