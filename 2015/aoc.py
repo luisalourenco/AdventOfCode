@@ -1450,8 +1450,10 @@ def day17_2(data):
 
 #### Day 18
 
-def countOnNeighbours(grid, posX, posY):
+def countOnNeighbours(grid, posX, posY, part2 = False):
     directionsDelta = [(1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1), (1, 1),(-1, -1)]
+    corners = [ (0,0), (0, len(grid[0])-1), (len(grid)-1, 0), (len(grid)-1, len(grid[0])-1) ]
+
     if posX == 0:
         if (-1,0) in directionsDelta:
             directionsDelta.remove((-1,0))
@@ -1485,31 +1487,30 @@ def countOnNeighbours(grid, posX, posY):
 
     on = 0
     for x,y in directionsDelta:
-    #    print("deltas:",x,y)
+        xx = posX+x
+        yy = posY+y
         if grid[posY+y][posX+x] == '#':
             on +=1
+        elif part2:
+            if (xx,yy) in corners:
+                on += 1
 
     return on
 
-# 3896 too high
-def day18_1(data):
-    data = read_input(2015, "181")
-    result = 0
-    
-    map = buildMapGrid(data, initValue='.')
-    rows = len(data)
-    columns = len(data[0])    
+def compute_new_map(map, cycles, part2 = False):
+    rows = len(map)
+    columns = len(map[0])   
+    newGrid = copy.deepcopy(map)
+    corners = [ (0,0), (0, columns-1), (rows-1, 0), (rows-1, columns-1) ]
 
     cycle = 0
-    cycles = 1
-    newGrid = map.copy()
-    printMap(map)
     while cycle < cycles:
         for y in range(rows):
             for x in range(columns): 
-                #print("x,y:",x,y)
-                onNeighbours = countOnNeighbours(map,x,y)
-                print("x,y:",x,y,onNeighbours)
+                if part2 and (x,y) in corners:
+                    continue
+
+                onNeighbours = countOnNeighbours(map,x,y,part2)
                 if map[y][x] == '#':
                     if onNeighbours == 2 or onNeighbours == 3:
                         newGrid[y][x] = '#'
@@ -1518,20 +1519,61 @@ def day18_1(data):
                 else:
                     if onNeighbours == 3:
                         newGrid[y][x] = '#'
-                    else:
-                        newGrid[y][x] = '.'
-        map = newGrid.copy()
-        printMap(map)
+                    
+        map = copy.deepcopy(newGrid)
+        #printMap(map)
         cycle += 1
+    return map
 
-    for y in range(rows):
-        for x in range(columns): 
-            if map[y][x] == '#':
-                result += 1
-    AssertExpectedResult(0, result)   
+# 3896 too high
+# 2438 too high
+#Day 18, part 1: 821 (0.951 secs)
+def day18_1(data):
+    #data = read_input(2015, "181")
+    result = 0
+    
+    map = buildMapGrid(data, initValue='.')
+    rows = len(data)
+    columns = len(data[0])    
+
+    cycles = 100
+    #printMap(map)
+    map = compute_new_map(map, cycles)
+
+    result = sum( [map[i].count('#') for i in range(rows) ] )
+    AssertExpectedResult(821, result)   
     return result
 
+# 885 too low
+#Day 18, part 2: 886 (1.836 secs)
+def day18_2(data):
+    #data = read_input(2015, "181")
+    result = 0
+    map = buildMapGrid(data, initValue='.')
+    rows = len(data)
+    columns = len(data[0])    
+    corners = [ (0,0), (0, columns-1), (rows-1, 0), (rows-1, columns-1) ]
 
+    for x,y in corners:
+        map[y][x] = '#'
+
+    cycles = 100
+    #printMap(map)
+    
+    map = compute_new_map(map, cycles, part2=True)
+    result = sum( [map[i].count('#') for i in range(rows) ] )
+    AssertExpectedResult(886, result)   
+    return result
+
+#### Day 19
+
+def day19_1(data):
+    #data = read_input(2015, "191")
+    result = 0
+    
+    
+    AssertExpectedResult(821, result)   
+    return result
 
 if __name__ == "__main__":
     main(sys.argv, globals(), 2015)
