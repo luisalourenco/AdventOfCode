@@ -267,7 +267,7 @@ def day3_2(data):
 
 #region ##### Day 4 #####
 
-def day3_1(data):
+def day4_1(data):
     #data = read_input(2022, "04t")    
     
     rucksacks = []
