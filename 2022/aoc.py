@@ -206,21 +206,81 @@ def day2_2(data):
 
 #region ##### Day 3 #####
 
-#Day 3, part 1: 
-#Day 3, part 2: 
+#Day 3, part 1: 8401 (0.075 secs)
+#Day 3, part 2: 2641 (0.188 secs)
 def day3_1(data):
     #data = read_input(2022, "03t")    
     
-    score = 0
+    rucksacks = []
+    result = 0
     for line in data:
-        play = line.split(' ')
-                  
+        if line:
+            rucksacks.append(line)            
     
-    AssertExpectedResult(0, score)
-    return score
+    for rucksack in rucksacks:
+        middle = int(len(rucksack)/2)
+        first_compartment = rucksack[:middle]
+        second_compartment = rucksack[middle:]
+        common_item = ''.join(set(first_compartment).intersection(second_compartment))
+        result += get_priority(common_item)                  
+    
+    AssertExpectedResult(8401, result)
+    return result
+
+
+def get_priority(item):
+    if item.islower():
+        return (ord(item)-96)
+    else:
+        return (ord(item)-65+27)
+
+#8067887
+# Day 3, part 2: 2641 (0.188 secs)
+def day3_2(data):
+    #data = read_input(2022, "03t")        
+    
+    rucksacks = []
+    result = 0
+    visited = set()
+    for line in data:
+        if line:
+            rucksacks.append(line)            
+    
+    for three_rucksacks in itertools.combinations(rucksacks, 3):
+        if three_rucksacks[0] in visited or three_rucksacks[1] in visited or three_rucksacks[2] in visited:
+            continue
+        
+        common_item1 = ''.join(set(three_rucksacks[0]).intersection(three_rucksacks[1]))
+        common_item2 = ''.join(set(three_rucksacks[2]).intersection(common_item1))
+        
+        if len(common_item2) == 1:
+            result += get_priority(common_item2)            
+            visited.add(three_rucksacks[0])
+            visited.add(three_rucksacks[1])
+            visited.add(three_rucksacks[2])            
+      
+    AssertExpectedResult(2641, result)
+    return result
 
 #endregion
 
+
+#region ##### Day 4 #####
+
+def day3_1(data):
+    #data = read_input(2022, "04t")    
+    
+    rucksacks = []
+    result = 0
+    for line in data:
+        if line:
+            rucksacks.append(line)           
+    
+
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
 
 
 
