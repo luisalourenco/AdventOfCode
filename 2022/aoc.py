@@ -267,19 +267,63 @@ def day3_2(data):
 
 #region ##### Day 4 #####
 
+#Day 4, part 1: 513 (0.066 secs)
+#Day 4, part 2: 878 (0.017 secs)
 def day4_1(data):
     #data = read_input(2022, "04t")    
     
-    rucksacks = []
     result = 0
     for line in data:
         if line:
-            rucksacks.append(line)           
+           sections_pairs = line.split(",")
+           first_section = sections_pairs[0].split('-')
+           section1 = set(range(int(first_section[0]), int(first_section[1])+1))
+           
+           second_section = sections_pairs[1].split('-')
+           section2 = set(range(int(second_section[0]), int(second_section[1])+1))
+          
+           if section1.issubset(section2) or section2.issubset(section1):
+               result+=1
+    
+
+    AssertExpectedResult(513, result)
+    return result
+
+def day4_2(data):
+    #data = read_input(2022, "04t")    
+    
+    result = 0
+    for line in data:
+        if line:
+           sections_pairs = line.split(",")
+           first_section = sections_pairs[0].split('-')
+           section1 = set(range(int(first_section[0]), int(first_section[1])+1))
+           
+           second_section = sections_pairs[1].split('-')
+           section2 = set(range(int(second_section[0]), int(second_section[1])+1))
+          
+           if len(section1.intersection(section2)) > 0:
+               result+=1    
+
+    AssertExpectedResult(878, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 5 #####
+
+def day5_1(data):
+    #data = read_input(2022, "05t")    
+    
+    result = 0
+    for line in data:
+        if line:
+           sections_pairs = line.split(",")
     
 
     AssertExpectedResult(0, result)
     return result
-
 #endregion
 
 
