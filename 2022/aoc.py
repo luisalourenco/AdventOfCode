@@ -33,6 +33,7 @@ from numpy.lib.arraypad import pad
 from termcolor import colored
 import termcolor
 import random
+from parse import parse
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2022
@@ -313,20 +314,119 @@ def day4_2(data):
 
 #region ##### Day 5 #####
 
+#    [C]             [L]         [T]
+#    [V] [R] [M]     [T]         [B]
+#    [F] [G] [H] [Q] [Q]         [H]
+#    [W] [L] [P] [V] [M] [V]     [F]
+#    [P] [C] [W] [S] [Z] [B] [S] [P]
+#[G] [R] [M] [B] [F] [J] [S] [Z] [D]
+#[J] [L] [P] [F] [C] [H] [F] [J] [C]
+#[Z] [Q] [F] [L] [G] [W] [H] [F] [M]
+# 1   2   3   4   5   6   7   8   9 
+
+def print_top_crates(stacks):
+    result = ''
+    for i in range(1, len(stacks.keys())+1):
+        s = stacks[i]
+        if len(s) > 0:
+            result += s.pop()
+    return result
+
+#Day 5, part 1: WSFTMRHPP (0.185 secs)
+#Day 5, part 2: GSLCMFBRP (0.042 secs)
+''' 
+    Unable to parse the stacks at 5am ಥ_ಥ so I gave up and hardcoded the input 
+    (it was reasonable to do, the size is small)
+'''
 def day5_1(data):
     #data = read_input(2022, "05t")    
+    stack1 = ['Z','J','G']
+    stack2 = ['Q','L','R','P','W','F','V','C']
+    stack3 = ['F','P','M','C','L','G','R']
+    stack4 = ['L','F','B','W','P','H','M']
+    stack5 = ['G','C','F','S','V','Q']
+    stack6 = ['W','H','J','Z','M','Q','T','L']
+    stack7 = ['H','F','S','B','V']
+    stack8 = ['F','J','Z','S']
+    stack9 = ['M','C','D','P','F','H','B','T']
+    
+    stacks = {1: stack1, 2: stack2, 3: stack3, 4: stack4, 5: stack5, 6: stack6, 7: stack7, 8: stack8, 9: stack9}
+    result = ''
+    for line in data:
+        if line:
+           crates = [parse("move {} from {} to {}", line)]
+          
+           if crates[0] != None:
+                for c in crates:
+                    num = int(c[0])
+                    from_crate = int(c[1])
+                    to_crate = int(c[2])
+                    from_stack = stacks[from_crate]
+                    for i in range(num):
+                        crate = from_stack.pop()
+                        stacks[to_crate].append(crate)
+    
+    result = print_top_crates(stacks)            
+    print(result)
+
+    AssertExpectedResult('WSFTMRHPP', result)
+    return result
+
+def day5_2(data):
+    #data = read_input(2022, "05t")    
+    stack1 = ['Z','J','G']
+    stack2 = ['Q','L','R','P','W','F','V','C']
+    stack3 = ['F','P','M','C','L','G','R']
+    stack4 = ['L','F','B','W','P','H','M']
+    stack5 = ['G','C','F','S','V','Q']
+    stack6 = ['W','H','J','Z','M','Q','T','L']
+    stack7 = ['H','F','S','B','V']
+    stack8 = ['F','J','Z','S']
+    stack9 = ['M','C','D','P','F','H','B','T']
+    
+    stacks = {1: stack1, 2: stack2, 3: stack3, 4: stack4, 5: stack5, 6: stack6, 7: stack7, 8: stack8, 9: stack9}
+    result = ''
+    
+    #stacks = {1: ['Z','N'], 2: ['M','C','D'], 3: ['P']}
+    
+    for line in data:
+        if line:
+           crates = [parse("move {} from {} to {}", line)]
+           
+           if crates[0] != None:
+                for c in crates:
+                    num = int(c[0])
+                    from_crate = int(c[1])
+                    to_crate = int(c[2])
+                    from_stack = stacks[from_crate]
+                    moving_crates = []
+                    for i in range(num):
+                        crate = from_stack.pop()
+                        moving_crates.append(crate)
+                    moving_crates.reverse()
+                    stacks[to_crate] = stacks[to_crate] + moving_crates
+                    
+    result = print_top_crates(stacks)
+    print(result)
+    AssertExpectedResult('GSLCMFBRP', result)
+    return result
+
+#endregion
+
+
+#region ##### Day 6 #####
+
+def day6_1(data):
+    #data = read_input(2022, "06t")    
     
     result = 0
     for line in data:
         if line:
            sections_pairs = line.split(",")
-    
-
+           
     AssertExpectedResult(0, result)
     return result
 #endregion
-
-
 
 if __name__ == "__main__":
     # override timeout
