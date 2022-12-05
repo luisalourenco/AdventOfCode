@@ -338,7 +338,7 @@ def print_top_crates(stacks):
     Unable to parse the stacks at 5am ಥ_ಥ so I gave up and hardcoded the input 
     (it was reasonable to do, the size is small)
 '''
-def day5_1(data):
+def day5_1_original(data):
     #data = read_input(2022, "05t")    
     stack1 = ['Z','J','G']
     stack2 = ['Q','L','R','P','W','F','V','C']
@@ -392,7 +392,7 @@ def day5_2(data):
     for line in data:
         if line:
            crates = [parse("move {} from {} to {}", line)]
-           
+
            if crates[0] != None:
                 for c in crates:
                     num = int(c[0])
@@ -409,6 +409,50 @@ def day5_2(data):
     result = print_top_crates(stacks)
     print(result)
     AssertExpectedResult('GSLCMFBRP', result)
+    return result
+
+def parse_stacks(line, stacks):
+    for stack, crate in enumerate(line[1::4]):
+        if crate.isdigit():
+            break
+        if crate == ' ':
+            continue
+        
+        stack+=1
+        if stack not in stacks:
+            stacks[stack] = []
+        stacks[stack].insert(0,crate)
+                
+    return stacks
+               
+
+def day5_1(data):
+    #data = read_input(2022, "05t")    
+    result = ''   
+    
+    stacks = {}
+    
+    for line in data:
+        if line:
+           crates = [parse("move {} from {} to {}", line)]
+           
+           if crates[0] == None:
+               stacks = parse_stacks(line, stacks)
+           if crates[0] != None:
+
+                for c in crates:
+                    num = int(c[0])
+                    from_crate = int(c[1])
+                    to_crate = int(c[2])
+                    from_stack = stacks[from_crate]
+                    moving_crates = []
+                    for i in range(num):
+                        crate = from_stack.pop()
+                        stacks[to_crate].append(crate)
+                    
+    result = print_top_crates(stacks)
+    print(result)
+    AssertExpectedResult('WSFTMRHPP', result)
     return result
 
 #endregion
