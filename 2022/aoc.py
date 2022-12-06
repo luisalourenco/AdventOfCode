@@ -460,17 +460,60 @@ def day5_1(data):
 
 #region ##### Day 6 #####
 
+#Day 6, part 1: 1909 (0.141 secs)
+#Day 6, part 2: 3380 (0.030 secs)
 def day6_1(data):
     #data = read_input(2022, "06t")    
     
     result = 0
-    for line in data:
-        if line:
-           sections_pairs = line.split(",")
+    datastream = data[0]
+    
+    for i in range(len(datastream)):
+        packet = datastream[i:i+4]
+        c = Counter(packet)
+        
+        if len(c) == 4:
+            result = i+4
+            print(packet, i+4)
+            break    
            
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(1909, result)
+    return result
+
+def day6_2(data):
+    #data = read_input(2022, "06t")    
+    
+    result = 0
+    datastream = data[0]
+    
+    for i in range(len(datastream)):
+        packet = datastream[i:i+14]
+        c = Counter(packet)
+        
+        if len(c) == 14:
+            result = i+14
+            print(packet, i+14)
+            break    
+           
+    AssertExpectedResult(3380, result)
     return result
 #endregion
+
+
+#region ##### Day 7 #####
+
+
+def day7_1(data):
+    data = read_input(2022, "07t")    
+    
+    result = 0
+    for line in data:
+        line.split("")
+           
+    AssertExpectedResult(1909, result)
+    return result
+
+
 
 if __name__ == "__main__":
     # override timeout
