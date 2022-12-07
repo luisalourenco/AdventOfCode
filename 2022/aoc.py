@@ -502,16 +502,219 @@ def day6_2(data):
 
 #region ##### Day 7 #####
 
+def print_filesystem_data(filesystem, dir_sizes= None):
+    print('filesystem:')
+    for d in filesystem.keys():
+        print(d, filesystem[d])
+    print('****')
+    print()
 
+
+
+def compute_dir_sizes2(filesystem):
+    dir_sizes = {} 
+    for directory, contents in filesystem.items():
+        total_size = 0
+        for filename, size in contents:        
+            total_size += size
+            
+        dir_sizes[directory] = total_size
+        
+    repeat_computation = True
+    
+    while (repeat_computation):
+        repeat_computation = False
+        for directory, contents in filesystem.items():
+            total_size = dir_sizes[directory]
+            path = [directory]
+            for filename, size in contents:        
+                if size == 0:                
+                    #print("size for?", get_path(path, filename))
+                    total_size += dir_sizes[get_path(path, filename)]
+                    
+                    missing_dir = sum([1 for f,s in filesystem[get_path(path, filename)] if s == 0])
+                    if missing_dir == 0:
+                        repeat_computation = True
+                        filesystem[directory].remove((filename,0))
+                        filesystem[directory].append((filename, dir_sizes[get_path(path, filename)]))                
+                
+            dir_sizes[directory] = total_size
+    
+    dir_sizes = {} 
+    for directory, contents in filesystem.items():
+        total_size = 0
+        for filename, size in contents:        
+            total_size += size
+            
+        dir_sizes[directory] = total_size
+        
+    return dir_sizes
+                        
+
+def get_path(path, directory = None):
+    if directory == '/':
+        directory =''
+        
+    if path == ['/']:
+        if directory != None:
+            return '/' + directory
+        else:
+            return '/'
+    else: 
+        full_path = '/'.join(path)
+        if len(full_path) > 1 and full_path[0] == full_path[1]:
+            full_path = full_path[1:]
+        if directory == None:
+            return full_path    
+        else:
+            return full_path + '/' + directory
+
+def parse_filesystem(data):
+    current_dir = '/'
+    filesystem = {'/': []}
+    path = [current_dir]
+    for line in data:
+        if line.startswith("$"):
+            command_line = line.split(" ")
+            command = command_line[1]
+            #print()
+            #print_filesystem_data(filesystem)
+            if command == 'ls':    
+                size = 0
+            if command == 'cd':                    
+                target_dir = command_line[2]
+                
+                if target_dir == '..': # cd ..                        
+                    #print("cd .. with current dir", current_dir, 'with path', get_path(path))
+                    for directory in filesystem.keys():
+                        
+                        #print("checking if path", directory,"is in filesystem" )
+                        if directory not in filesystem.keys():
+                            continue
+                        
+                        #print("checking...",current_dir,"inside path", directory,":",filesystem[directory])
+                        
+                        if current_dir in [d for d,s in filesystem[directory]]:
+                            path.pop()
+                            target_dir = path[-1]
+                            current_dir = target_dir
+                            
+                            #print("changed to",get_path(path))                          
+                            
+                            break
+                    
+                    if current_dir != '/':
+                        current_dir = target_dir
+                
+                elif target_dir == '/': # cd /
+                    #print("cd /")
+                    current_dir = '/'
+                    path = ['/']
+                
+                else: # cd new_dir
+                    #print("cd", target_dir)
+                    #print("current_dir", current_dir, "path:", path)
+                    #print("current_path", get_path(path),":",filesystem[get_path(path)])
+                    
+                    if target_dir in [d for d,s in filesystem[get_path(path)]]:
+                        current_dir = target_dir
+                        path.append(target_dir)
+                        #print("changed to", current_dir, 'new path:', get_path(path))
+                    else:
+                        print("OOPS")
+                        
+                
+        else: #listing contents of current dir
+            #print("ls",current_dir)
+            dir_contents = line.split(" ")
+            
+            if dir_contents[0] == 'dir':
+                dir_name = dir_contents[1]
+                #print("checking content:", dir_name)
+                #print('is',get_path(path, dir_name),'in filesystem', filesystem.keys(),'?')
+                if get_path(path, dir_name) not in filesystem.keys():    
+                    filesystem[get_path(path, dir_name)] = []
+                    #print("added",get_path(path, dir_name),'to filesystem',filesystem.keys())
+                
+                #print("checking if", dir_name,'is in current directory', get_path(path),':',filesystem[get_path(path)])
+                if dir_name not in filesystem[get_path(path)]:
+                    filesystem[get_path(path)].append((dir_name, 0))                
+                    #print("added",dir_name,'to current directory', get_path(path))
+            else:
+                filesize = int(dir_contents[0])
+                filename = dir_contents[1] 
+                #print("listing file", filename)                               
+                filesystem[get_path(path)].append((filename, filesize))
+                #print("added",filename,'to', get_path(path))
+                
+    return filesystem
+
+
+#1259494
+#836079
+#978424
 def day7_1(data):
-    data = read_input(2022, "07t")    
+    #data = read_input(2022, "07t")    
+    
+    limit = 100000
+    result = 0
+    size = 0    
+    filesystem = parse_filesystem(data)    
+    #print_filesystem_data(filesystem) 
+    dir_sizes = compute_dir_sizes2(filesystem)   
+    #print(dir_sizes)
+    
+    for d in dir_sizes.keys():
+        if dir_sizes[d] < limit:
+            #print(d)
+            result += dir_sizes[d]
+     
+            
+    #print_filesystem_data(filesystem) 
+    
+    print(result)
+    
+    AssertExpectedResult(1348005, result)
+    return result
+
+def day7_2(data):
+    #data = read_input(2022, "07t")    
+    
+    disk_space = 70000000
+    min_unused_space_needed = 30000000        
     
     result = 0
-    for line in data:
-        line.split("")
-           
+    size = 0    
+    filesystem = parse_filesystem(data)
+    
+    #print_filesystem_data(filesystem) 
+    dir_sizes = compute_dir_sizes2(filesystem)   
+    print(dir_sizes)
+    print_filesystem_data(filesystem)
+    
+    current_unused_space = disk_space - dir_sizes['/']
+    print("current unused space:",current_unused_space)
+    
+    need_to_free = min_unused_space_needed - current_unused_space
+    print("need to free",need_to_free)
+    
+    min_dir = (disk_space, '.')
+    for d in dir_sizes.keys():
+        size = dir_sizes[d]
+        if size >= need_to_free:
+            if size < min_dir[0]:
+                min_dir = (size,d)
+
+            
+     
+            
+    #print_filesystem_data(filesystem) 
+    
+    print(min_dir)
+    
     AssertExpectedResult(1909, result)
     return result
+
 
 
 
