@@ -512,6 +512,12 @@ def print_filesystem_data(filesystem, dir_sizes= None):
 
 # this should work but it's bugged :(
 def compute_dir_sizes(filesystem):
+    
+    
+    #filesystem['/a'].append(('my_dir',0))
+    #filesystem['/a/my_dir'] = [('my_file',1024)]
+    print_filesystem_data(filesystem)
+    
     dir_sizes = {} 
     for directory, contents in filesystem.items():
         total_size = 0
@@ -520,7 +526,7 @@ def compute_dir_sizes(filesystem):
             
         dir_sizes[directory] = total_size
         
-     
+    print(dir_sizes)
     directories = sorted(list(filesystem.keys()), key=len, reverse=True)
     print("directories ordered:",directories)
     print()
@@ -542,21 +548,33 @@ def compute_dir_sizes(filesystem):
             parent_dir = directory[:i]
         print("parent_dir:", parent_dir)
         
+        value = [v for d,v in filesystem[parent_dir] if d == dir_to_update][0]
+        print("value", value)
+        filesystem[parent_dir].remove((dir_to_update, value))
+        filesystem[parent_dir].append((dir_to_update, value + dir_sizes[directory]))
+        #dir_sizes[parent_dir]+= value
+        dir_sizes = {} 
+        for directory, contents in filesystem.items():
+            total_size = 0
+            for filename, size in contents:        
+                total_size += size
+            
+            dir_sizes[directory] = total_size
         
-        filesystem[parent_dir].remove((dir_to_update,0))
-        filesystem[parent_dir].append((dir_to_update, dir_sizes[directory]))
-        print("updated", parent_dir,'with', dir_sizes[directory], 'for entry', dir_to_update)
+        
+        print("updated", parent_dir,'with', dir_sizes[directory]+value, 'for entry', dir_to_update)
         print()
     
     print("compute final dirs size")
-    dir_sizes = {} 
-    for directory, contents in filesystem.items():
-        total_size = 0
-        for filename, size in contents:        
-            total_size += size
+    #dir_sizes = {} 
+    #for directory, contents in filesystem.items():
+    #    total_size = 0
+    #    for filename, size in contents:        
+    #        total_size += size
             
-        dir_sizes[directory] = total_size
+    #    dir_sizes[directory] = total_size
     
+    print_filesystem_data(filesystem)
     print(dir_sizes)
     return dir_sizes
 
@@ -706,7 +724,7 @@ def parse_filesystem(data):
 #836079
 #978424
 def day7_1(data):
-    data = read_input(2022, "07t")    
+    #data = read_input(2022, "07t")    
     
     limit = 100000
     result = 0
