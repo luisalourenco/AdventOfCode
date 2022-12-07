@@ -512,12 +512,7 @@ def print_filesystem_data(filesystem, dir_sizes= None):
 
 # this should work but it's bugged :(
 def compute_dir_sizes(filesystem):
-    
-    
-    #filesystem['/a'].append(('my_dir',0))
-    #filesystem['/a/my_dir'] = [('my_file',1024)]
-    print_filesystem_data(filesystem)
-    
+        
     dir_sizes = {} 
     for directory, contents in filesystem.items():
         total_size = 0
@@ -526,56 +521,47 @@ def compute_dir_sizes(filesystem):
             
         dir_sizes[directory] = total_size
         
-    print(dir_sizes)
+    #print(dir_sizes)
     directories = sorted(list(filesystem.keys()), key=len, reverse=True)
-    print("directories ordered:",directories)
-    print()
+    #print("directories ordered:",directories)
+    #print()
     for directory in directories:
         if directory == '/':
             continue
         
-        print("dir",directory)
-        print(directory.split('/')[-2])
+        #print("dir",directory)
+        #print(directory.split('/')[-2])
         
         dir_to_update = directory.split('/')[-1]
         parent_dir = directory.split('/')[-2]
         
-        print("dir_to_update",dir_to_update)
+        #print("dir_to_update",dir_to_update)
         if parent_dir == '': #update root
             parent_dir = '/'
         else:
             i = directory.rfind('/')
             parent_dir = directory[:i]
-        print("parent_dir:", parent_dir)
+        #print("parent_dir:", parent_dir)
         
         value = [v for d,v in filesystem[parent_dir] if d == dir_to_update][0]
-        print("value", value)
+        #print("value", value)
         filesystem[parent_dir].remove((dir_to_update, value))
         filesystem[parent_dir].append((dir_to_update, value + dir_sizes[directory]))
         #dir_sizes[parent_dir]+= value
+        
         dir_sizes = {} 
         for directory, contents in filesystem.items():
             total_size = 0
             for filename, size in contents:        
                 total_size += size
             
-            dir_sizes[directory] = total_size
+            dir_sizes[directory] = total_size        
         
-        
-        print("updated", parent_dir,'with', dir_sizes[directory]+value, 'for entry', dir_to_update)
-        print()
+        #print("updated", parent_dir,'with', dir_sizes[directory]+value, 'for entry', dir_to_update)
+        #print()
     
-    print("compute final dirs size")
-    #dir_sizes = {} 
-    #for directory, contents in filesystem.items():
-    #    total_size = 0
-    #    for filename, size in contents:        
-    #        total_size += size
-            
-    #    dir_sizes[directory] = total_size
-    
-    print_filesystem_data(filesystem)
-    print(dir_sizes)
+
+    #print(dir_sizes)
     return dir_sizes
 
 #horrible first approach that must be buggy AF, worked for part1
@@ -723,12 +709,13 @@ def parse_filesystem(data):
 #1259494
 #836079
 #978424
+#Day 7, part 1: 1348005 (0.089 secs)
+#Day 7, part 2: 12785886 (0.021 secs)
 def day7_1(data):
     #data = read_input(2022, "07t")    
     
     limit = 100000
     result = 0
-    size = 0    
     filesystem = parse_filesystem(data)    
     #print_filesystem_data(filesystem) 
     dir_sizes = compute_dir_sizes(filesystem)   
@@ -736,9 +723,7 @@ def day7_1(data):
     
     for d in dir_sizes.keys():
         if dir_sizes[d] < limit:
-            #print(d)
-            result += dir_sizes[d]
-     
+            result += dir_sizes[d]     
             
     #print_filesystem_data(filesystem) 
     
@@ -754,15 +739,12 @@ def day7_2(data):
     min_unused_space_needed = 30000000        
     
     result = 0
-    size = 0    
     filesystem = parse_filesystem(data)
     
     #print_filesystem_data(filesystem) 
 
     dir_sizes = compute_dir_sizes(filesystem)   
-    print(dir_sizes)
-    print_filesystem_data(filesystem)
-    print()
+    #print_filesystem_data(filesystem)
         
     current_unused_space = disk_space - dir_sizes['/']
     print("current unused space:",current_unused_space)
@@ -775,17 +757,31 @@ def day7_2(data):
         size = dir_sizes[d]
         if size >= need_to_free:
             if size < min_dir[0]:
-                min_dir = (size,d)           
+                min_dir = (size,d)          
      
             
     #print_filesystem_data(filesystem) 
     
     print(min_dir)
-    
-    AssertExpectedResult(1909, result)
+    result = min_dir[0]
+    AssertExpectedResult(12785886, result)
     return result
 
+#endregion
 
+#region ##### Day 8 #####
+
+def day8_1(data):
+    #data = read_input(2022, "08t")    
+    
+    result = 0    
+    for line in data:
+        input_data = line.split(" ")
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
 
 
 if __name__ == "__main__":
