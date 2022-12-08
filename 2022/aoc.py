@@ -771,12 +771,187 @@ def day7_2(data):
 
 #region ##### Day 8 #####
 
+def count_visible_trees(trees_map):
+    rows = len(trees_map)
+    columns = len(trees_map[0])    
+    visible = 0  
+    
+    for y in range(rows):
+        for x in range(columns):
+            if x == 0 or x == (columns-1) or y == 0 or y == (rows-1):
+                visible += 1 
+            else:
+                tree_size = trees_map[y][x]
+                #print("testing",y,x,"with height",tree_size)
+                taller_trees_horizontal = 0
+                
+                for xx in range(0, x):                    
+                    size = trees_map[y][xx]
+                    
+                    if size >= tree_size and xx != x:                       
+                        taller_trees_horizontal +=1
+                        break
+                
+                for xx in range(x+1, columns):                    
+                    size = trees_map[y][xx]
+                    
+                    if size >= tree_size and xx != x:                       
+                        taller_trees_horizontal +=1  
+                        break                       
+                        
+                #print("horizontal for",y,x,"is:", taller_trees_horizontal)
+                
+                taller_trees_vertical = 0
+                
+                for yy in range(0, y):                    
+                    size = trees_map[yy][x]
+                    if size >= tree_size and yy != y:                       
+                        taller_trees_vertical +=1 
+                        break
+                
+                for yy in range(y+1,rows):                    
+                    size = trees_map[yy][x]
+                    if size >= tree_size and yy != y:                       
+                        taller_trees_vertical +=1 
+                        break
+                        
+                #print("vertical for",y,x,"is:", taller_trees_horizontal)
+                #print()
+                if (taller_trees_horizontal + taller_trees_vertical) <4:
+                    visible +=1
+
+    return visible
+
+#Day 8, part 1: 1835 (0.109 secs)
+#Day 8, part 2: 263670 (0.050 secs)
 def day8_1(data):
     #data = read_input(2022, "08t")    
+    trees_map = []
     
-    result = 0    
+    result = 0     
+    trees_map = buildMapGrid(data, initValue=0)       
+    
+    y = 0
     for line in data:
-        input_data = line.split(" ")
+        for x in range(len(line)):
+            trees_map[y][x] = int(line[x])
+        y += 1
+    
+    result = count_visible_trees(trees_map)            
+    #printMap(trees_map)
+           
+    AssertExpectedResult(1835, result)
+    return result
+
+
+def get_highest_scenic_score(trees_map):
+    rows = len(trees_map)
+    columns = len(trees_map[0])
+    
+    highest_scenic_score = 0
+    
+    for y in range(rows):
+        for x in range(columns):
+            tree_size = trees_map[y][x]
+            #print("testing (",y,x,") with height ->",tree_size,'<-')
+            #print()
+            left_visible_trees = 0
+            
+            #print("left trees:")
+            left_trees = list(range(0, x))
+            left_trees.reverse()
+            for xx in left_trees:                    
+                size = trees_map[y][xx]
+                #print("checking",y,xx,'with size',size)    
+                left_visible_trees +=1                      
+                if size >= tree_size: 
+                    break                                     
+                
+            #print("left for",y,x,"is:", left_visible_trees)
+            #print()
+            scenic_score = left_visible_trees  
+            
+            right_visible_trees = 0
+            #print("right trees:")
+            for xx in range(x+1, columns):                    
+                size = trees_map[y][xx]
+                #print("checking",y,xx,'with size',size) 
+                right_visible_trees +=1                     
+                if size >= tree_size:  
+                    break                   
+                
+            scenic_score *= right_visible_trees                             
+            #print("right for",y,x,"is:", right_visible_trees)
+            #print()
+            up_visible_trees = 0
+            
+            up_trees = list(range(0, y))
+            up_trees.reverse()
+            #print("up trees:")                
+            for yy in up_trees:                    
+                size = trees_map[yy][x]
+                #print("checking",yy,x,'with size',size) 
+                up_visible_trees +=1
+                if size >= tree_size:
+                    break                
+                
+            #print("up for",y,x,"is:", up_visible_trees)    
+            scenic_score *= up_visible_trees
+            #print()
+            down_visible_trees = 0
+              
+            #print("down trees:")  
+            for yy in range(y+1,rows):                    
+                size = trees_map[yy][x]
+                #print("checking",yy,x,'with size',size) 
+                down_visible_trees +=1 
+                if size >= tree_size:                                          
+                    break
+                
+            #print("down for",y,x,"is:", down_visible_trees)
+            #print()
+            scenic_score *= down_visible_trees   
+        
+            #print("scenic score", scenic_score)
+            #print("highest scenic score", highest_scenic_score)
+            #print() 
+            #print('********')  
+            if scenic_score > 0 and scenic_score > highest_scenic_score:
+                highest_scenic_score = scenic_score 
+            scenic_score = 1                     
+               
+    return highest_scenic_score
+
+
+#2500608 too high
+def day8_2(data):
+    #data = read_input(2022, "08t")       
+   
+    trees_map = buildMapGrid(data, initValue=0)       
+    
+    y = 0
+    for line in data:
+        for x in range(len(line)):
+            trees_map[y][x] = int(line[x])
+        y += 1
+
+    result = get_highest_scenic_score(trees_map)          
+           
+    AssertExpectedResult(263670, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 9 #####
+
+
+def day9_1(data):
+    data = read_input(2022, "09t")    
+    
+    result = 0     
+    for line in data:
+        line.split(' ')
            
     AssertExpectedResult(0, result)
     return result
