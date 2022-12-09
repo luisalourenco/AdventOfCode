@@ -945,15 +945,137 @@ def day8_2(data):
 
 #region ##### Day 9 #####
 
+def check_tail_position(head, tails, direction):
+    
+    for k,v in tails.items():
+        if k != 1:
+            head = tails[k-1]
+        tail = v
+        
+        new_x = tail[0]
+        new_y = tail[1]
+        xh = head[0]
+        xt = tail[0]
+        
+        yh = head[1]
+        yt = tail[1]
+        
+        if head == tail:
+            return tail    
+        
+        if abs(xh - xt) > 1:
+            if direction == 'L':
+                new_x = xt - 1
+            elif direction == 'R':
+                new_x = xt + 1
+            
+            if yh != yt:
+                new_y = yh        
+            
+        if abs(yh - yt) > 1:
+            #print("adjusting y of tail", tail)
+            if direction == 'D':
+                new_y = yt - 1
+            elif direction == 'U':
+                new_y = yt + 1
+            #print("adjusted y of tail to", (new_x, new_y))
+            
+            if xh != xt:
+                #print('adjusting x of tail', (new_x, new_y))
+                new_x = xh       
+                #print("adjusted y of tail to", (new_x, new_y)) 
+        tails[k] = (new_x, new_y)
+
+    return tails[len(tails)]
+
+def move_rope(moves, tails):
+    head = (0,0)
+    #tail = (0,0)
+    
+    #rows = len(grid)
+    #columns = len(grid[0])
+
+    visited = {(0,0)}
+    
+    for move in moves:
+        direction = move[0]
+        pos = move[1]
+        
+        #print(move)
+        #print(head,tails)
+        
+        for i in range(pos):
+            xx = head[0]
+            yy =  head[1]
+            
+            if direction == 'U':
+                yy +=1    
+            elif direction == 'D':
+                yy -=1
+            elif direction == 'L':
+                xx -=1
+            elif direction == 'R':
+                xx +=1
+                
+            head = (xx, yy)
+            check_tail_position(head, tails, direction)
+            
+            tail = tails[len(tails)]
+            print("***", head,tails,tail)
+            i#f tail not in visited:
+            visited.add(tail)
+    
+    print(visited)
+    return len(visited)
+
+    
 
 def day9_1(data):
+    #data = read_input(2022, "09t")    
+    
+    result = 0 
+    moves = []       
+     
+    for line in data:
+        direction = line.split(' ')[0]
+        times = int(line.split(' ')[1])
+        moves.append((direction, times))
+            
+    tails = defaultdict()
+    tails[1] = (0,0)
+    result = move_rope(moves, tails)   
+    
+    AssertExpectedResult(6011, result)
+    return result
+
+
+# 6185 too high
+def day9_2(data):
     data = read_input(2022, "09t")    
     
-    result = 0     
+    result = 0 
+    moves = []       
+     
     for line in data:
-        line.split(' ')
-           
-    AssertExpectedResult(0, result)
+        direction = line.split(' ')[0]
+        times = int(line.split(' ')[1])
+        moves.append((direction, times))
+
+            
+    tails = defaultdict()
+    tails[1] = (0,0)    
+    tails[2] = (0,0)
+    tails[3] = (0,0)
+    tails[4] = (0,0)
+    tails[5] = (0,0)
+    tails[6] = (0,0)
+    tails[7] = (0,0)
+    tails[8] = (0,0)
+    tails[9] = (0,0)
+    result = move_rope(moves, tails)   
+
+    
+    AssertExpectedResult(6011, result)
     return result
 
 #endregion
