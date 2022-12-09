@@ -945,8 +945,8 @@ def day8_2(data):
 
 #region ##### Day 9 #####
 
-def check_tail_position(head, tails, direction):
-    
+def check_tail_position(head, tails):
+
     for k,v in tails.items():
         if k != 1:
             head = tails[k-1]
@@ -954,47 +954,60 @@ def check_tail_position(head, tails, direction):
         
         new_x = tail[0]
         new_y = tail[1]
-        xh = head[0]
-        xt = tail[0]
         
-        yh = head[1]
-        yt = tail[1]
+        head_x = head[0]
+        tail_x = tail[0]
+        
+        head_y = head[1]
+        tail_y = tail[1]
+        
+        dx = head_x -tail_x
+        dy = head_y - tail_y
+        #print('checking tail', tail,'against head',head,'. dx =',dx,'dy =',dy)
         
         if head == tail:
             return tail    
         
-        if abs(xh - xt) > 1:
-            if direction == 'L':
-                new_x = xt - 1
-            elif direction == 'R':
-                new_x = xt + 1
+        if abs(head_x - tail_x) > 1:
+            #print("adjusting x of tail", tail)
+            if head_x - tail_x < 0:
+                new_x = tail_x - 1
+            elif head_x - tail_x > 0:
+                new_x = tail_x + 1
             
-            if yh != yt:
-                new_y = yh        
+            if head_y != tail_y:
+                #print('adjusting y of tail', (new_x, new_y))
+                if head_y - tail_y < 0:
+                    new_y = tail_y - 1
+                elif head_y - tail_y > 0:
+                    new_y = tail_y + 1       
+                #print("adjusted y of tail to", (new_x, new_y))
+                
+            #print("adjusted x of tail to", (new_x, new_y))             
+
             
-        if abs(yh - yt) > 1:
+        if abs(head_y - tail_y) > 1:
             #print("adjusting y of tail", tail)
-            if direction == 'D':
-                new_y = yt - 1
-            elif direction == 'U':
-                new_y = yt + 1
+            if head_y - tail_y < 0:
+                new_y = tail_y - 1
+            elif head_y - tail_y > 0:
+                new_y = tail_y + 1
             #print("adjusted y of tail to", (new_x, new_y))
             
-            if xh != xt:
+            if head_x != tail_x:
                 #print('adjusting x of tail', (new_x, new_y))
-                new_x = xh       
-                #print("adjusted y of tail to", (new_x, new_y)) 
+                if head_x - tail_x < 0:
+                    new_x = tail_x - 1
+                elif head_x - tail_x > 0:
+                    new_x = tail_x + 1      
+                #print("adjusted x of tail to", (new_x, new_y))           
+                 
+        #print('updated tail #',k,'to', (new_x, new_y))
         tails[k] = (new_x, new_y)
 
-    return tails[len(tails)]
 
 def move_rope(moves, tails):
     head = (0,0)
-    #tail = (0,0)
-    
-    #rows = len(grid)
-    #columns = len(grid[0])
-
     visited = {(0,0)}
     
     for move in moves:
@@ -1002,7 +1015,8 @@ def move_rope(moves, tails):
         pos = move[1]
         
         #print(move)
-        #print(head,tails)
+        #print("initial:",head,tails)
+        #print()
         
         for i in range(pos):
             xx = head[0]
@@ -1017,19 +1031,24 @@ def move_rope(moves, tails):
             elif direction == 'R':
                 xx +=1
                 
+            old_head = head
             head = (xx, yy)
-            check_tail_position(head, tails, direction)
+            check_tail_position(head, tails)
             
             tail = tails[len(tails)]
-            print("***", head,tails,tail)
-            i#f tail not in visited:
+            #print("*** after move",old_head,'->',head,'***')
+            #print('tails:',tails,tail)
+            #print()
+
             visited.add(tail)
-    
-    print(visited)
+        #print()
+        #print("completed move", move,"final tails:", tails)
+    #print("tail 9 visited:",visited)
     return len(visited)
 
     
-
+#Day 9, part 1: 6011 (0.118 secs)
+#Day 9, part 2: 2419 (0.094 secs)
 def day9_1(data):
     #data = read_input(2022, "09t")    
     
@@ -1050,8 +1069,12 @@ def day9_1(data):
 
 
 # 6185 too high
+# 2474 too high
+# 2456 ?
+# 1945 too low
+# 1946
 def day9_2(data):
-    data = read_input(2022, "09t")    
+    #data = read_input(2022, "09t")    
     
     result = 0 
     moves = []       
@@ -1073,12 +1096,27 @@ def day9_2(data):
     tails[8] = (0,0)
     tails[9] = (0,0)
     result = move_rope(moves, tails)   
-
     
-    AssertExpectedResult(6011, result)
+    AssertExpectedResult(2419, result)
     return result
 
 #endregion
+
+#region ##### Day 10 #####
+
+def day10_1(data):
+    data = read_input(2022, "10t")       
+    
+    for line in data:
+        line.split(' ')
+
+    result = 0
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
 
 
 if __name__ == "__main__":
