@@ -1188,9 +1188,12 @@ def draw_crt(crt, instructions):
             register += instruction[1]
 
 
+import emoji
+#https://unicode.org/emoji/charts/emoji-list.html
 def day10_2(data):
     #data = read_input(2022, "10t")       
-    
+
+
     result = 0
     instructions = []
     for line in data:
@@ -1206,12 +1209,10 @@ def day10_2(data):
     rows += sum([1 for l in instructions if l[0] == 'addx']) * 2
     rows = rows // columns
 
-    crt = [ [ '.' for i in range(columns) ] for j in range(rows) ]    
+    crt = [ [ emoji.emojize('.') for i in range(columns) ] for j in range(rows) ]    
     draw_crt(crt,instructions)
-    #printMap(crt)    
-   
     
-    printGridsASCII(crt,BLUE_CIRCLE)
+    printGridsASCII(crt,'#')
            
     AssertExpectedResult('RKAZAJBR', result)
     return result
