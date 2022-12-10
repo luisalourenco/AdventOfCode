@@ -1104,19 +1104,137 @@ def day9_2(data):
 
 #region ##### Day 10 #####
 
-def day10_1(data):
-    data = read_input(2022, "10t")       
+def get_signal_strenghts(instructions, times):
+    cycle = 1
+    register = 1
+    signal_strenghts = []
+    signal_strenght = 0
     
-    for line in data:
-        line.split(' ')
+    cycles = [20,60,100,140,180,220]
+    
+    required_cycle = 0
+    for instruction in instructions:
+        
+        if instruction[0] == 'noop':
+            required_cycle = 1
+        elif instruction[0] == 'addx':
+            required_cycle = 2
 
+        for i in range(required_cycle):           
+                
+            if cycle in cycles:
+                print(cycle,cycle*register)
+                #print(instruction[0],instruction[1], "register:",register)
+                signal_strenghts.append(cycle*register)
+            
+            cycle += 1
+            
+        if instruction[0] == 'addx':
+            register += instruction[1]
+            
+    return signal_strenghts
+
+#Day 10, part 1: 16880 (0.077 secs)
+#Day 10, part 2: 0 (0.006 secs)
+def day10_1(data):
+    #data = read_input(2022, "10t")       
+    
     result = 0
+    instructions = []
+    for line in data:
+        input = line.split(' ')
+
+        if input[0] == 'addx':
+            instructions.append((input[0], int(input[1])))
+        else:
+            instructions.append((input[0], ''))
+
+    times = 6
+    signal_strenghts = get_signal_strenghts(instructions, times)
+
+    result = sum(signal_strenghts)
+    #print(instructions)
            
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(16880, result)
+    return result
+
+
+def draw_crt(crt, instructions):
+    cycle = 1
+    register = 1
+    required_cycle = 0
+    
+    x = 0
+    for instruction in instructions:
+        
+        if instruction[0] == 'noop':
+            required_cycle = 1
+        elif instruction[0] == 'addx':
+            required_cycle = 2
+            #register += instruction[1]
+
+        for i in range(required_cycle):           
+            x = x % 40
+            y = (cycle//40)
+            
+            #print("cycle:",cycle,"position:", x, y, "register:",register)
+            if x-1 <= register <= x+1:
+                crt[y][x] = '#'
+            
+            cycle += 1
+            x += 1
+            
+        if instruction[0] == 'addx':
+            register += instruction[1]
+
+
+def day10_2(data):
+    #data = read_input(2022, "10t")       
+    
+    result = 0
+    instructions = []
+    for line in data:
+        input = line.split(' ')
+
+        if input[0] == 'addx':
+            instructions.append((input[0], int(input[1])))
+        else:
+            instructions.append((input[0], ''))
+
+    rows = len(instructions)
+    columns = 40    
+    rows += sum([1 for l in instructions if l[0] == 'addx']) * 2
+    rows = rows // columns
+
+    crt = [ [ '.' for i in range(columns) ] for j in range(rows) ]    
+    draw_crt(crt,instructions)
+    #printMap(crt)    
+   
+    
+    printGridsASCII(crt,BLUE_CIRCLE)
+           
+    AssertExpectedResult('RKAZAJBR', result)
     return result
 
 #endregion
 
+
+
+#region ##### Day 11 #####
+
+def day11_1(data):
+    data = read_input(2022, "11t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+
+#endregion
 
 
 if __name__ == "__main__":
