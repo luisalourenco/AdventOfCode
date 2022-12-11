@@ -1223,16 +1223,241 @@ def day10_2(data):
 
 #region ##### Day 11 #####
 
+def play_monkey_turn(monkey, monkey_data, monkeys, part2):
+    items = monkey_data[0]
+    operation = monkey_data[1]
+
+    if part2:
+        test = monkey_data[4]
+    else:
+        test = monkey_data[2]
+    inspected = monkeys[monkey][3] + len(items)
+    
+    #print('Monkey',monkey, 'with items', items)
+    for worry_level in items:
+        #print("Monkey inspects an item with a worry level of", worry_level)
+        worry_level = operation(worry_level)
+        #print('Worry level changes to', worry_level)       
+        
+        if not part2:
+            worry_level = worry_level // 3
+            #print('Monkey gets bored with item. Worry level is divided by 3 to', worry_level)
+       
+        throw_at_monkey = test(worry_level)
+        #print('Item with worry level',worry_level,'is thrown to monkey', throw_at_monkey)
+        
+        monkeys[throw_at_monkey][0].append(worry_level)
+        #print()
+       
+    #print('Updated monkey to', inspected)
+    monkeys[monkey] = ([], operation, monkey_data[2], inspected, monkey_data[4])
+    
+
+def play_round(monkeys, part2 = False):
+    for monkey, monkey_data in monkeys.items():
+        play_monkey_turn(monkey, monkey_data, monkeys, part2)
+
+
 def day11_1(data):
     data = read_input(2022, "11t")       
     
-    result = 0
-    for line in data:
-        input = line.split(' ')
-
+    monkeys_s, monkeys = get_monkeys_input()
+            
+    rounds = 20
+    for r in range(rounds):
+        play_round(monkeys)
+        #print("Round",r)
+        #for m,v in monkeys_s.items():
+        #    print(m, v[0])
+        #print()          
+    
+    inspected = []
+    for m, v in monkeys.items():
+        inspected.append(v[3])
+    inspected.sort(reverse=True)
+    monkey_business = inspected[0] * inspected[1]
+    
+    print(monkey_business)
            
-    AssertExpectedResult(0, result)
-    return result
+    AssertExpectedResult(110264, monkey_business)
+    return monkey_business
+
+
+#2,3,5,7,11,13,17,19,23
+#wasted effort on trying disibility rules algos for big numbers
+def apply_divisibility_rule(number, divisor):
+    if divisor == 2:
+        #print(str(number)[-1])
+        return (int(str(number)[-1]) % 2) == 0
+        
+    elif divisor == 3:
+        list_of_integers = [int(digit) for digit in str(number)]       
+        
+        return (sum(list_of_integers) % 3) == 0
+            
+    elif divisor == 5:
+        last_digit = int(str(number)[-1])
+        
+        return last_digit == 0 or last_digit == 5
+    
+    elif divisor == 7: #ok
+        
+        list_of_integers = [int(digit) for digit in str(number)]          
+        triplets = []
+        
+        # Append required 0s at the beginning. 
+        if (len(list_of_integers) % 3 == 1) : 
+            list_of_integers.insert(0,0)
+            list_of_integers.insert(0,0)      
+        elif (len(list_of_integers) % 3 == 2) : 
+            list_of_integers.insert(0,0)        
+        
+        i = 0
+        while i < len(list_of_integers):
+            n = int(str(list_of_integers[i]) + str(list_of_integers[i+1]) + str(list_of_integers[i+2]))
+            triplets.append(n) 
+            i += 3
+        triplets.reverse()
+       
+        total = range(len(triplets))
+        sum_subtracts = 0
+        for i in total[1::2]:        
+            #print(triplets[i-1],'-',triplets[i]  )
+            sum_subtracts += triplets[i-1]-triplets[i]  
+        
+        return (sum_subtracts % 7) == 0
+        
+    elif divisor == 11: # ok
+        list_of_integers = [int(digit) for digit in str(number)]       
+        
+        total = range(len(list_of_integers))
+        sum_subtracts = 0
+        for i in total[1::2]:
+            print(list_of_integers[i-1],'-',list_of_integers[i])
+            sum_subtracts += list_of_integers[i-1]-list_of_integers[i]  
+        
+        if len(list_of_integers) % 2 != 0:
+            sum_subtracts += list_of_integers[-1]
+        
+        return (sum_subtracts % 11) == 0
+    
+    elif divisor == 13: #ok
+        list_of_integers = [int(digit) for digit in str(number)]          
+        triplets = []
+        
+        # Append required 0s at the beginning. 
+        if (len(list_of_integers) % 3 == 1) : 
+            list_of_integers.insert(0,0)
+            list_of_integers.insert(0,0)      
+        elif (len(list_of_integers) % 3 == 2) : 
+            list_of_integers.insert(0,0)        
+        
+        i = 0          
+        while i < len(list_of_integers):
+            n = int(str(list_of_integers[i]) + str(list_of_integers[i+1]) + str(list_of_integers[i+2]))
+            triplets.append(n) 
+            i += 3
+        triplets.reverse()
+        
+        sum_subtracts = 0
+        while len(triplets) > 0:
+            n1 = triplets.pop()
+            n2 = triplets.pop()
+            sum_subtracts += n1 - n2
+            #print(n1,'-',n2)
+            if len(triplets) == 1:
+                n3 = triplets.pop()
+                #print(n3,'- 0')
+                sum_subtracts += n3
+        
+        return (sum_subtracts % 13) == 0
+        
+    elif divisor == 17:
+        
+        while(len(str(number)) > 5):
+            last_digit = int(str(number)[-1]) * 7
+            remainder = int(str(number)[:-1])
+            
+            number = remainder - last_digit
+        
+        return (number % 17) == 0
+    
+    elif divisor == 19:
+        
+        while(len(str(number)) > 5):
+            last_digit = int(str(number)[-1]) * 2
+            remainder = int(str(number)[:-1])
+            
+            number = remainder - last_digit
+        
+        return (number % 19) == 0
+            
+    elif divisor == 23:
+        
+        while(len(str(number)) > 5):
+            last_digit = int(str(number)[-1]) * 7
+            remainder = int(str(number)[:-1])
+            
+            number = remainder - last_digit
+        
+        return (number %23) == 0
+           
+    return False
+
+def get_monkeys_input():
+    monkeys_s = defaultdict()
+    monkeys = defaultdict()
+    
+    monkeys_s[0] = ([79,98], lambda old: old*19, lambda worry: 2 if worry % 23 == 0 else 3, 0, lambda worry: 2 if worry % 96577 == 0 else 3)
+    
+    monkeys_s[1] = ([54,65,75,74], lambda old: old+6, lambda worry: 2 if worry % 19 == 0 else 0, 0, lambda worry: 2 if worry % 96577 == 0 else 0)
+    
+    monkeys_s[2] = ([79,60,97], lambda old: old*old, lambda worry: 1 if worry % 13 == 0 else 3, 0, lambda worry: 1 if worry % 96577 == 0 else 3)
+    
+    monkeys_s[3] = ([74], lambda old: old+3, lambda worry: 0 if worry % 17 == 0 else 1, 0, lambda worry: 0 if worry % 96577 == 0 else 1)
+    
+    
+    monkeys[0] = ([65,78], lambda old: old*3, lambda worry: 2 if worry % 5 == 0 else 3, 0, lambda worry: 2 if worry % 9699690 == 0 else 3)
+    monkeys[1] = ([54, 78, 86, 79, 73, 64, 85, 88], lambda old: old + 8, lambda worry: 4 if worry % 11 == 0 else 7, 0, lambda worry: 4 if worry % 9699690 == 0 else 7)
+    monkeys[2] = ([69, 97, 77, 88, 87], lambda old: old + 2, lambda worry: 5 if worry % 2 == 0 else 3, 0, lambda worry: 5 if worry % 9699690 == 0 else 3)
+    monkeys[3] = ([99], lambda old: old + 4, lambda worry: 1 if worry % 13 == 0 else 5, 0, lambda worry: 1 if worry % 9699690 == 0 else 5)
+    monkeys[4] = ([60, 57, 52], lambda old: old * 19, lambda worry: 7 if worry % 7 == 0 else 6, 0, lambda worry: 7 if worry % 9699690 == 0 else 6)
+    monkeys[5] = ([91, 82, 85, 73, 84, 53], lambda old: old + 5, lambda worry: 4 if worry % 3 == 0 else 1, 0, lambda worry: 4 if worry % 9699690 == 0 else 1)
+    monkeys[6] = ([88, 74, 68, 56], lambda old: old * old, lambda worry: 0 if worry % 17 == 0 else 2, 0, lambda worry: 0 if worry % 9699690 == 0 else 2)
+    monkeys[7] = ([54, 82, 72, 71, 53, 99, 67], lambda old: old + 1, lambda worry: 6 if worry % 19 == 0 else 0, 0, lambda worry: 6 if worry % 9699690 == 0 else 0)
+    
+    return monkeys_s, monkeys
+
+# 32398560007 too high
+def day11_2(data):
+    data = read_input(2022, "11t")       
+    
+    monkeys_s, monkeys = get_monkeys_input()
+            
+    rounds = 10000
+    for r in range(rounds):
+        play_round(monkeys_s, part2=True)
+       
+        if r+1 in [1,20,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]:
+            print("Round",r+1)
+            for m,v in monkeys_s.items():
+                print(m, v[3])
+            print()             
+        
+    inspected = []
+    for m, v in monkeys_s.items():
+        inspected.append(v[3])
+    inspected.sort(reverse=True)
+    monkey_business = inspected[0] * inspected[1]
+    print(inspected)
+    print(monkey_business)
+    
+    
+    #1231243423434534643634545634565436354635636354635463452345235235325235235235
+    #print(apply_divisibility_rule(2278  , 17))
+           
+    AssertExpectedResult(0, monkey_business)
+    return monkey_business
 
 
 #endregion
@@ -1240,5 +1465,5 @@ def day11_1(data):
 
 if __name__ == "__main__":
     # override timeout
-    main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
+    main(sys.argv, globals(), AOC_EDITION_YEAR, 120)
 
