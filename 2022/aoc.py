@@ -1191,8 +1191,7 @@ def draw_crt(crt, instructions):
 import emoji
 #https://unicode.org/emoji/charts/emoji-list.html
 def day10_2(data):
-    #data = read_input(2022, "10t")       
-
+    #data = read_input(2022, "10t")      
 
     result = 0
     instructions = []
@@ -1226,11 +1225,7 @@ def day10_2(data):
 def play_monkey_turn(monkey, monkey_data, monkeys, part2):
     items = monkey_data[0]
     operation = monkey_data[1]
-
-    if part2:
-        test = monkey_data[4]
-    else:
-        test = monkey_data[2]
+    test = monkey_data[2]
     inspected = monkeys[monkey][3] + len(items)
     
     #print('Monkey',monkey, 'with items', items)
@@ -1242,6 +1237,9 @@ def play_monkey_turn(monkey, monkey_data, monkeys, part2):
         if not part2:
             worry_level = worry_level // 3
             #print('Monkey gets bored with item. Worry level is divided by 3 to', worry_level)
+        else:
+            #hardcoding was not a great idea :'(
+            worry_level = worry_level % 9699690 
        
         throw_at_monkey = test(worry_level)
         #print('Item with worry level',worry_level,'is thrown to monkey', throw_at_monkey)
@@ -1250,14 +1248,15 @@ def play_monkey_turn(monkey, monkey_data, monkeys, part2):
         #print()
        
     #print('Updated monkey to', inspected)
-    monkeys[monkey] = ([], operation, monkey_data[2], inspected, monkey_data[4])
+    monkeys[monkey] = ([], operation, monkey_data[2], inspected)
     
 
 def play_round(monkeys, part2 = False):
     for monkey, monkey_data in monkeys.items():
         play_monkey_turn(monkey, monkey_data, monkeys, part2)
 
-
+#Day 11, part 1: 110264 (0.080 secs)
+#Day 11, part 2: 23612457316 (0.132 secs)
 def day11_1(data):
     data = read_input(2022, "11t")       
     
@@ -1408,27 +1407,26 @@ def get_monkeys_input():
     monkeys_s = defaultdict()
     monkeys = defaultdict()
     
-    monkeys_s[0] = ([79,98], lambda old: old*19, lambda worry: 2 if worry % 23 == 0 else 3, 0, lambda worry: 2 if worry % 96577 == 0 else 3)
+    # 96577
+    monkeys_s[0] = ([79,98], lambda old: old*19, lambda worry: 2 if worry % 23 == 0 else 3, 0)    
+    monkeys_s[1] = ([54,65,75,74], lambda old: old+6, lambda worry: 2 if worry % 19 == 0 else 0, 0)    
+    monkeys_s[2] = ([79,60,97], lambda old: old*old, lambda worry: 1 if worry % 13 == 0 else 3, 0)    
+    monkeys_s[3] = ([74], lambda old: old+3, lambda worry: 0 if worry % 17 == 0 else 1, 0)
     
-    monkeys_s[1] = ([54,65,75,74], lambda old: old+6, lambda worry: 2 if worry % 19 == 0 else 0, 0, lambda worry: 2 if worry % 96577 == 0 else 0)
-    
-    monkeys_s[2] = ([79,60,97], lambda old: old*old, lambda worry: 1 if worry % 13 == 0 else 3, 0, lambda worry: 1 if worry % 96577 == 0 else 3)
-    
-    monkeys_s[3] = ([74], lambda old: old+3, lambda worry: 0 if worry % 17 == 0 else 1, 0, lambda worry: 0 if worry % 96577 == 0 else 1)
-    
-    
-    monkeys[0] = ([65,78], lambda old: old*3, lambda worry: 2 if worry % 5 == 0 else 3, 0, lambda worry: 2 if worry % 9699690 == 0 else 3)
-    monkeys[1] = ([54, 78, 86, 79, 73, 64, 85, 88], lambda old: old + 8, lambda worry: 4 if worry % 11 == 0 else 7, 0, lambda worry: 4 if worry % 9699690 == 0 else 7)
-    monkeys[2] = ([69, 97, 77, 88, 87], lambda old: old + 2, lambda worry: 5 if worry % 2 == 0 else 3, 0, lambda worry: 5 if worry % 9699690 == 0 else 3)
-    monkeys[3] = ([99], lambda old: old + 4, lambda worry: 1 if worry % 13 == 0 else 5, 0, lambda worry: 1 if worry % 9699690 == 0 else 5)
-    monkeys[4] = ([60, 57, 52], lambda old: old * 19, lambda worry: 7 if worry % 7 == 0 else 6, 0, lambda worry: 7 if worry % 9699690 == 0 else 6)
-    monkeys[5] = ([91, 82, 85, 73, 84, 53], lambda old: old + 5, lambda worry: 4 if worry % 3 == 0 else 1, 0, lambda worry: 4 if worry % 9699690 == 0 else 1)
-    monkeys[6] = ([88, 74, 68, 56], lambda old: old * old, lambda worry: 0 if worry % 17 == 0 else 2, 0, lambda worry: 0 if worry % 9699690 == 0 else 2)
-    monkeys[7] = ([54, 82, 72, 71, 53, 99, 67], lambda old: old + 1, lambda worry: 6 if worry % 19 == 0 else 0, 0, lambda worry: 6 if worry % 9699690 == 0 else 0)
+    # 9699690
+    monkeys[0] = ([65,78], lambda old: old*3, lambda worry: 2 if worry % 5 == 0 else 3, 0)
+    monkeys[1] = ([54, 78, 86, 79, 73, 64, 85, 88], lambda old: old + 8, lambda worry: 4 if worry % 11 == 0 else 7, 0)
+    monkeys[2] = ([69, 97, 77, 88, 87], lambda old: old + 2, lambda worry: 5 if worry % 2 == 0 else 3, 0)
+    monkeys[3] = ([99], lambda old: old + 4, lambda worry: 1 if worry % 13 == 0 else 5, 0)
+    monkeys[4] = ([60, 57, 52], lambda old: old * 19, lambda worry: 7 if worry % 7 == 0 else 6, 0)
+    monkeys[5] = ([91, 82, 85, 73, 84, 53], lambda old: old + 5, lambda worry: 4 if worry % 3 == 0 else 1, 0)
+    monkeys[6] = ([88, 74, 68, 56], lambda old: old * old, lambda worry: 0 if worry % 17 == 0 else 2, 0)
+    monkeys[7] = ([54, 82, 72, 71, 53, 99, 67], lambda old: old + 1, lambda worry: 6 if worry % 19 == 0 else 0, 0)
     
     return monkeys_s, monkeys
 
 # 32398560007 too high
+# 21662625840 too low
 def day11_2(data):
     data = read_input(2022, "11t")       
     
@@ -1436,16 +1434,16 @@ def day11_2(data):
             
     rounds = 10000
     for r in range(rounds):
-        play_round(monkeys_s, part2=True)
+        play_round(monkeys, part2=True)
        
-        if r+1 in [1,20,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]:
-            print("Round",r+1)
-            for m,v in monkeys_s.items():
-                print(m, v[3])
-            print()             
+        #if r+1 in [1,20,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000]:
+        #    print("Round",r+1)
+        #    for m,v in monkeys.items():
+        #        print(m, v[3])
+        #    print()             
         
     inspected = []
-    for m, v in monkeys_s.items():
+    for m, v in monkeys.items():
         inspected.append(v[3])
     inspected.sort(reverse=True)
     monkey_business = inspected[0] * inspected[1]
@@ -1456,11 +1454,60 @@ def day11_2(data):
     #1231243423434534643634545634565436354635636354635463452345235235325235235235
     #print(apply_divisibility_rule(2278  , 17))
            
-    AssertExpectedResult(0, monkey_business)
+    AssertExpectedResult(23612457316, monkey_business)
     return monkey_business
 
+#endregion
+
+
+
+#region ##### Day 12 #####
+
+def day12_1(data):
+    data = read_input(2022, "12t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+'''
+def day12_2(data):
+    data = read_input(2022, "12t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+'''
 
 #endregion
+
+
+
+
+'''
+#region ##### Day 13 #####
+
+def day13_1(data):
+    data = read_input(2022, "13t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+'''
 
 
 if __name__ == "__main__":
