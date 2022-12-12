@@ -1460,23 +1460,161 @@ def day11_2(data):
 #endregion
 
 
-
 #region ##### Day 12 #####
 
+def build_graph_from_height_map(map):
+    graph = {}
+    sizeX = len(map[0])
+    sizeY = len(map)
+
+    for y in range(sizeY):
+        for x in range(sizeX):
+
+            east = (x+1, y)
+            west = (x-1, y)
+            north = (x, y-1)
+            south = (x, y+1)
+            
+            neighbours = []
+            
+            if map[y][x] == 'S':
+                current_pos = ord('a')
+            elif map[y][x] == 'E':
+                current_pos = ord('z')
+            else:
+                current_pos = ord(map[y][x])
+
+            if map[y][x] != ' ':                
+                if east[1] >= 0 and east[0] >= 0 and east[1] < sizeY and east[0] < sizeX and map[east[1]][east[0]] != ' ' and (ord(map[east[1]][east[0]]) - current_pos) <= 1:
+                    neighbours.append(east)
+                if west[1] >= 0 and west[0] >= 0 and west[1] < sizeY and west[0] < sizeX and map[west[1]][west[0]] != ' ' and (ord(map[west[1]][west[0]]) - current_pos) <= 1:
+                    neighbours.append(west)
+                if north[1] >= 0 and north[0] >= 0 and north[1] < sizeY and north[0] < sizeX and map[north[1]][north[0]] != ' ' and (ord(map[north[1]][north[0]]) - current_pos) <= 1:
+                    neighbours.append(north)
+                if south[1] >= 0 and south[0] >= 0 and south[1] < sizeY and south[0] < sizeX and map[south[1]][south[0]] != ' ' and (ord(map[south[1]][south[0]]) - current_pos) <= 1:
+                    neighbours.append(south)
+            
+            graph[(x,y)] = neighbours
+    return graph
+
+
+# shamelessly taken from https://onestepcode.com/graph-shortest-path-python/
+def shortest_path(graph, node1, node2):
+    path_list = [[node1]]
+    path_index = 0
+    # To keep track of previously visited nodes
+    previous_nodes = {node1}
+    if node1 == node2:
+        return path_list[0]
+        
+    while path_index < len(path_list):
+        current_path = path_list[path_index]
+        last_node = current_path[-1]
+        next_nodes = graph[last_node]
+        
+        # Search goal node
+        if node2 in next_nodes:
+            current_path.append(node2)
+            return current_path
+        # Add new paths
+        for next_node in next_nodes:
+            if not next_node in previous_nodes:
+                new_path = current_path[:]
+                new_path.append(next_node)
+                path_list.append(new_path)
+                # To avoid backtracking
+                previous_nodes.add(next_node)
+        # Continue to next path in list
+        path_index += 1
+    # No path is found
+    return []
+
+#Day 12, part 1: 352 (0.110 secs)
+#Day 12, part 2: 345 (0.494 secs)
 def day12_1(data):
-    data = read_input(2022, "12t")       
+    #data = read_input(2022, "12t")       
     
-    result = 0
+    result = 0  
+    y = 0
+    rows = len(data)
+    columns = len(data[0])  
+    grid = [ [ ' ' for i in range(columns) ] for j in range(rows) ]  
+    initial_position = (0,0)
+    final_position = (0,0)
+    
     for line in data:
-        input = line.split(' ')
-
-           
-    AssertExpectedResult(0, result)
+        x=0
+        for n in line:
+            grid[y][x] = n
+            if n == 'S':
+                grid[y][x] = 'a'
+                initial_position = (x,y)
+            if n == 'E':
+                grid[y][x] = 'z'
+                final_position = (x,y)
+            x+=1
+        y+=1
+        
+    #printMap(grid)    
+    g = build_graph_from_height_map(grid)    
+    #printGraph(g)
+    path = shortest_path(g,initial_position,final_position)
+    #print(path)
+    result = len(path)-1
+    
+    AssertExpectedResult(352, result)
     return result
 
-'''
+
 def day12_2(data):
-    data = read_input(2022, "12t")       
+    #data = read_input(2022, "12t")       
+    
+    result = 0  
+    y = 0
+    rows = len(data)
+    columns = len(data[0])  
+    grid = [ [ ' ' for i in range(columns) ] for j in range(rows) ]  
+    initial_position = (0,0)
+    final_position = (0,0)
+    a_positions = []
+    
+    for line in data:
+        x=0
+        for n in line:
+            if n == 'a':
+                a_positions.append((x,y))
+            grid[y][x] = n
+            if n == 'S':
+                grid[y][x] = 'a'
+                initial_position = (x,y)
+            if n == 'E':
+                grid[y][x] = 'z'
+                final_position = (x,y)
+            x+=1
+        y+=1
+        
+    #printMap(grid)    
+    g = build_graph_from_height_map(grid)    
+    
+    result = sys.maxsize
+    while len(a_positions) > 0:
+        initial_position = a_positions.pop()    
+        path = shortest_path(g,initial_position,final_position)
+        path_length = len(path)-1
+        if path_length > 0 and path_length < result:
+            result = path_length
+    
+    AssertExpectedResult(345, result)
+    return result
+
+
+#endregion
+
+
+#region ##### Day 13 #####
+
+def day13_1(data):
+    data = read_input(2022, "13t")       
     
     result = 0
     for line in data:
@@ -1485,18 +1623,16 @@ def day12_2(data):
            
     AssertExpectedResult(0, result)
     return result
-'''
 
 #endregion
 
 
 
-
 '''
-#region ##### Day 13 #####
+#region ##### Day 14 #####
 
-def day13_1(data):
-    data = read_input(2022, "13t")       
+def day14_1(data):
+    data = read_input(2022, "14t")       
     
     result = 0
     for line in data:
