@@ -1613,8 +1613,189 @@ def day12_2(data):
 
 #region ##### Day 13 #####
 
+
+def is_packet_pair_in_right_order(left_packet, right_packet):
+    
+    #print("Left packet",left_packet)
+    #print("Right packet",right_packet)
+    
+    if type(left_packet) is list and type(right_packet) is int:
+        #print("Converting right packet into list")
+        return is_packet_pair_in_right_order(left_packet, [right_packet])
+    
+    if type(left_packet) is int and type(right_packet) is list:
+        #print("Converting left packet into list")
+        return is_packet_pair_in_right_order([left_packet], right_packet)
+    
+    if type(left_packet) is int and type(right_packet) is int:
+        #print("Packets are integers:", left_packet, right_packet)
+        if left_packet != right_packet:
+            #print("Comparing integers!")
+            return left_packet < right_packet
+        else:
+            return None
+    
+    if type(left_packet) is list and type(right_packet) is list:
+        #print("Packets are lists of sizes",len(left_packet), len(right_packet))
+        
+        if left_packet == []:
+            return True
+        if right_packet == []:
+            return False
+        
+        left_elem = left_packet.pop(0)
+        right_elem = right_packet.pop(0)
+
+        if right_elem == left_elem == []:
+            result = None
+        else:
+            result = is_packet_pair_in_right_order(left_elem, right_elem)
+           
+        #print("result is", result)
+        if result != None:
+            return result
+        else:
+            if left_packet != [] or right_packet != []:
+                return is_packet_pair_in_right_order(left_packet, right_packet)
+        
+    
+# 2087
+# 5913
+#Day 13, part 1: 5580 (0.076 secs)
+#Day 13, part 2: 26200 (1.557 secs)
 def day13_1(data):
-    data = read_input(2022, "13t")       
+    #data = read_input(2022, "13t")           
+    result = 0
+    left_packet = None
+    right_packet = None
+    index = 1
+    right_ordered_pairs = []
+    for line in data:
+        if line:
+            if left_packet == None:
+                left_packet = eval(line.split("\n")[0])
+            elif right_packet == None:
+                right_packet = eval(line.split("\n")[0])
+                #print("Pair",index,":",left_packet,'vs',right_packet)
+                result = is_packet_pair_in_right_order(left_packet, right_packet)
+                #print("result of pair comparison is", result)
+                if result == True:
+                    right_ordered_pairs.append(index)
+                #print()
+                left_packet = None
+                right_packet = None
+                index+=1
+    #print(right_ordered_pairs)
+    result = sum(right_ordered_pairs)
+           
+    AssertExpectedResult(5580, result)
+    return result
+
+# this is inneficient, takes 110s
+def bubble_sort(array):
+    n = len(array)
+
+    for i in range(n):
+        already_sorted = True
+
+        for j in range(n - i - 1):
+            c_array = copy.deepcopy(array)            
+            res = is_packet_pair_in_right_order(c_array[j+1], c_array[j])
+            if res:
+                array[j], array[j + 1] = array[j + 1], array[j]
+                already_sorted = False
+
+        if already_sorted:
+            break
+
+    return array
+
+
+def merge(left, right):
+    if len(left) == 0:
+        return right
+
+    if len(right) == 0:
+        return left
+
+    result = []
+    index_left = index_right = 0
+
+    while len(result) < len(left) + len(right):
+
+        c_left = copy.deepcopy(left) 
+        c_right = copy.deepcopy(right) 
+        res = is_packet_pair_in_right_order(c_left[index_left], c_right[index_right])
+        
+        if res: 
+            result.append(left[index_left])
+            index_left += 1
+        else:
+            result.append(right[index_right])
+            index_right += 1
+
+        if index_right == len(right):
+            result += left[index_left:]
+            break
+
+        if index_left == len(left):
+            result += right[index_right:]
+            break
+
+    return result
+
+def merge_sort(array):
+    if len(array) < 2:
+        return array
+
+    midpoint = len(array) // 2
+
+    return merge(
+        left=merge_sort(array[:midpoint]),
+        right=merge_sort(array[midpoint:]))
+
+
+def day13_2(data):
+    #data = read_input(2022, "13t")           
+    result = 0
+    left_packet = None
+    right_packet = None
+    index = 1
+    divider_packets = [[[2]],[[6]]]
+    packet_pairs = [[[2]],[[6]]]
+    for line in data:
+        if line:
+            if left_packet == None:
+                left_packet = eval(line.split("\n")[0])
+            elif right_packet == None:
+                right_packet = eval(line.split("\n")[0])
+                packet_pairs.append(left_packet)
+                packet_pairs.append(right_packet)
+
+                left_packet = None
+                right_packet = None
+                index+=1
+                
+    packet_pairs = merge_sort(packet_pairs)
+    i = 1
+    result = 1
+    for packet in packet_pairs:
+        if packet in divider_packets:
+            result *= i
+        i+=1
+    print(result)   
+           
+    AssertExpectedResult(26200, result)
+    return result
+
+#endregion
+
+
+
+#region ##### Day 14 #####
+
+def day14_1(data):
+    data = read_input(2022, "14t")       
     
     result = 0
     for line in data:
@@ -1624,15 +1805,15 @@ def day13_1(data):
     AssertExpectedResult(0, result)
     return result
 
-#endregion
+#enddregion
 
 
 
 '''
-#region ##### Day 14 #####
+#region ##### Day 15 #####
 
-def day14_1(data):
-    data = read_input(2022, "14t")       
+def day15_1(data):
+    data = read_input(2022, "15t")       
     
     result = 0
     for line in data:
