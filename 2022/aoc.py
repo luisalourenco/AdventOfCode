@@ -1794,8 +1794,207 @@ def day13_2(data):
 
 #region ##### Day 14 #####
 
+def generate_cave_system(rock_segments, low_x, high_x, low_y, high_y, part2 = False):
+    delta = 500
+    
+    adjust_x = high_x - delta//2
+    adjust_y = high_y 
+    adjust_delta = min(adjust_x, adjust_y) 
+    
+    rows = low_y - high_y + delta 
+    columns = high_x - low_x + delta
+    cave = [ [ '.' for i in range(columns) ] for j in range(rows) ]      
+    
+    sand = (500-adjust_x, 0+adjust_y)
+    
+    lowest_y = 0
+    for rock_segment in rock_segments:
+        #print(rock_segment)
+        start = rock_segment[0]
+        end = rock_segment[1]
+        xi = min(start[0], end[0])
+        xf = max(start[0], end[0])
+        
+        for x in range(xi, xf+1):
+            #print("converting x:", x, "into", x - adjust_x)
+            
+            x -= adjust_x
+            
+            
+            yi = min(start[1], end[1])
+            yf = max(start[1], end[1])
+            for y in range(yi, yf+1):  
+               # print("converting y:", y, "into", y -adjust_y )
+                y+= adjust_y         
+                
+                cave[y][x] = '#'
+                if y > lowest_y:
+                    lowest_y = y
+    if part2:
+        y= lowest_y+2
+        for x in range(0, columns):   
+            cave[y][x] = '#' 
+    
+    cave[sand[1]][sand[0]] = '+'
+    #printMap(cave)
+    return cave, sand, lowest_y
+
+def check_grain_at_rest(cave, lowest_rock, x, y, part2 = False):
+    SAND = 'o'
+    AIR = '.'
+    ROCK = '#'
+    obstacles = [SAND, ROCK]
+    directions = {"down": (0,1), "left": (-1,1), "right": (1,1)}
+    
+    dx = directions["down"][0]
+    dy = directions["down"][1]
+    
+    #print("sand FALLING DOWN to position", x, y, "with",cave[y][x], part2)
+    if not part2:
+        if y+dy > lowest_rock :
+            #print("sand fell into ABYSS!", y+dy,'>', lowest_rock)
+            return cave, True, True, x, y  
+    
+    #     .
+    #   #?#?#
+    if cave[y+dy][x+dx] in obstacles: #hit a rock or sand grain
+        #print("hit an obstacle", cave[y+dy][x+dx],"at", x+dx,y+dy, "switching to LEFT")
+        dx = directions["left"][0]
+        dy = directions["left"][1]                
+        #     .
+        #  ##.# ###
+        if cave[y+dy][x+dx] == AIR: # can cascade left
+            return check_grain_at_rest(cave, lowest_rock, x+dx, y+dy, part2)
+        else:
+            #print("hit an obstacle", cave[y+dy][x+dx],"at", x+dx,y+dy, "switching to RIGHT")
+            dx = directions["right"][0]
+            dy = directions["right"][1]                
+            #     .
+            #  ## #. ###
+            if cave[y+dy][x+dx] == AIR: # can cascade right
+                return check_grain_at_rest(cave, lowest_rock, x+dx, y+dy, part2)
+            else: 
+                if cave[y][x] in obstacles:
+                    #print("hit an obstacle", cave[y][x],"at", x,y, "rebooting!")
+                    return cave, False, False, x, y
+                else: #it sits on top
+                    #print("sand dropped at",x,y,"!")
+                    cave[y][x] = SAND
+                    return cave, True, False, x, y
+   
+    return cave, False, False, x, y 
+
+def drop_one_sand(cave, lowest_rock, sand, part2 = False):
+    SAND = 'o'
+    AIR = '.'
+    ROCK = '#'
+    sand_point = (sand[0], sand[1])
+    x,y = (sand[0], sand[1])        
+
+    while True: 
+        dx = 0
+        dy = 1         
+        cave, is_resting, fell_into_abyss, x, y = check_grain_at_rest(cave, lowest_rock, x, y, part2)
+
+        if not part2:
+            if fell_into_abyss:
+                break
+        
+        if not is_resting:
+            #print("updating",x,y,"to",x+dx,y+dy)
+            x+=dx 
+            y+=dy
+        else:
+            break
+ 
+        
+    return cave, fell_into_abyss 
+
+def drop_sand_until_it_flows_into_abyss(cave, lowest_rock, sand, part2=False):
+    units = 0
+    
+    while True:
+        #print("unit:", units)
+        cave, fell_into_abyss = drop_one_sand(cave, lowest_rock, sand, part2)
+        if not part2 and fell_into_abyss:
+            break
+        units+=1
+        #printMap(cave)
+        if part2 and cave[sand[1]][sand[0]] == 'o':
+            break
+        
+    return units
+
+def parse_cave(data):
+    SAND = 'o'
+    rock_segments = []
+    lowest_rock = 0
+    result = 0
+    
+    low_y = -1000
+    high_y = 1000
+    
+    low_x = 1000    
+    high_x = -1000
+    for line in data:
+        input = line.split(' -> ')
+        start = None
+        end = None
+        for point in input:
+            p = point.split(',')
+            x = int(p[0])
+            y = int(p[1])
+            
+            if y > low_y:
+                low_y = y
+            if y < high_y:
+                high_y = y
+                
+            if x < low_x:
+                low_x = x
+            if x > high_x:
+                high_x = x            
+            
+            if not start:
+                start = (x,y)
+            else:
+                end = (x,y)
+                rock_segments.append([start, end])
+                start = end
+                end = None
+    return rock_segments, low_x, high_x, low_y, high_y
+
+    
+#Day 14, part 1: 618 (0.138 secs)
+#Day 14, part 2: 26358 (0.255 secs)
 def day14_1(data):
-    data = read_input(2022, "14t")       
+    #data = read_input(2022, "14t")       
+    rock_segments, low_x, high_x, low_y, high_y = parse_cave(data)    
+    cave, sand, lowest_rock = generate_cave_system(rock_segments, low_x, high_x, low_y, high_y)
+    result = drop_sand_until_it_flows_into_abyss(cave, lowest_rock, sand)   
+   
+    AssertExpectedResult(618, result)
+    return result
+
+def day14_2(data):
+    #data = read_input(2022, "14t")       
+    
+    rock_segments, low_x, high_x, low_y, high_y = parse_cave(data)    
+    
+    cave, sand, lowest_rock = generate_cave_system(rock_segments, low_x, high_x, low_y, high_y, part2=True)
+    result = drop_sand_until_it_flows_into_abyss(cave, lowest_rock, sand, part2=True)   
+   
+    AssertExpectedResult(26358, result)
+    return result
+
+
+#enddregion
+
+
+#region ##### Day 15 #####
+
+def day15_1(data):
+    data = read_input(2022, "15t")       
     
     result = 0
     for line in data:
@@ -1805,15 +2004,15 @@ def day14_1(data):
     AssertExpectedResult(0, result)
     return result
 
-#enddregion
+#endregion
 
 
 
 '''
-#region ##### Day 15 #####
+#region ##### Day 16 #####
 
-def day15_1(data):
-    data = read_input(2022, "15t")       
+def day16_1(data):
+    data = read_input(2022, "16t")       
     
     result = 0
     for line in data:
