@@ -2089,33 +2089,31 @@ def day15_2(data):
     result = 0
     sensors_beacons = parse_beacons_sensors(data)
     
-    #target_y = 2000000
-    target_y = 10
-    coverage_area = set()
     lower_bound = 0
-    upper_bound = 4000000    
+    upper_bound = 20#4000000    
     
     solver = Solver()
 
     x = Int('x')
     y = Int('y')
-    solver.add(x >= lower_bound, x <= upper_bound)
-    solver.add(y >= lower_bound, y <= upper_bound)
+    solver.add(x >= lower_bound, x <= upper_bound, y >= lower_bound, y <= upper_bound)
         
     for sensor in sensors_beacons.keys():
         radius = sensors_beacons[sensor][1]        
-        c_x, c_y =  sensor
+        c_x, c_y = sensor
         
-        solver.add(Not(And(x > c_x - radius, x < c_x + radius )))
-        solver.add(Not(And(y > c_y - radius , y < c_y + radius )))   
-  
+        solver.add(Or(x <= c_x - radius, 
+                      x >= c_x + radius, 
+                      y <= c_y - radius , 
+                      y >= c_y + radius ))
+        
     solver.check()
     model = solver.model()
     print(model)
-
-     
+ 
     distress_beacon = (model[x].as_long(), model[y].as_long())
     result = get_tuning_frequency(distress_beacon)
+    
     AssertExpectedResult(5181556, result)
     return result
 
