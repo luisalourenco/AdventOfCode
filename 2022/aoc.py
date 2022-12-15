@@ -1993,14 +1993,132 @@ def day14_2(data):
 
 #region ##### Day 15 #####
 
+def print_dict(d):
+
+    for k,v in d.items():
+        print(k,'=>')
+        for e in v:
+            print(e)
+        print()
+            
+def manhattan_distance(p1, p2, three_dimensions = False):
+    if three_dimensions:
+        (x,y,z) = p1 
+        (xx,yy,zz) = p2
+        return abs(xx - x) + abs(yy - y) + abs(zz - z)
+    else:
+        (x,y) = p1 
+        (xx,yy) = p2
+        return abs(xx - x) + abs(yy - y)
+
+#naive version
+def compute_coverage(sensors, sensors_beacons, beacons_sensors,low_x, high_x, low_y, high_y):
+    coverage_area = set()
+    for sensor in sensors:
+        distance = sensors_beacons[sensor][1]
+        for y in range(low_y,high_y+1):
+            for x in range(low_x, high_x+1):
+                distance2 = manhattan_distance((x,y), sensor)
+                if distance2 <= distance and (x,y) not in beacons_sensors.keys():
+                    coverage_area.add((x,y))
+    return coverage_area                    
+
+def parse_beacons_sensors(data):
+    sensors = []
+    beacons = []
+    result = 0
+    sensors_beacons = defaultdict()
+    beacons_sensors = defaultdict()
+    
+    low_y = sys.maxsize
+    high_y = -sys.maxsize
+    highest_distance = -sys.maxsize
+    
+    low_x = sys.maxsize    
+    high_x = -sys.maxsize
+    
+    for line in data:
+        sensor_data = [parse("Sensor at x={}, y={}: closest beacon is at x={}, y={}", line)][0]
+  
+        sensor = (int(sensor_data[0]), int(sensor_data[1]))
+        beacon = (int(sensor_data[2]), int(sensor_data[3]))
+        sensors.append(sensor)
+        beacons.append(beacon)
+        distance = manhattan_distance(sensor, beacon)
+        
+        sensors_beacons[sensor] = (beacon, distance)
+        beacons_sensors[beacon] = sensor
+        
+        x,y = sensor
+        xx,yy = beacon
+
+        if y < low_y:
+            low_y = y
+        if yy < low_y:
+            low_y = yy
+        if y > high_y:
+            high_y = y
+        if yy > high_y:
+            high_y = yy
+            
+        if x < low_x:
+            low_x = x
+        if xx < low_x:
+            low_x = xx
+        if x > high_x:
+            high_x = x   
+        if xx > high_x:
+            high_x = xx
+        
+        if distance > highest_distance:
+            highest_distance = distance
+    
+    return sensors, sensors_beacons, beacons_sensors,high_x,low_x,high_y,low_y,highest_distance
+
+def compute_coverage_area_for_sensor(sensor, radius, target_y, low_x, high_x, low_y, high_y):
+    coverage_area = set()
+    x_center, y_center =  sensor
+    
+    if y_center + radius <= target_y or y_center - radius <= target_y:
+        for r in range(radius, 0, -1):
+            for x in range(x_center - radius, x_center+radius+1):
+                yy = y_center-radius
+                if (x,yy) != sensor and yy == target_y:
+                    coverage_area.add((x,yy))
+                yy = y_center+radius
+                if (x,yy) != sensor and yy == target_y:
+                    coverage_area.add((x,yy))
+    
+    return coverage_area   
+
+# 1995350 low
 def day15_1(data):
-    data = read_input(2022, "15t")       
+    #data = read_input(2022, "15t")       
     
     result = 0
-    for line in data:
-        input = line.split(' ')
-
-           
+    sensors, sensors_beacons, beacons_sensors,high_x,low_x,high_y,low_y,highest_distance = parse_beacons_sensors(data)
+    
+    target_y = 2000000
+    #target_y = 10
+    coverage_area = set()
+    print(high_x- low_x,high_y-low_y)
+    
+    
+    all_coverage_area = set()
+    for sensor in sensors_beacons.keys():
+        radius = sensors_beacons[sensor][1]
+        #print(radius)
+        coverage_area = compute_coverage_area_for_sensor(sensor, radius, target_y, low_x, high_x, low_y, high_y)
+        all_coverage_area = all_coverage_area.union(coverage_area)
+        
+    
+    #sensor = (8, 7)
+    #radius = sensors_beacons[sensor][1]
+    #coverage_area = compute_coverage_area_for_sensor(sensor, radius)
+    #print(coverage_area)
+    
+    #coverage_area = compute_coverage(sensors, sensors_beacons, beacons_sensors, low_x, high_x, low_y, high_y)
+    result = len(all_coverage_area)+1
     AssertExpectedResult(0, result)
     return result
 
