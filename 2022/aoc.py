@@ -2186,10 +2186,35 @@ def release_most_pressure(tunnel_graph):
     total_pressure_release = 0
     current_position = 'AA'
     
-    total_pressure_released, open_valves = walk_tunnels(tunnel_graph, current_position, [], minutes_left, 0)
-    print(open_valves)
+    paths = find_all_paths(current_position, lambda n: tunnel_graph[n][1], depth=minutes_left)
+    for p in paths:
+        print(p)
+    print(paths)
     
-    return total_pressure_released
+    return 0
+
+#from functools import lru_cache
+#@hashable_lru
+def find_all_paths(node, childrenFn, depth, _depth=0, _parents={}):
+    if _depth == depth - 1:
+        # path found with desired length, create path and stop traversing
+        path = []
+        parent = node
+        for i in range(depth):
+            path.insert(0, parent)
+            if not parent in _parents:
+                continue
+            parent = _parents[parent]
+            if parent in path:
+                return # this path is cyclic, forget
+        yield path
+        return
+
+    for nb in childrenFn(node):
+        _parents[nb] = node # keep track of where we came from
+        for p in find_all_paths(nb, childrenFn, depth, _depth + 1, _parents):
+            yield p
+
 
 def day16_1(data):
     data = read_input(2022, "16t")       
@@ -2206,11 +2231,28 @@ def day16_1(data):
 
 
 
-'''
 #region ##### Day 17 #####
 
 def day17_1(data):
     data = read_input(2022, "17t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+
+'''
+#region ##### Day 18 #####
+
+def day18_1(data):
+    data = read_input(2022, "18t")       
     
     result = 0
     for line in data:
@@ -2226,5 +2268,5 @@ def day17_1(data):
 
 if __name__ == "__main__":
     # override timeout
-    main(sys.argv, globals(), AOC_EDITION_YEAR, 120)
+    main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
 
