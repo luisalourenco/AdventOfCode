@@ -2054,6 +2054,8 @@ def compute_coverage_area_for_sensor(sensor, radius, target_y):
     return coverage_area   
 
 # 1995350 low
+#Day 15, part 1: 5181556 (4.538 secs)
+#Day 15, part 2: 12817603219131 (0.204 secs)
 def day15_1(data):
     #data = read_input(2022, "15t")       
     
@@ -2083,14 +2085,20 @@ def get_tuning_frequency(distress_beacon):
     return (x*4000000 + y)
 
 from z3 import *
+
+#encoding taken from https://stackoverflow.com/questions/22547988/how-to-calculate-absolute-value-in-z3-or-z3py
+def z3_abs(x):
+    return If(x >= 0,x,-x)
+
+# 60000025 too low 
 def day15_2(data):
-    data = read_input(2022, "15t")       
+    #data = read_input(2022, "15t")       
     
     result = 0
     sensors_beacons = parse_beacons_sensors(data)
     
     lower_bound = 0
-    upper_bound = 20#4000000    
+    upper_bound = 4000000    
     
     solver = Solver()
 
@@ -2102,19 +2110,20 @@ def day15_2(data):
         radius = sensors_beacons[sensor][1]        
         c_x, c_y = sensor
         
-        solver.add(Or(x <= c_x - radius, 
-                      x >= c_x + radius, 
-                      y <= c_y - radius , 
-                      y >= c_y + radius ))
-        
-    solver.check()
-    model = solver.model()
-    print(model)
- 
-    distress_beacon = (model[x].as_long(), model[y].as_long())
-    result = get_tuning_frequency(distress_beacon)
+        # for each sensor add equation that x,y must be outside their range
+        solver.add( z3_abs(c_x - x) + z3_abs(c_y - y) > radius )
     
-    AssertExpectedResult(5181556, result)
+    try:    
+        solver.check()
+        model = solver.model()
+        print(model)    
+ 
+        distress_beacon = (model[x].as_long(), model[y].as_long())
+        result = get_tuning_frequency(distress_beacon)
+    except:
+        print("No model found!")
+    
+    AssertExpectedResult(12817603219131, result)
     return result
 
 #endregion
@@ -2123,15 +2132,74 @@ def day15_2(data):
 
 #region ##### Day 16 #####
 
+def parse_tunel_system(data):
+    result = 0
+    tunnel_graph = defaultdict()
+    
+    for line in data:
+        tunnel_data = [parse("Valve {} has flow rate={}; tunnels lead to valves {}", line)][0]
+        if not tunnel_data:
+            tunnel_data = [parse("Valve {} has flow rate={}; tunnel leads to valve {}", line)][0]
+        #print(tunnel_data)
+        origin = tunnel_data[0]
+        flow_rate = int(tunnel_data[1])
+        tunnels = list(tunnel_data[2].split(", "))            
+        tunnel_graph[origin] = (flow_rate, tunnels)
+  
+    return tunnel_graph
+
+def open_valve(flow_rate, minutes_left):
+    return flow_rate*minutes_left
+
+
+def walk_tunnels(tunnel_graph, current_position, open_valves, minutes_left, total_pressure_release):
+    if minutes_left == 0:
+        print("Run out of time!")
+        return total_pressure_release, open_valves
+    
+    flow_rate, possible_tunnels = tunnel_graph[current_position]
+    if current_position not in open_valves and flow_rate != 0:
+        minutes_left -=1
+        total_pressure_release += open_valve(flow_rate, minutes_left)
+        print("Opened valve", current_position, "with added pressure",flow_rate*minutes_left)
+        open_valves.append(current_position)
+        
+    
+    max_pressure = 0
+    for tunnel in possible_tunnels:
+        print("Walking into tunnel", tunnel,"open valves are:",open_valves)
+        if not tunnel in open_valves:
+            pressure_released, open_valves = walk_tunnels(tunnel_graph, tunnel, open_valves, minutes_left-1, total_pressure_release)
+            print("Pressure released with tunnel", tunnel, 'is', pressure_released)
+        
+            if pressure_released > max_pressure:
+                max_pressure = pressure_released
+            
+    minutes_left -=1
+    total_pressure_release += max_pressure
+    
+    return total_pressure_release, open_valves
+        
+
+def release_most_pressure(tunnel_graph):
+    minutes_left = 30
+    total_pressure_release = 0
+    current_position = 'AA'
+    
+    total_pressure_released, open_valves = walk_tunnels(tunnel_graph, current_position, [], minutes_left, 0)
+    print(open_valves)
+    
+    return total_pressure_released
+
 def day16_1(data):
     data = read_input(2022, "16t")       
     
     result = 0
-    for line in data:
-        input = line.split(' ')
-
-           
-    AssertExpectedResult(0, result)
+    tunnel_graph = parse_tunel_system(data)
+    #print_dict(tunnel_graph)
+    pressure_released = release_most_pressure(tunnel_graph)
+    
+    AssertExpectedResult(pressure_released, result)
     return result
 
 #endregion
