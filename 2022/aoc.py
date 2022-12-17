@@ -2222,9 +2222,9 @@ def day16_1(data):
     result = 0
     tunnel_graph = parse_tunel_system(data)
     #print_dict(tunnel_graph)
-    pressure_released = release_most_pressure(tunnel_graph)
+    #pressure_released = release_most_pressure(tunnel_graph)
     
-    AssertExpectedResult(pressure_released, result)
+    AssertExpectedResult(0, result)
     return result
 
 #endregion
@@ -2233,56 +2233,127 @@ def day16_1(data):
 
 #region ##### Day 17 #####
 
-# ['-', '+','L','|','S']  
+
+def drop_rock(cave, rock, jet_direction, current_height, left_edge, right_edge, jet_active):
+    print("input height",current_height)
+    print("input left_edge",left_edge)
+    print("input right_edge",right_edge)
+    lower_edge = len(cave) - 3 - (current_height ) -3  
+
+    if jet_active:
+        left_edge,right_edge = apply_jet(cave, left_edge, right_edge, lower_edge, jet_direction)
+        print("jet applied:", left_edge,right_edge)
+        
+    y = lower_edge
+    x = left_edge
+    if not jet_active: # it's falling down
+        if rock_is_resting(rock, cave, x, y): # hit an obstacle
+            delta = draw_rock(cave,x,y, rock)
+            return cave, current_height-delta, left_edge, right_edge, True
+        else:
+            return cave, current_height-1, left_edge, right_edge, False
+    else:
+        return cave, current_height, left_edge, right_edge, False
+
+
+def get_right_edge(rock):
+    if rock == '-':
+        return 3
+    elif rock == '+':
+        return 2
+    elif rock == 'L':
+        return 2
+    elif rock == '|':
+        return 0
+    elif rock == 'S':
+        return 1
+
 '''
 ####  .#.   ..#   #   ##
       ###   ..#   #   ##
       .#.   ###   #
                   #
 '''  
-def drop_rock(cave, rock, jet_direction, current_height, occupied, jet_active):
-    print("in",current_height)
-    left_edge = 3
-    lower_edge = len(cave) - (current_height + 3) - 2    
-    h = lower_edge
-    
-    if jet_active:
-        left_edge = apply_jet(cave, left_edge, lower_edge, jet_direction)
-        
+# ['-', '+','L','|','S']  
+def rock_is_resting(rock,cave, x, y):
+    print("is rock resting?",x,y)
     if rock == '-':
-        y = lower_edge
-        x = left_edge
-        for i in range(4):
-            # it's falling down and hit an obstacle
-            if not jet_active and rock_is_resting(cave, x, y):            
-                #drop rock
-                cave[y][x] = '#'
+        for _ in range(4):
+            if cave[y+1][x] != '.':
+                return True
             x+=1
-                   
-        if not jet_active and rock_is_resting(cave, x, y):            
-        #    if (x,y) not in occupied:            
-        #        occupied.add((x,y))
-            #drop rock
-            current_height +=1
-            return cave, current_height, True
-    print(current_height)
-    return cave, current_height, False
+    elif rock == 'S':
+        if cave[y+1][x] != '.' or cave[y+1][x+1] != '.': #lower edge 
+            return True
+    elif rock == '|':
+        if cave[y+1][x] != '.': #lower edge 
+            return True
+    elif rock == 'L':
+        for _ in range(3):
+            if cave[y+1][x] != '.': #lower edge 
+                return True
+            x+=1
+    elif rock == '+':
+        if cave[y+1][x] != '.': #lower edge 
+            return True
+        elif cave[y][x] != '.': #left edge
+            return True
+        elif cave[y][x+2] != '.': #right edge
+            return True
 
-def rock_is_resting(cave, x, y):
-    #print("is rock resting?")
-    #print("***", cave[y+1][x])
-    return cave[y+1][x] != '.'
+    return False
+
+#y = lower_edge
+#x = left_edge
+def draw_rock(cave,x,y, rock, init = False):
+    if init:
+        symbol = '@'
+    else:
+        symbol = '#'
     
+    if rock == '-':  
+        for i in range(4):
+            cave[y][x] = symbol
+            x+=1
+        return 0
+    elif rock == '+':
+        cave[y][x+1] = symbol #bottom
+        cave[y-1][x+1] = symbol #middle
+        cave[y-2][x+1] = symbol #top
+        cave[y-1][x] = symbol
+        cave[y-1][x+2] = symbol
+        return - 2
+    elif rock == 'L':
+        for _ in range(3):
+            cave[y][x] = symbol #bottom
+            x+=1
+        cave[y-1][x-1] = symbol #middle
+        cave[y-2][x-1] = symbol #top
+        return -3
+    elif rock == '|':
+        cave[y][x] = symbol #bottom
+        cave[y-1][x] = symbol #bottom
+        cave[y-2][x] = symbol #middle
+        cave[y-3][x] = symbol #top
+        return -3
+    elif rock == 'S':
+        cave[y][x] = symbol #bottom
+        cave[y][x+1] = symbol #bottom
+        cave[y-1][x] = symbol #middle
+        cave[y-1][x+1] = symbol #top
+        return -1
 
-def apply_jet(cave, left_edge, y, jet_direction):
-    print("applying jet for",left_edge,"in direction", jet_direction)
+
+def apply_jet(cave, left_edge, rigth_edge, y, jet_direction):
+    print("applying jet for",left_edge,rigth_edge,"in direction", jet_direction)
     if jet_direction == '<':
         if cave[y][left_edge - 1] == '.':
-            return left_edge - 1
+            return left_edge - 1, rigth_edge-1
     
     if jet_direction == '>':
-        if cave[y][left_edge + 1] == '.':
-            return left_edge + 1
+        if cave[y][rigth_edge + 1] == '.':
+            return left_edge+1, rigth_edge + 1
+    return left_edge, rigth_edge
         
 def day17_1(data):
     data = read_input(2022, "17t")       
@@ -2291,6 +2362,10 @@ def day17_1(data):
     rock_types = ['-', '+','L','|','S']    
     
     rows = max_rocks_fallen * 4 
+
+    ###FOR DEBUG
+    rows = 20
+
     columns = width + 2
     cave = [ [ '.' for i in range(columns) ] for j in range(rows) ] 
     floor = [ '-' for i in range(columns) ]
@@ -2311,43 +2386,59 @@ def day17_1(data):
     current_jet_direction = 0
     current_height = 0
     
-    occupied = set()
     jet_active = False
-    height = len(cave) - (current_height + 3) - 2 
     
     #debug
-    max_rocks_fallen = 1
+    max_rocks_fallen = 5
     while rocks_fallen != max_rocks_fallen:       
         rock = rock_types[current_rock_type]        
         
         print("dropping rock", rock)
         is_rested = False
-        aux = current_height
+        left_edge = 3
+        right_edge = left_edge + get_right_edge(rock)
+        
+        c_cave = copy.deepcopy(cave)
+        draw_rock(c_cave,left_edge,len(cave) - 3 - (current_height ) -3 ,rock,True)
+        printMap(c_cave)
+
         while not is_rested:
             jet_direction = jet_pattern[current_jet_direction]
-            
-            print('current height is', height)
-            cave, res, is_rested = drop_rock(cave, rock, jet_direction, current_height, occupied, jet_active)
-            print("res",res)
+            print()
+            print('current height is', current_height)
+            print('current left_edge is', left_edge)
+            print('current right_edge is', right_edge)
+            cave, res, left, right, is_rested = drop_rock(cave, rock, jet_direction, current_height, left_edge, right_edge, jet_active)
+            print("res h",res)
+            print("res left,right",left,right)
             current_height = res
-            current_jet_direction += 1 
-            current_jet_direction %= len(jet_pattern)
+            left_edge = left
+            right_edge = right
+            if jet_active:
+                current_jet_direction += 1 
+                current_jet_direction %= len(jet_pattern)
+            #print("pattern:", jet_pattern)
+            #print("current_jet_direction:",current_jet_direction)
             jet_active = not jet_active
-            if aux == current_height and not jet_active:
-                print("something wrong")
-                rocks_fallen = max_rocks_fallen
-                break
                 
         current_rock_type += 1
         current_rock_type %= 5
+        left_edge = 3
+        right_edge = left_edge + get_right_edge(rock)
+        current_height +=3
+        jet_active = False
+
+        
         
         if is_rested:
             print("rock dropped!")
-            rocks_fallen +=1
-        
-        
-    printMap(cave)
-    
+            #printMap(cave)
+            rocks_fallen +=1    
+            printMap(cave)
+
+        c_cave = copy.deepcopy(cave)
+        draw_rock(c_cave,left_edge,len(cave) - 3 - (current_height ) -3 ,rock,True)
+        printMap(c_cave)
 
            
     AssertExpectedResult(0, result)
@@ -2357,7 +2448,6 @@ def day17_1(data):
 
 
 
-'''
 #region ##### Day 18 #####
 
 def day18_1(data):
@@ -2372,7 +2462,27 @@ def day18_1(data):
     return result
 
 #endregion
+
+
+
+
 '''
+#region ##### Day 19 #####
+
+def day19_1(data):
+    data = read_input(2022, "19t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+'''
+
 
 
 if __name__ == "__main__":
