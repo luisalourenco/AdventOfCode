@@ -2233,12 +2233,121 @@ def day16_1(data):
 
 #region ##### Day 17 #####
 
+# ['-', '+','L','|','S']  
+'''
+####  .#.   ..#   #   ##
+      ###   ..#   #   ##
+      .#.   ###   #
+                  #
+'''  
+def drop_rock(cave, rock, jet_direction, current_height, occupied, jet_active):
+    print("in",current_height)
+    left_edge = 3
+    lower_edge = len(cave) - (current_height + 3) - 2    
+    h = lower_edge
+    
+    if jet_active:
+        left_edge = apply_jet(cave, left_edge, lower_edge, jet_direction)
+        
+    if rock == '-':
+        y = lower_edge
+        x = left_edge
+        for i in range(4):
+            # it's falling down and hit an obstacle
+            if not jet_active and rock_is_resting(cave, x, y):            
+                #drop rock
+                cave[y][x] = '#'
+            x+=1
+                   
+        if not jet_active and rock_is_resting(cave, x, y):            
+        #    if (x,y) not in occupied:            
+        #        occupied.add((x,y))
+            #drop rock
+            current_height +=1
+            return cave, current_height, True
+    print(current_height)
+    return cave, current_height, False
+
+def rock_is_resting(cave, x, y):
+    #print("is rock resting?")
+    #print("***", cave[y+1][x])
+    return cave[y+1][x] != '.'
+    
+
+def apply_jet(cave, left_edge, y, jet_direction):
+    print("applying jet for",left_edge,"in direction", jet_direction)
+    if jet_direction == '<':
+        if cave[y][left_edge - 1] == '.':
+            return left_edge - 1
+    
+    if jet_direction == '>':
+        if cave[y][left_edge + 1] == '.':
+            return left_edge + 1
+        
 def day17_1(data):
     data = read_input(2022, "17t")       
+    width = 7
+    max_rocks_fallen = 2022
+    rock_types = ['-', '+','L','|','S']    
+    
+    rows = max_rocks_fallen * 4 
+    columns = width + 2
+    cave = [ [ '.' for i in range(columns) ] for j in range(rows) ] 
+    floor = [ '-' for i in range(columns) ]
+    floor[0] = '+'
+    floor[8] = '+'
+    cave.append(floor)
+    for y in range(rows):
+        cave[y][0] = '|'
+        cave[y][columns-1] = '|'
+            
+    
     
     result = 0
-    for line in data:
-        input = line.split(' ')
+    jet_pattern = data[0]
+    
+    rocks_fallen = 0
+    current_rock_type = 0
+    current_jet_direction = 0
+    current_height = 0
+    
+    occupied = set()
+    jet_active = False
+    height = len(cave) - (current_height + 3) - 2 
+    
+    #debug
+    max_rocks_fallen = 1
+    while rocks_fallen != max_rocks_fallen:       
+        rock = rock_types[current_rock_type]        
+        
+        print("dropping rock", rock)
+        is_rested = False
+        aux = current_height
+        while not is_rested:
+            jet_direction = jet_pattern[current_jet_direction]
+            
+            print('current height is', height)
+            cave, res, is_rested = drop_rock(cave, rock, jet_direction, current_height, occupied, jet_active)
+            print("res",res)
+            current_height = res
+            current_jet_direction += 1 
+            current_jet_direction %= len(jet_pattern)
+            jet_active = not jet_active
+            if aux == current_height and not jet_active:
+                print("something wrong")
+                rocks_fallen = max_rocks_fallen
+                break
+                
+        current_rock_type += 1
+        current_rock_type %= 5
+        
+        if is_rested:
+            print("rock dropped!")
+            rocks_fallen +=1
+        
+        
+    printMap(cave)
+    
 
            
     AssertExpectedResult(0, result)
