@@ -2363,7 +2363,7 @@ def day17_1(data):
     rows = max_rocks_fallen * 4 
 
     ###FOR DEBUG
-    #rows = 20
+    rows = 40
 
     columns = width + 2
     cave = [ [ '.' for i in range(columns) ] for j in range(rows) ] 
@@ -2388,7 +2388,8 @@ def day17_1(data):
     jet_active = False
     
     #debug
-    #max_rocks_fallen = 5
+    max_rocks_fallen = 5
+    print("pattern:", list(jet_pattern))
     while rocks_fallen != max_rocks_fallen:       
         rock = rock_types[current_rock_type]        
         
@@ -2416,7 +2417,6 @@ def day17_1(data):
             if jet_active:
                 current_jet_direction += 1 
                 current_jet_direction %= len(jet_pattern)
-            #print("pattern:", jet_pattern)
             print("current_jet_direction:",current_jet_direction)
             jet_active = not jet_active
                 
@@ -2427,12 +2427,12 @@ def day17_1(data):
         current_height +=3
         jet_active = False
 
-        current_jet_direction += 1 
-        current_jet_direction %= len(jet_pattern)
+        #current_jet_direction += 1 
+        #current_jet_direction %= len(jet_pattern)
         
         
         if is_rested:
-            print("rock dropped!")
+            print("rock dropped! HEIGHT:",current_height-3)
             #printMap(cave)
             rocks_fallen +=1    
             #printMap(cave)
@@ -2493,8 +2493,23 @@ def day18_1(data):
     return result
 
 
+def is_inside(cube, boundaries):
+    x_min = boundaries[0]
+    x_max = boundaries[1]
+    y_min = boundaries[2]
+    y_max = boundaries[3]
+    z_min = boundaries[4]
+    z_max = boundaries[5]
+
+    for c in get_cube_vertexes(cube):
+        x,y,z = cube
+        if not (x_min <= x <= x_max and y_min <= y <= y_max  and z_min <= z <= z_max):
+            return True
+    return False
+
+# too high 4598
 def day18_2(data):
-    data = read_input(2022, "18t")       
+    #data = read_input(2022, "18t")       
     
     result = 0
     cubes = []
@@ -2505,6 +2520,8 @@ def day18_2(data):
 
     total_exposed_sides = 0
     candidate_air_pockets = []
+    #  xmin, xmax, ymin, ymax, zmin, zmax
+    boundaries = [sys.maxsize, -sys.maxsize, sys.maxsize, -sys.maxsize, sys.maxsize, -sys.maxsize]
     for cube in cubes:
         vertices = get_cube_vertexes(cube)
         exposed_sides = 6
@@ -2520,11 +2537,33 @@ def day18_2(data):
                     exposed_sides -=1
         if exposed_sides == 6:
             candidate_air_pockets.append(cube)
+        else:
+            for x,y,z in vertices:
+                if x < boundaries[0]:
+                    boundaries[0] = x
+                if x > boundaries[1]:
+                    boundaries[1] = x 
+
+                if y < boundaries[2]:
+                    boundaries[2] = y
+                if y > boundaries[3]:
+                    boundaries[3] = y
+
+                if z < boundaries[4]:
+                    boundaries[4] = z
+                if z > boundaries[5]:
+                    boundaries[5] = z
+            
         total_exposed_sides += exposed_sides
         #print("cube has exposed sides:",exposed_sides)
         #print()
-
-    print(candidate_air_pockets)
+    #print("boundaries:", boundaries)
+    for cube in candidate_air_pockets:
+        if is_inside(cube, boundaries):
+            #print(cube)
+            total_exposed_sides -=6
+    
+    #print(candidate_air_pockets)
     result = total_exposed_sides
     AssertExpectedResult(4604, result)
     return result
