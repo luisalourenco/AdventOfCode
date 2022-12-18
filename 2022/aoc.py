@@ -2450,15 +2450,36 @@ def day17_1(data):
 
 #region ##### Day 18 #####
 
+def get_cube_vertexes(cube):
+    deltas = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]
+    vertexes = set()
+    for delta in deltas:
+        vertexes.add( (cube[0]+delta[0], cube[1]+delta[1], cube[2]+delta[2] ) )
+    return vertexes
+
 def day18_1(data):
     data = read_input(2022, "18t")       
     
     result = 0
+    cubes = []
+    points = set()
     for line in data:
-        input = line.split(' ')
+        cube = line.split(',')
+        cubes.append((int(cube[0]), int(cube[1]), int(cube[2]) ))
 
-           
-    AssertExpectedResult(0, result)
+    sides_touches = 0
+    sides = 6*len(cubes)
+    for cube in cubes:
+        vertices = get_cube_vertexes(cube)
+        if vertices.intersection(points):
+            sides-=2
+            print(vertices.intersection(points)) 
+        #else:
+        points = points.union(vertices)           
+    
+    print(sides_touches)
+    print(sides)
+    AssertExpectedResult(sides_touches, result)
     return result
 
 #endregion
