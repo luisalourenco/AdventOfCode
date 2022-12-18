@@ -2243,17 +2243,16 @@ def drop_rock(cave, rock, jet_direction, current_height, left_edge, right_edge, 
     if jet_active:
         left_edge,right_edge = apply_jet(cave, left_edge, right_edge, lower_edge, jet_direction)
         print("jet applied:", left_edge,right_edge)
-        
-    y = lower_edge
-    x = left_edge
-    if not jet_active: # it's falling down
+        return cave, current_height, left_edge, right_edge, False
+    else:  # it's falling down
+        y = lower_edge
+        x = left_edge
         if rock_is_resting(rock, cave, x, y): # hit an obstacle
             delta = draw_rock(cave,x,y, rock)
             return cave, current_height-delta, left_edge, right_edge, True
         else:
             return cave, current_height-1, left_edge, right_edge, False
-    else:
-        return cave, current_height, left_edge, right_edge, False
+        
 
 
 def get_right_edge(rock):
@@ -2322,26 +2321,26 @@ def draw_rock(cave,x,y, rock, init = False):
         cave[y-2][x+1] = symbol #top
         cave[y-1][x] = symbol
         cave[y-1][x+2] = symbol
-        return - 2
+        return - 3
     elif rock == 'L':
         for _ in range(3):
             cave[y][x] = symbol #bottom
             x+=1
         cave[y-1][x-1] = symbol #middle
         cave[y-2][x-1] = symbol #top
-        return -3
+        return -4
     elif rock == '|':
         cave[y][x] = symbol #bottom
         cave[y-1][x] = symbol #bottom
         cave[y-2][x] = symbol #middle
         cave[y-3][x] = symbol #top
-        return -3
+        return -4
     elif rock == 'S':
         cave[y][x] = symbol #bottom
         cave[y][x+1] = symbol #bottom
         cave[y-1][x] = symbol #middle
         cave[y-1][x+1] = symbol #top
-        return -1
+        return -2
 
 
 def apply_jet(cave, left_edge, rigth_edge, y, jet_direction):
@@ -2364,7 +2363,7 @@ def day17_1(data):
     rows = max_rocks_fallen * 4 
 
     ###FOR DEBUG
-    rows = 20
+    #rows = 20
 
     columns = width + 2
     cave = [ [ '.' for i in range(columns) ] for j in range(rows) ] 
@@ -2389,7 +2388,7 @@ def day17_1(data):
     jet_active = False
     
     #debug
-    max_rocks_fallen = 5
+    #max_rocks_fallen = 5
     while rocks_fallen != max_rocks_fallen:       
         rock = rock_types[current_rock_type]        
         
@@ -2418,7 +2417,7 @@ def day17_1(data):
                 current_jet_direction += 1 
                 current_jet_direction %= len(jet_pattern)
             #print("pattern:", jet_pattern)
-            #print("current_jet_direction:",current_jet_direction)
+            print("current_jet_direction:",current_jet_direction)
             jet_active = not jet_active
                 
         current_rock_type += 1
@@ -2428,19 +2427,22 @@ def day17_1(data):
         current_height +=3
         jet_active = False
 
+        current_jet_direction += 1 
+        current_jet_direction %= len(jet_pattern)
         
         
         if is_rested:
             print("rock dropped!")
             #printMap(cave)
             rocks_fallen +=1    
-            printMap(cave)
+            #printMap(cave)
 
-        c_cave = copy.deepcopy(cave)
-        draw_rock(c_cave,left_edge,len(cave) - 3 - (current_height ) -3 ,rock,True)
-        printMap(c_cave)
+        #c_cave = copy.deepcopy(cave)
+        #draw_rock(c_cave,left_edge,len(cave) - 3 - (current_height ) -3 ,rock,True)
+        #printMap(c_cave)
 
-           
+    result = current_height
+    print(result)     
     AssertExpectedResult(0, result)
     return result
 
@@ -2458,6 +2460,40 @@ def get_cube_vertexes(cube):
     return vertexes
 
 def day18_1(data):
+    #data = read_input(2022, "18t")       
+    
+    result = 0
+    cubes = []
+    points = set()
+    for line in data:
+        cube = line.split(',')
+        cubes.append((int(cube[0]), int(cube[1]), int(cube[2]) ))
+
+    total_exposed_sides = 0
+    sides = 6*len(cubes)
+    for cube in cubes:
+        vertices = get_cube_vertexes(cube)
+        exposed_sides = 6
+        #print("checking cube:",cube)
+        for other_cube in cubes:
+            if other_cube != cube:
+                other_vertices = get_cube_vertexes(other_cube)
+                covered_side = vertices.intersection(other_vertices)
+                if len(covered_side) == 4:
+                    #print("covered side:", other_cube)
+                    #print(covered_side)
+                    #print()
+                    exposed_sides -=1
+        total_exposed_sides += exposed_sides
+        #print("cube has exposed sides:",exposed_sides)
+        #print()
+
+    result = total_exposed_sides
+    AssertExpectedResult(4604, result)
+    return result
+
+
+def day18_2(data):
     data = read_input(2022, "18t")       
     
     result = 0
@@ -2467,19 +2503,50 @@ def day18_1(data):
         cube = line.split(',')
         cubes.append((int(cube[0]), int(cube[1]), int(cube[2]) ))
 
-    sides_touches = 0
-    sides = 6*len(cubes)
+    total_exposed_sides = 0
+    candidate_air_pockets = []
     for cube in cubes:
         vertices = get_cube_vertexes(cube)
-        if vertices.intersection(points):
-            sides-=2
-            print(vertices.intersection(points)) 
-        #else:
-        points = points.union(vertices)           
+        exposed_sides = 6
+        #print("checking cube:",cube)
+        for other_cube in cubes:
+            if other_cube != cube:
+                other_vertices = get_cube_vertexes(other_cube)
+                covered_side = vertices.intersection(other_vertices)
+                if len(covered_side) == 4:
+                    #print("covered side:", other_cube)
+                    #print(covered_side)
+                    #print()
+                    exposed_sides -=1
+        if exposed_sides == 6:
+            candidate_air_pockets.append(cube)
+        total_exposed_sides += exposed_sides
+        #print("cube has exposed sides:",exposed_sides)
+        #print()
+
+    print(candidate_air_pockets)
+    result = total_exposed_sides
+    AssertExpectedResult(4604, result)
+    return result
+
+
+#endregion
+
+
+
+
+
+#region ##### Day 19 #####
+
+def day19_1(data):
+    data = read_input(2022, "19t")       
     
-    print(sides_touches)
-    print(sides)
-    AssertExpectedResult(sides_touches, result)
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
     return result
 
 #endregion
@@ -2488,10 +2555,10 @@ def day18_1(data):
 
 
 '''
-#region ##### Day 19 #####
+#region ##### Day 20 #####
 
-def day19_1(data):
-    data = read_input(2022, "19t")       
+def day20_1(data):
+    data = read_input(2022, "20t")       
     
     result = 0
     for line in data:
