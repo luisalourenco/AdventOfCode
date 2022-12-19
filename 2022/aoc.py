@@ -1537,7 +1537,7 @@ def day12_1(data):
     result = 0  
     y = 0
     rows = len(data)
-    columns = len(data[0])  
+    columns = len(data[0])      
     grid = [ [ ' ' for i in range(columns) ] for j in range(rows) ]  
     initial_position = (0,0)
     final_position = (0,0)
@@ -2577,13 +2577,96 @@ def day18_2(data):
 
 #region ##### Day 19 #####
 
+def get_blueprint_quality_level(id, blueprint, time_limit):
+    ores = 0
+    obsidians = 0
+    clay = 0
+    geodes = 0
+    (ore_robot_cost, clay_robot_cost, obsidian_robot_cost, geode_robot_cost) = blueprint
+    robot_ores = 1
+    robot_obsidians = 0
+    robot_clay = 0
+    robot_geodes = 0
+    
+    
+    while time_limit > 0:
+        build_ore_robot = False
+        build_clay_robot = False
+        build_obsidian_robot = False
+        build_geode_robot = False
+        build_resources = (ores, clay, obsidians)
+        
+        # build robots
+        if build_resources[0] <= geode_robot_cost[0] and build_resources[2] <= geode_robot_cost[1]:
+            build_geode_robot = True
+            
+        elif build_resources[0] <= obsidian_robot_cost[0] and build_resources[1] <= obsidian_robot_cost[1]:
+            build_obsidian_robot = True
+          
+        elif build_resources[0] <= clay_robot_cost:
+            build_clay_robot = True
+
+        elif build_resources[0] <= ore_robot_cost:
+            build_ore_robot = True
+        
+        #collect ores with the robots we have
+        
+        ores += 1 #collecting ore
+        
+        if robot_obsidians > 0:
+            obsidians += robot_obsidians
+        if robot_clay > 0:
+            clay += robot_clay
+        if robot_geodes > 0:
+            geodes += robot_geodes
+            
+        #update robot data
+        if build_ore_robot:
+            ores -= ore_robot_cost
+            robot_ores += 1
+        
+        if build_clay_robot:
+            ores -= clay_robot_cost
+            robot_clay += 1
+            
+        if build_geode_robot:
+            ores -= geode_robot_cost[0]
+            obsidians -= geode_robot_cost[1]
+            robot_geodes += 1
+        
+        if build_obsidian_robot:
+            ores -= obsidian_robot_cost[0]
+            clay -= obsidian_robot_cost[1]
+            robot_obsidian += 1
+            
+        time_limit -= 1
+
+    return geodes*id
+
 def day19_1(data):
     data = read_input(2022, "19t")       
     
+    time_limit = 24
     result = 0
+    blueprints = defaultdict()
     for line in data:
-        input = line.split(' ')
+        blueprint_data = [parse("Blueprint {}: Each ore robot costs {} ore. Each clay robot costs {} ore. Each obsidian robot costs {} ore and {} clay. Each geode robot costs {} ore and {} obsidian.", line)][0]
+        print(blueprint_data)
+        blueprint = int(blueprint_data[0])
+        ore_robot_cost = int(blueprint_data[1])
+        clay_robot_cost = int(blueprint_data[2])
+        obsidian_robot_cost = (int(blueprint_data[3]), int(blueprint_data[4]))
+        geode_robot_cost = (int(blueprint_data[5]), int(blueprint_data[6]))
+        
+        blueprints[blueprint] = (ore_robot_cost, clay_robot_cost, obsidian_robot_cost, geode_robot_cost)
 
+    total_quality_level = 0
+    quality_level = 0
+    for id, blueprint in blueprints.items():
+        quality_level = get_blueprint_quality_level(id, blueprint, time_limit)
+        total_quality_level += quality_level
+        print(id, quality_level)
+    print(total_quality_level)
            
     AssertExpectedResult(0, result)
     return result
