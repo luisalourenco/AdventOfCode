@@ -2731,6 +2731,8 @@ def convert_message(message, message_contents):
 #502
 #20792 too high
 #-5332
+#-7740
+#-9226
 def day20_1(data):
     #data = read_input(2022, "20t")       
     
@@ -2758,15 +2760,16 @@ def day20_1(data):
     i2 = 2000
     i3 = 3000    
     
-    zero_index -=1
-    #zero_index = message.index(0)
+    #zero_index -=1
+    zero_index = m.index(0)
     i1 += zero_index
-    #i1 %= len(message)
+    i1 %= len(message)
     i2 += zero_index
-    #i2 %= len(message)
+    i2 %= len(message)
     i3 += zero_index
-    #i3 %= len(message)
+    i3 %= len(message)
     
+    '''
     size = len(message)
     if i1 > size-1:
         i1 %= size 
@@ -2795,14 +2798,14 @@ def day20_1(data):
     i1 -=1
     i2 -=1
     i3 -=1
-    
-    message_contents = convert_message(message, message_contents)
+    '''
+    m = convert_message(message, message_contents)
     
     #print()
     #print(i1,i2,i3)
     #print(message_contents[i1],message_contents[i2],message_contents[i3], zero_index)
     
-    result = message_contents[i1] + message_contents[i2] + message_contents[i3]
+    result = m[i1] + m[i2] + m[i3]
     
     print(result)
     AssertExpectedResult(0, result)
@@ -2814,15 +2817,105 @@ def day20_1(data):
 
 #region ##### Day 21 #####
 
+def find_root_number(monkeys, monkey):
+    left, op, right, n = monkeys[monkey]
+    result = 0
+    if n:
+        return n
+    else:
+        n1 = find_root_number(monkeys, left)
+        n2 = find_root_number(monkeys, right)
+        if op == '+':
+            return n1 + n2
+        elif op == '-':
+            return n1 - n2
+        elif op == '*':
+            return n1 * n2
+        elif op == '/':
+            return n1 // n2
+
+def get_monkey_var(variables, monkey):
+    if monkey in variables.keys():
+        return variables[monkey]
+    else:
+        variables[monkey] = z3.Int(monkey)
+        return variables[monkey]
+
+
+def find_root_number_z3(monkeys, monkey, part2=False):
+    left, op, right, n = monkeys[monkey]
+    result = 0
+    variables = defaultdict()
+    solver = Solver()
+
+    for monkey in monkeys.keys():        
+        left, op, right, n = monkeys[monkey]  
+        
+        m = get_monkey_var(variables, monkey)
+        if monkey == 'humn':
+            continue
+        if n:                        
+            solver.add(m == int(n))
+        else:
+            x = get_monkey_var(variables, left)
+            y = get_monkey_var(variables, right)
+            
+            if monkey == 'root':
+                solver.add(x == y)
+            else:
+                if op == '+':
+                    solver.add(m == x + y)
+                elif op == '-':
+                    solver.add(m == x - y)
+                elif op == '*':
+                    solver.add(m == x * y)
+                elif op == '/':
+                    solver.add(m == x / y)              
+    try:    
+        #print(solver)
+        print(solver.check())
+        model = solver.model()
+        #print(model)
+        print(model[variables['humn']])    
+    except:
+        print("No model found!")
+    return model[variables['humn']]
+
+def parse_monkeys(data):
+    monkeys = defaultdict()
+    for line in data:
+        monkey_data = [parse("{}: {} {} {}", line)][0]
+        if monkey_data:
+            monkey = monkey_data[0]
+            monkey_left = monkey_data[1]
+            monkey_right = monkey_data[3]
+            operation = monkey_data[2]
+            monkeys[monkey] = (monkey_left, operation, monkey_right, None)
+        else:
+            monkey_data = [parse("{}: {}", line)][0]
+            monkey = monkey_data[0]
+            number = int(monkey_data[1])
+            monkeys[monkey] = (None, None, None, number)
+    return monkeys
+
 def day21_1(data):
-    data = read_input(2022, "21t")       
+    #data = read_input(2022, "21t")       
     
     result = 0
-    for line in data:
-        input = line.split(' ')
+    monkeys = parse_monkeys(data)        
+    result = find_root_number(monkeys,"root")           
+    AssertExpectedResult(63119856257960, result)
+    return result
 
+
+def day21_2(data):
+    #data = read_input(2022, "21t")       
+    
+    result = 0
+    monkeys = parse_monkeys(data)
+    result = find_root_number_z3(monkeys,"root")    
            
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(3006709232464, result)
     return result
 
 #endregion
