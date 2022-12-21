@@ -2685,43 +2685,45 @@ def mixing_message(encrypted_message, message_contents):
     #print("initial:", message)
     for position in encrypted_message:
         
-        p = message_contents[position]
+        number = message_contents[position]
         
-        print(p,"to be moved")
+        #print(number,"to be moved")
         
-        n_p = message.index(position)    
-        print("position", n_p,"new position",p+n_p)
-        new_pos = (p + n_p)
+        number_position = message.index(position)    
+        #print("position", number_position,"new position",number+number_position)
+        new_pos = (number + number_position)
         
         
-        print("new pos before wrapping",new_pos, "size", size,"newps%size",new_pos%size)
-        if p < 0:
-            new_pos = size - 1
-        elif p == size:
-            new_pos = new_pos
-        #if abs(new_pos) > size-1:
-        #    if new_pos < 0:
-        #        new_pos = new_pos//size
-        else:
+        #print("new pos before wrapping",new_pos, "size", size,"newps%size",new_pos%size)
+        
+        #not sure I understood this line...
+        p = abs(number) % (size -1)
+        if number < 0:
+            p = -p
+
+        new_pos = number_position + p
+        if new_pos > size-1:
             new_pos = new_pos%size 
-            #new_pos +=1
-        #elif p > 0:
-        #    new_pos = new_pos%size    
-        #elif p == 0:
-        #    new_pos = size-1
+            new_pos +=1
+
+        elif new_pos == 0:
+            if p > 0:
+                new_pos = 0
+            else:
+                new_pos = size
         
-        print("new pos after wrapping",new_pos)
-        if p == 0:
+        #print("new pos after wrapping",new_pos)
+        if number == 0:
             zero_index = position 
         
-        print("message",end=' ')
-        print_message_contents(message, message_contents)
-        print("changes to",end=' ')
+        #print("message",end=' ')
+        #print_message_contents(message, message_contents)
+        #print("changes to",end=' ')
                        
         message.remove(position)
         message.insert(new_pos, position)
-        print_message_contents(message, message_contents)
-        print()
+        #print_message_contents(message, message_contents)
+        #print()
     #print("final",message)
     return message, zero_index
 
@@ -2744,7 +2746,7 @@ def convert_message(message, message_contents):
 #-9226
 #-4785
 def day20_1(data):
-    data = read_input(2022, "20t")       
+    #data = read_input(2022, "20t")       
     
     result = 0
     encrypted_message = []
@@ -2773,14 +2775,14 @@ def day20_1(data):
     i3 += zero_index
     i3 %= len(message)
         
-    #print()
-    #print(i1,i2,i3)
-    #print(message_contents[i1],message_contents[i2],message_contents[i3], zero_index)
+    print()
+    print("indices",i1,i2,i3)
+    print(m[i1],m[i2],m[i3], zero_index)
     
     result = m[i1] + m[i2] + m[i3]
     
     print(result)
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(8028, result)
     return result
 
 #endregion
@@ -2894,11 +2896,27 @@ def day21_2(data):
 
 
 
-'''
 #region ##### Day 22 #####
 
 def day22_1(data):
     data = read_input(2022, "22t")       
+    
+    result = 0
+    for line in data:
+        input = line.split(' ')
+
+           
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+'''
+#region ##### Day 23 #####
+
+def day22_1(data):
+    data = read_input(2022, "23t")       
     
     result = 0
     for line in data:
