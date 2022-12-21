@@ -2687,32 +2687,41 @@ def mixing_message(encrypted_message, message_contents):
         
         p = message_contents[position]
         
-        #print(p,"to be moved")
+        print(p,"to be moved")
         
         n_p = message.index(position)    
-        #print("position", n_p,"new position",p+n_p)
+        print("position", n_p,"new position",p+n_p)
         new_pos = (p + n_p)
         
-        if new_pos > size-1:
-            new_pos = new_pos%size 
-            new_pos +=1
-        elif new_pos > 0:
-            new_pos = new_pos%size    
-        elif new_pos == 0:
-            new_pos = size-1
         
-        #print("new pos",new_pos)
+        print("new pos before wrapping",new_pos, "size", size,"newps%size",new_pos%size)
+        if p < 0:
+            new_pos = size - 1
+        elif p == size:
+            new_pos = new_pos
+        #if abs(new_pos) > size-1:
+        #    if new_pos < 0:
+        #        new_pos = new_pos//size
+        else:
+            new_pos = new_pos%size 
+            #new_pos +=1
+        #elif p > 0:
+        #    new_pos = new_pos%size    
+        #elif p == 0:
+        #    new_pos = size-1
+        
+        print("new pos after wrapping",new_pos)
         if p == 0:
             zero_index = position 
         
-        #print("message",end=' ')
-        #print_message_contents(message, message_contents)
-        #print("changes to",end=' ')
+        print("message",end=' ')
+        print_message_contents(message, message_contents)
+        print("changes to",end=' ')
                        
         message.remove(position)
         message.insert(new_pos, position)
-        #print_message_contents(message, message_contents)
-        #print()
+        print_message_contents(message, message_contents)
+        print()
     #print("final",message)
     return message, zero_index
 
@@ -2733,18 +2742,16 @@ def convert_message(message, message_contents):
 #-5332
 #-7740
 #-9226
+#-4785
 def day20_1(data):
-    #data = read_input(2022, "20t")       
+    data = read_input(2022, "20t")       
     
     result = 0
     encrypted_message = []
     message_contents = defaultdict()
-    #duplicates = defaultdict()
     i = 0
     for line in data:
         n = int(line.strip())
-        if n == 0:
-            zero_index = i
         message_contents[i] = n
         encrypted_message.append(i)
         i+=1
@@ -2752,15 +2759,12 @@ def day20_1(data):
     message, zero_index = mixing_message(encrypted_message, message_contents)
     
     print_message_contents(message, message_contents)
-    m = convert_message(message, message_contents)
-    #print(m)
-    
+    m = convert_message(message, message_contents)   
     
     i1 = 1000
     i2 = 2000
     i3 = 3000    
     
-    #zero_index -=1
     zero_index = m.index(0)
     i1 += zero_index
     i1 %= len(message)
@@ -2768,39 +2772,7 @@ def day20_1(data):
     i2 %= len(message)
     i3 += zero_index
     i3 %= len(message)
-    
-    '''
-    size = len(message)
-    if i1 > size-1:
-        i1 %= size 
-        i1 +=1
-    elif i1 > 0:
-        i1 %=size    
-    elif i1 == 0:
-        i1 = size-1
         
-    if i2 > size-1:
-        i2 %=size 
-        i2 +=1
-    elif i2 > 0:
-        i2 %=size    
-    elif i2 == 0:
-        i2 = size-1
-        
-    if i3 > size-1:
-        i3 %=size 
-        i3 +=1
-    elif i3 > 0:
-        i3 %=size    
-    elif i3 == 0:
-        i3 = size-1
-    
-    i1 -=1
-    i2 -=1
-    i3 -=1
-    '''
-    m = convert_message(message, message_contents)
-    
     #print()
     #print(i1,i2,i3)
     #print(message_contents[i1],message_contents[i2],message_contents[i3], zero_index)
