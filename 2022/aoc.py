@@ -2681,7 +2681,6 @@ def day19_1(data):
 def mixing_message(encrypted_message, message_contents):
     message = copy.deepcopy(encrypted_message)
     size = len(message)
-    zero_index = 0
     #print("initial:", message)
     for position in encrypted_message:
         
@@ -2713,8 +2712,6 @@ def mixing_message(encrypted_message, message_contents):
                 new_pos = size
         
         #print("new pos after wrapping",new_pos)
-        if number == 0:
-            zero_index = position 
         
         #print("message",end=' ')
         #print_message_contents(message, message_contents)
@@ -2725,7 +2722,7 @@ def mixing_message(encrypted_message, message_contents):
         #print_message_contents(message, message_contents)
         #print()
     #print("final",message)
-    return message, zero_index
+    return message
 
 def print_message_contents(message, message_contents):
     for i in message:
@@ -2758,7 +2755,7 @@ def day20_1(data):
         encrypted_message.append(i)
         i+=1
        
-    message, zero_index = mixing_message(encrypted_message, message_contents)
+    message = mixing_message(encrypted_message, message_contents)
     
     print_message_contents(message, message_contents)
     m = convert_message(message, message_contents)   
