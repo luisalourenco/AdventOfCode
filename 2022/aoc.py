@@ -2895,36 +2895,380 @@ def day21_2(data):
 
 #region ##### Day 22 #####
 
+
+def turn_direction(direction, action):
+    '''
+    R:  turn L -> U
+        turn R -> D clockwise
+    
+    L:  turn L -> D
+        turn R -> N clockwise
+
+    U:  turn L -> L
+        turn R -> R clockwise
+
+    D:  turn L -> R
+        turn R -> L clockwise
+    '''
+    
+    if action == 'L':
+        if direction == 'R':
+            return 'U'
+        elif direction == 'L':
+            return 'D'
+        elif direction == 'U':
+            return 'L'
+        elif direction == 'D':
+            return 'R'
+        
+    if action == 'R':
+        if direction == 'R':
+            return 'D'
+        elif direction == 'L':
+            return 'U'
+        elif direction == 'U':
+            return 'R'
+        elif direction == 'D':
+            return 'L'
+
+def change_direction(direction, action, value=90):
+    turns = value/90
+    if turns == 4:
+        return direction
+    
+    if turns == 1:
+        return turn_direction(direction, action)
+    elif turns == 2:
+        direction = turn_direction(direction, action)
+        return turn_direction(direction, action)
+    elif turns == 3:
+        direction = turn_direction(direction, action)
+        direction = turn_direction(direction, action)
+        return turn_direction(direction, action)
+
+def move_in_direction(grid, facing, steps, x, y):
+
+    if direction == 'U':
+        y+=value
+    elif direction == 'D':
+        y-= value
+    elif direction == 'R':
+        x += value
+    elif direction == 'L':
+        x -= value
+    
+
+    return grid
+
+
+def parse_grid(data):
+    rows = len(data)
+    columns = len(data[0])       
+ 
+    for line in data:
+        if len(line) > columns:
+            columns = len(line)
+
+    grid = [ [ ' ' for i in range(columns) ] for j in range(rows) ]  
+    
+    print(rows, columns)
+    for y in range(rows):
+        for x in range(columns):
+            try:
+                grid[y][x] = data[y][x]
+            except IndexError:
+                continue
+
+def get_facing_value(facing):
+    if facing == 'R':
+        return 0
+    elif facing == 'D':
+        return 1    
+    elif facing == 'L':
+        return 2
+    elif facing == 'U':
+        return 3
+
+def get_password(grid, instructions):
+    password = 0
+    current_facing = 'R'
+    curr_row = 1
+    curr_column = 1
+    for instruction in instructions:
+        if instruction.isdigit():
+            print("moving",steps,"steps in direction", current_facing)
+            steps = int(instruction)
+            move_in_direction(grid, current_facing, steps, current_column, current_row)
+        else: #change direction
+            print("changing facing", current_facing,"90 degrees to the", instruction)
+            current_facing = change_direction(current_facing, instruction)
+            print("changed facing to", current_facing)
+            
+    
+    return 1000 * curr_row + 4 * curr_column + get_facing_value(current_facing)
+
+def parse_instructions(instructions):
+    #print(instructions)
+    steps = re.split('L|R', instructions)
+    directions = re.split('\d+', instructions)
+    directions = [direction for direction in directions if direction !='']
+    
+    #print(steps)
+    #print(directions) 
+    
+    num = min(len(steps), len(directions))
+    result = [None]*(num*2)   
+    result[::2] = steps[:num]
+    result[1::2] = directions[:num]
+    result.extend(steps[num:])
+    result.extend(directions[num:])      
+    return result
+
 def day22_1(data):
     data = read_input(2022, "22t")       
     
     result = 0
-    for line in data:
-        input = line.split(' ')
-
-           
+    instructions = data[-1]
+    grid = parse_grid(data[:-2])
+    instructions = parse_instructions(instructions)
+    password = get_password(grid, instructions)
+    
+    print(instructions)  
+    #printMap(grid)
+    
     AssertExpectedResult(0, result)
     return result
 
 #endregion
 
 
-'''
 #region ##### Day 23 #####
 
-def day22_1(data):
-    data = read_input(2022, "23t")       
+
+def get_elf_positions(elf_map):
+    elf_positions = []
+    rows = len(elf_map)
+    columns = len(elf_map[0])
+    
+    for y in range(rows):
+        for x in range(columns):
+            if elf_map[y][x] == '#':
+                elf_positions.append((x,y))
+    
+    return elf_positions
+
+def check_neighbours(elf_map, elf, deltas):
+    neighbours = 0
+    #deltas = [ (0,1), (1,1), (1,0), (0,-1), (-1,-1), (-1,0), (1,-1), (-1,1) ]
+    x,y = elf
+
+    for delta_x, delta_y in deltas:
+        if x == 0 and delta_x < 0:
+            continue
+        if y == 0 and delta_y < 0:
+            continue
+        if x == len(elf_map[0])-1 and delta_x > 0:
+            continue
+        if y == len(elf_map)-1 and delta_y > 0:
+            continue
+            
+        if elf_map[y + delta_y][x + delta_x] == '#':
+            neighbours += 1
+    
+    return neighbours
+
+def move_elf(elf, elf_map, proposal, elf_positions):
+    x,y = elf    
+    elf_map[y][x] = '.'
+    elf_map[proposal[1]][proposal[0]] = '#'
+    elf_positions.remove((x,y))
+    elf_positions.append((proposal[0],proposal[1]))
+    
+    return elf_map, elf_positions
+
+def convert_proposal_into_position(elf, elf_map, direction):
+    x,y = elf
+    delta = (0,0)
+    
+    if direction == 'N':
+        delta = (0,-1)        
+    elif direction == 'S':
+        delta = (0,1)
+    elif direction == 'E':
+        delta = (1,0)
+    elif direction == 'W':
+        delta = (-1,0)        
+    
+    #print("converting", elf,"with delta",delta,"for direction",direction)
+    if 0 <= y+delta[1] <= len(elf_map)-1 and 0 <= x+delta[0] <= len(elf_map[0])-1:
+        #print("converting to",(x+delta[0], y+delta[1]))
+        return (x+delta[0], y+delta[1])
+    else:  
+        return (x,y)
+    
+def get_elf_proposal(elf, elf_map, directions_to_consider):
+    
+    #print("elf:", elf)
+    for direction in directions_to_consider:
+        #print("considering",direction)
+        if direction == 'N':
+            deltas = [ (0,-1), (1,-1), (-1,-1) ]
+            n = check_neighbours(elf_map, elf, deltas)
+        elif direction == 'S':
+            deltas = [ (0,1), (1,1), (-1,1) ]
+            n = check_neighbours(elf_map, elf, deltas)
+        elif direction == 'E':
+            deltas = [ (1,0), (1,-1), (1,1) ]
+            n = check_neighbours(elf_map, elf, deltas)
+        elif direction == 'W':
+            deltas = [ (-1,0), (-1,1), (-1,-1) ]
+            n = check_neighbours(elf_map, elf, deltas)
+            
+        if n == 0:
+            #print("converting...")
+            proposal_position = convert_proposal_into_position(elf, elf_map, direction)
+            #print("proposal is",proposal_position)
+            return proposal_position
+     
+
+def first_half(elf_map, elf_positions, directions_to_consider):
+    elf_proposals = defaultdict()
+    
+    for elf in elf_positions:
+        deltas = [ (0,1), (1,1), (1,0), (0,-1), (-1,-1), (-1,0), (1,-1), (-1,1) ]
+        n = check_neighbours(elf_map, elf, deltas)
+        #print("elf",elf,"has",n,"neighbours")
+        if n > 0:
+            proposal = get_elf_proposal(elf, elf_map, directions_to_consider)
+            if proposal:
+                if proposal not in elf_proposals:
+                    elf_proposals[proposal] = [elf]
+                else:
+                    elf_proposals[proposal].append(elf)
+        #print()
+
+    
+    return elf_proposals
+
+def second_half(elf_map, elf_positions, elf_proposals):
+    new_elf_map = copy.deepcopy(elf_map)
+    
+    for proposal, elves in elf_proposals.items():               
+        if len(elves) == 1:
+            #print("moving elf",elves[0],"to",proposal)
+            new_elf_map, elf_positions = move_elf(elves[0], elf_map, proposal, elf_positions)
+            #print("elf position after:",elf_positions)
+    
+    return new_elf_map, elf_positions
+
+
+
+def where_to_go_next(elf_map, elf_positions, part2=False):
+    directions_to_consider = ['N', 'S', 'W', 'E']
+    if part2:
+        rounds = sys.maxsize
+    else:
+        rounds = 10
+        
+    for round in range(rounds):
+        elf_proposals = first_half(elf_map, elf_positions, directions_to_consider)
+        if len(elf_proposals) == 0:
+            return elf_map, round+1
+        #print("Round",round)
+        #print("elf proposals:", len(elf_proposals))
+        #for proposal, elves in elf_proposals.items():
+        #    print("move to", proposal,"proposed by", elves)
+        
+        elf_map, elf_positions = second_half(elf_map, elf_positions, elf_proposals)
+        #print()
+        d = directions_to_consider.pop(0)
+        directions_to_consider.append(d)
+        #printMap(elf_map)
+        
+    
+    return elf_map, round+1
+
+def add_padding_to_map(elf_map):
+    rows = len(elf_map)
+    columns = len(elf_map[0])
+    padding = 10
+    
+    #padding = ['.'] * len(columns) * 5
+    
+    padded_elf_map = [ [ '.' for i in range(columns+padding*2+1) ] for j in range(rows+padding*2+1)]        
+ 
+    for y in range(rows):
+        for x in range(columns):
+            padded_elf_map[y + padding][x + padding] = elf_map[y][x]
+    return padded_elf_map
+
+def get_empty_tiles(elf_map):
+    rows = len(elf_map)
+    columns = len(elf_map[0])
+    x_min = sys.maxsize
+    x_max = -sys.maxsize
+    
+    y_min = sys.maxsize
+    y_max = -sys.maxsize
+    for y in range(rows):
+        for x in range(columns):
+            if elf_map[y][x] == '#':
+                if y < y_min:
+                    y_min = y
+                if y > y_max:
+                    y_max = y
+                if x < x_min:
+                    x_min = x
+                if x > x_max:
+                    x_max = x
+    
+    #print(x_min,x_max,y_min,y_max)
+    count = 0
+    for x in range(x_min, x_max + 1):
+        for y in range(y_min, y_max + 1):
+            if elf_map[y][x] == '.':
+                count += 1
+    return count
+    #sum([1 for _ in elf_map[y_min:y_max+1][x_min:x_max+1] if ])
+
+def day23_1(data):
+    #data = read_input(2022, "23t")       
     
     result = 0
-    for line in data:
-        input = line.split(' ')
+    elf_map = buildMapGrid(data, initValue='')
+    elf_map = add_padding_to_map(elf_map)
+    
+    #printMap(elf_map)
+    
+    elf_positions = get_elf_positions(elf_map)
+    elf_map, _ = where_to_go_next(elf_map, elf_positions)
+    result = get_empty_tiles(elf_map)
 
            
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(3990, result)
     return result
 
+def day23_2(data):
+    #data = read_input(2022, "23t")       
+    
+    result = 0
+    elf_map = buildMapGrid(data, initValue='')
+    elf_map = add_padding_to_map(elf_map)
+    
+    #printMap(elf_map)
+    
+    elf_positions = get_elf_positions(elf_map)
+    elf_map, rounds = where_to_go_next(elf_map, elf_positions, part2 = True)
+    result = rounds
+
+           
+    AssertExpectedResult(3990, result)
+    return result
+
+
+
 #endregion
-'''
+
 
 
 if __name__ == "__main__":
