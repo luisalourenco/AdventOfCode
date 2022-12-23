@@ -1791,7 +1791,6 @@ def day13_2(data):
 #endregion
 
 
-
 #region ##### Day 14 #####
 
 def generate_cave_system(rock_segments, low_x, high_x, low_y, high_y, part2 = False):
@@ -1988,7 +1987,7 @@ def day14_2(data):
     return result
 
 
-#enddregion
+#endregion
 
 
 #region ##### Day 15 #####
@@ -2130,7 +2129,7 @@ def day15_2(data):
 
 
 
-#region ##### Day 16 #####
+#region ##### Day 16  TODO #####
 
 def parse_tunel_system(data):
     result = 0
@@ -2231,7 +2230,7 @@ def day16_1(data):
 
 
 
-#region ##### Day 17 #####
+#region ##### Day 17 TODO #####
 
 
 def drop_rock(cave, rock, jet_direction, current_height, left_edge, right_edge, jet_active):
@@ -2450,7 +2449,7 @@ def day17_1(data):
 
 
 
-#region ##### Day 18 #####
+#region ##### Day 18 TODO part2 #####
 
 def get_cube_vertexes(cube):
     deltas = [(0, 0, 0), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 1), (1, 1, 1), (0, 1, 1)]
@@ -2575,7 +2574,7 @@ def day18_2(data):
 
 
 
-#region ##### Day 19 #####
+#region ##### Day 19 TODO #####
 
 def get_blueprint_quality_level(id, blueprint, time_limit):
     ores = 0
@@ -2941,7 +2940,7 @@ def day21_2(data):
 
 
 
-#region ##### Day 22 #####
+#region ##### Day 22 TODO #####
 
 
 def turn_direction(direction, action):
@@ -2996,14 +2995,14 @@ def change_direction(direction, action, value=90):
 
 def move_in_direction(grid, facing, steps, x, y):
 
-    if direction == 'U':
-        y+=value
-    elif direction == 'D':
-        y-= value
-    elif direction == 'R':
-        x += value
-    elif direction == 'L':
-        x -= value
+    if facing == 'U':
+        y+=steps
+    elif facing == 'D':
+        y-= steps
+    elif facing == 'R':
+        x += steps
+    elif facing == 'L':
+        x -= steps
     
 
     return grid
@@ -3046,7 +3045,7 @@ def get_password(grid, instructions):
         if instruction.isdigit():
             print("moving",steps,"steps in direction", current_facing)
             steps = int(instruction)
-            move_in_direction(grid, current_facing, steps, current_column, current_row)
+            move_in_direction(grid, current_facing, steps, curr_column, curr_row)
         else: #change direction
             print("changing facing", current_facing,"90 degrees to the", instruction)
             current_facing = change_direction(current_facing, instruction)
