@@ -3173,6 +3173,9 @@ def where_to_go_next(elf_map, elf_positions, part2=False):
     for round in range(rounds):
         elf_proposals = first_half(elf_map, elf_positions, directions_to_consider)
         if len(elf_proposals) == 0:
+            print(len(elf_proposals))
+            ##print((elf_proposals))
+            print(round)
             return elf_map, round+1
         #print("Round",round)
         #print("elf proposals:", len(elf_proposals))
@@ -3191,7 +3194,7 @@ def where_to_go_next(elf_map, elf_positions, part2=False):
 def add_padding_to_map(elf_map):
     rows = len(elf_map)
     columns = len(elf_map[0])
-    padding = 10
+    padding = 60
     
     #padding = ['.'] * len(columns) * 5
     
@@ -3229,10 +3232,9 @@ def get_empty_tiles(elf_map):
             if elf_map[y][x] == '.':
                 count += 1
     return count
-    #sum([1 for _ in elf_map[y_min:y_max+1][x_min:x_max+1] if ])
 
 def day23_1(data):
-    #data = read_input(2022, "23t")       
+    data = read_input(2022, "23t")       
     
     result = 0
     elf_map = buildMapGrid(data, initValue='')
@@ -3248,6 +3250,7 @@ def day23_1(data):
     AssertExpectedResult(3990, result)
     return result
 
+#1040 low
 def day23_2(data):
     #data = read_input(2022, "23t")       
     
@@ -3262,12 +3265,31 @@ def day23_2(data):
     result = rounds
 
            
+    AssertExpectedResult(1057, result)
+    return result
+
+#endregion
+
+
+
+#region ##### Day 24 #####
+
+
+def day24_1(data):
+    data = read_input(2022, "24t")       
+    
+    for line in data:
+        input = line.split(' ')
+
+    result = 0
+    
+           
     AssertExpectedResult(3990, result)
     return result
 
-
-
 #endregion
+
+
 
 
 
