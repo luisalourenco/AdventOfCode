@@ -2678,11 +2678,11 @@ def day19_1(data):
 
 #region ##### Day 20 #####
 
-def mixing_message(encrypted_message, message_contents):
+def mixing_message(original, encrypted_message, message_contents):
     message = copy.deepcopy(encrypted_message)
     size = len(message)
     #print("initial:", message)
-    for position in encrypted_message:
+    for position in original:
         
         number = message_contents[position]
         
@@ -2755,9 +2755,9 @@ def day20_1(data):
         encrypted_message.append(i)
         i+=1
        
-    message = mixing_message(encrypted_message, message_contents)
+    message = mixing_message(encrypted_message, encrypted_message, message_contents)
     
-    print_message_contents(message, message_contents)
+    #print_message_contents(message, message_contents)
     m = convert_message(message, message_contents)   
     
     i1 = 1000
@@ -2780,6 +2780,54 @@ def day20_1(data):
     
     print(result)
     AssertExpectedResult(8028, result)
+    return result
+
+
+def day20_2(data):
+    #data = read_input(2022, "20t")       
+    
+    decryption_key = 811589153
+    result = 0
+    encrypted_message = []
+    message_contents = defaultdict()
+    i = 0
+    for line in data:
+        n = int(line.strip())
+        message_contents[i] = n * decryption_key
+        encrypted_message.append(i)
+        i+=1
+       
+    original = copy.deepcopy(encrypted_message)
+    for round in range(10):
+        #print("After",round+1,"round of mixing:")
+        message = mixing_message(original, encrypted_message, message_contents)    
+        #print_message_contents(message, message_contents)        
+        #print()
+        encrypted_message = message
+       
+    
+    m = convert_message(message, message_contents)   
+    
+    i1 = 1000
+    i2 = 2000
+    i3 = 3000    
+    
+    zero_index = m.index(0)
+    i1 += zero_index
+    i1 %= len(message)
+    i2 += zero_index
+    i2 %= len(message)
+    i3 += zero_index
+    i3 %= len(message)
+        
+    print()
+    print("indices",i1,i2,i3)
+    print(m[i1],m[i2],m[i3], zero_index)
+    
+    result = m[i1] + m[i2] + m[i3]
+    
+    print(result)
+    AssertExpectedResult(8798438007673, result)
     return result
 
 #endregion
