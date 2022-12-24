@@ -3321,14 +3321,108 @@ def day23_2(data):
 
 #region ##### Day 24 #####
 
+def get_new_position(position, direction, lower_bound, right_bound):
+    if direction == '^':
+        return (position[0], 1)
+    elif direction == 'v':
+        return (position[0], lower_bound-1)
+    elif direction == '<':
+        return (right_bound-1, position[1])
+    elif direction == '>':
+        return (1, position[1])
+
+#up (^), down (v), left (<), or right (>)
+def move_blizzards(walls, blizzards_positions, blizards, lower_bound, right_bound):
+    new_blizzards_positions = []
+    
+    for blizzard in blizzards_positions: 
+        x,y = blizzard
+        directions = blizards[blizzard]
+        blizards[blizzard] = []
+        
+        for direction in directions:
+            delta = (0,0)
+            if direction == '^':
+                delta = (0,-1)
+            elif direction == 'v':
+                delta = (0,1)
+            elif direction == '<':
+                delta = (-1,0)
+            elif direction == '>':
+                delta = (1,0)
+            
+            new_position = (x + delta[0], y + delta[1])
+            
+            if new_position in walls:
+                new_position = get_new_position(new_position, direction, lower_bound, right_bound)
+                                
+            new_blizzards_positions.append(new_position)
+            if new_position not in blizards:
+                blizards[new_position] = []
+            blizards[new_position].append(new_position)
+    
+    return new_blizzards_positions, blizards
+
+def move_expedition(expedition, walls, blizzards_positions, blizards, lower_bound, right_bound):
+    y_min = 0
+    x_min = 0
+    y_max = lower_bound
+    x_max = right_bound
+    x,y = expedition
+    
+    #priority directions
+    deltas = [(0,1), (1,0), (0,-1), (-1, 0)]
+    
+    for xx , yy in deltas:
+        if x_min < x+xx < x_max and y_min < y+yy < y_max:
+            new_position = (x + xx, y + yy)
+            if new_position not in walls and new_position not in blizzards_positions:
+                return (x + xx, y + yy)
+    return expedition
+    
+
+def find_way_out(start, end, walls, blizzards_positions, blizards, lower_bound, right_bound):
+    expedition = start
+    steps = 0
+    
+    while expedition != end:
+        if steps == 30:
+            break
+        blizzards_positions, blizards = move_blizzards(walls, blizzards_positions, blizards, lower_bound, right_bound)
+        expedition = move_expedition(expedition, walls, blizzards_positions, blizards, lower_bound, right_bound)
+        print(expedition)
+        steps += 1
+    return steps
 
 def day24_1(data):
     data = read_input(2022, "24t")       
+    walls = set()
+    blizzards_positions = list()
+    blizzards = defaultdict()
+    start = None
+    end = None
     
-    for line in data:
-        input = line.split(' ')
+    for y in range(len(data)):
+        for x in range(len(data[0])):
+            if data[y][x]== '#':
+                walls.add((x,y))
+            elif data[y][x] == '.':
+                if not start:
+                    start = (x,y)
+                else:
+                    end = (x,y)
+            else:
+                blizzards_positions.append((x,y))
+                if (x,y) not in blizzards:
+                    blizzards[(x,y)] = []  
+                blizzards[(x,y)].append(data[y][x])
 
-    result = 0
+    
+    lower_bound =  len(data)-1
+    right_bound = len(data[0])-1
+
+    steps = find_way_out(start, end, walls, blizzards_positions, blizzards,lower_bound, right_bound)
+    result = steps
     
            
     AssertExpectedResult(3990, result)
