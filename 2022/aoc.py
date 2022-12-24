@@ -3334,11 +3334,13 @@ def get_new_position(position, direction, lower_bound, right_bound):
 #up (^), down (v), left (<), or right (>)
 def move_blizzards(walls, blizzards_positions, blizards, lower_bound, right_bound):
     new_blizzards_positions = []
+    new_blizards = defaultdict()
     
-    for blizzard in blizzards_positions: 
+    while len(blizzards_positions) > 0:
+        blizzard = blizzards_positions.pop() 
         x,y = blizzard
         directions = blizards[blizzard]
-        blizards[blizzard] = []
+        #print("bliz at pos", blizzard,":",directions)
         
         for direction in directions:
             delta = (0,0)
@@ -3356,12 +3358,13 @@ def move_blizzards(walls, blizzards_positions, blizards, lower_bound, right_boun
             if new_position in walls:
                 new_position = get_new_position(new_position, direction, lower_bound, right_bound)
                                 
-            new_blizzards_positions.append(new_position)
-            if new_position not in blizards:
-                blizards[new_position] = []
-            blizards[new_position].append(new_position)
+            if new_position not in new_blizzards_positions:
+                new_blizzards_positions.append(new_position)
+            if new_position not in new_blizards:
+                new_blizards[new_position] = []
+            new_blizards[new_position].append(direction)
     
-    return new_blizzards_positions, blizards
+    return new_blizzards_positions, new_blizards
 
 def move_expedition(expedition, walls, blizzards_positions, blizards, lower_bound, right_bound):
     y_min = 0
@@ -3390,7 +3393,8 @@ def find_way_out(start, end, walls, blizzards_positions, blizards, lower_bound, 
             break
         blizzards_positions, blizards = move_blizzards(walls, blizzards_positions, blizards, lower_bound, right_bound)
         expedition = move_expedition(expedition, walls, blizzards_positions, blizards, lower_bound, right_bound)
-        print(expedition)
+        print(len(blizzards_positions), len(blizards))
+        print("step",steps,"and expedition",expedition)
         steps += 1
     return steps
 
@@ -3417,12 +3421,13 @@ def day24_1(data):
                     blizzards[(x,y)] = []  
                 blizzards[(x,y)].append(data[y][x])
 
-    
+    print(blizzards_positions)
+    print(blizzards)
     lower_bound =  len(data)-1
     right_bound = len(data[0])-1
 
     steps = find_way_out(start, end, walls, blizzards_positions, blizzards,lower_bound, right_bound)
-    result = steps
+    result = 0
     
            
     AssertExpectedResult(3990, result)
