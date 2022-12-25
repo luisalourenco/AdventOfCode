@@ -3436,7 +3436,7 @@ def day24_1(data):
 #endregion
 
 
-#region ##### DAy 25 #######
+#region ##### Day 25 #######
 
 
 def convert_snafu_to_decimal(snafu):
@@ -3454,20 +3454,42 @@ def convert_snafu_to_decimal(snafu):
         position += 1
     return decimal
 
-#34182852926025
+#based on a converter to balanced ternary
+def balanced_quinary(n):
+    output = ""
+    while(n > 0):
+        rem = n % 5
+        n = n // 5
+		
+        if rem == 3 or rem == 4:
+            n += 1
+      
+        if(rem == 0):   
+            output = '0' + output
+        else:
+            if(rem == 1):
+                output = '1' + output
+            elif(rem == 2):
+                output = '2' + output
+            elif(rem == 3):
+                output = '=' + output
+            elif(rem == 4):
+                output = '-' + output
+    return output
 
+
+#34182852926025
+# 4890 -> 124030 --> 124021 -> 122021 --> 250
 def day25_1(data):
-    data = read_input(2022, "25t")       
+    #data = read_input(2022, "25t")       
     result = 0
     
     for snafu in data:
         result += convert_snafu_to_decimal(snafu)
     
-    
-    #print(convert_snafu_to_decimal("2=-01"))
-    #print(convert_snafu_to_decimal("1121-1110-1=0"))
-        
-    AssertExpectedResult(3990, result)
+    result = balanced_quinary(result)
+    print(result)        
+    AssertExpectedResult('2-0-01==0-1=2212=100', result)
     return result
 
 
