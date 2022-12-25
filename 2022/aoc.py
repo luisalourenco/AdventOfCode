@@ -3436,7 +3436,43 @@ def day24_1(data):
 #endregion
 
 
+#region ##### DAy 25 #######
 
+
+def convert_snafu_to_decimal(snafu):
+    position = 0
+    snafu = snafu[::-1]
+    decimal = 0
+    for d in snafu:
+        if d == '-':
+            n = -1 * (5**position)
+        elif d == '=':
+            n = -2 * (5**position)
+        else:
+            n = int(d) * (5**position)
+        decimal += n
+        position += 1
+    return decimal
+
+#34182852926025
+
+def day25_1(data):
+    data = read_input(2022, "25t")       
+    result = 0
+    
+    for snafu in data:
+        result += convert_snafu_to_decimal(snafu)
+    
+    
+    #print(convert_snafu_to_decimal("2=-01"))
+    #print(convert_snafu_to_decimal("1121-1110-1=0"))
+        
+    AssertExpectedResult(3990, result)
+    return result
+
+
+
+#endregion
 
 
 if __name__ == "__main__":
