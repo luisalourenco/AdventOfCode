@@ -2383,7 +2383,7 @@ def day17_1(data):
     rows = max_rocks_fallen * 4 
 
     ###FOR DEBUG
-    #rows = 40
+    rows = 40
 
     columns = width + 2
     cave = [ [ '.' for i in range(columns) ] for j in range(rows) ] 
@@ -2422,6 +2422,8 @@ def day17_1(data):
         
         c_cave = copy.deepcopy(cave)  
         draw_rock(c_cave, left_edge, lower_edge, rock, True)
+        if rocks_fallen == 11 or rocks_fallen == 12:
+                printMap(c_cave)
         #printMap(c_cave)
 
         i = 1
@@ -2450,14 +2452,15 @@ def day17_1(data):
             jet_active = not jet_active
             i+=1
                 
+        #print("prev:",highest_block)
         highest_block = res if res < highest_block else highest_block
+        #print("after:",highest_block)
         current_rock_type += 1
         current_rock_type %= 5
         left_edge = 3
         right_edge = left_edge + get_right_edge(rock)
         
         #print("highest_block:", highest_block)
-        lower_edge = (len(c_cave)-1 - padding_height)  - default_height 
         lower_edge = highest_block - default_height - 1
 
         jet_active = True
@@ -2467,7 +2470,8 @@ def day17_1(data):
             #print("rock dropped! HEIGHT:",lower_edge)
             rocks_fallen +=1    
             print(len(cave) - highest_block - 1)
-            #printMap(cave)
+            if rocks_fallen == 11 or rocks_fallen == 12:
+                printMap(cave)
 
 
     result = len(cave) - highest_block - 1
