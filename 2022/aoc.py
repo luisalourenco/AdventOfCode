@@ -2244,7 +2244,7 @@ def drop_rock(cave, rock, jet_direction, lower_edge, left_edge, right_edge, jet_
         y = lower_edge
         x = left_edge
         if rock_is_resting(rock, cave, x, y): # hit an obstacle
-            #print("rock hit obstacle!")
+            print("rock hit obstacle!",x,y)
             #print("upper edge is", get_upper_edge(rock, lower_edge))
             draw_rock(cave,x,y, rock)
             return cave, get_upper_edge(rock, lower_edge), left_edge, right_edge, True
@@ -2311,11 +2311,14 @@ def rock_is_resting(rock,cave, x, y):
                 return True
             x+=1
     elif rock == '+':
-        if cave[y+1][x] in obstacle: #lower edge 
+        if cave[y+1][x+1] in obstacle: #lower edge 
+            #print("cond1")
             return True
-        elif cave[y][x-1] in obstacle: #left edge
+        elif cave[y][x] in obstacle: #left edge
+            #print("cond2")
             return True
-        elif cave[y][x+1] in obstacle: #right edge
+        elif cave[y][x+2] in obstacle: #right edge
+            #print("cond3")
             return True
 
     return False
@@ -2337,8 +2340,15 @@ def draw_rock(cave,x,y, rock, init = False):
         cave[y][x+1] = symbol #bottom
         cave[y-1][x+1] = symbol #middle
         cave[y-2][x+1] = symbol #top
-        cave[y-1][x] = symbol
-        cave[y-1][x+2] = symbol
+        cave[y-1][x] = symbol #left edge
+        cave[y-1][x+2] = symbol #right-edge
+        if not init:
+            print("drew + on:")
+            print("(",x+1,",",y,")")
+            print("(",x+1,",",y-1,")")
+            print("(",x+1,",",y-2,")")
+            print("(",x,",",y-1,")")
+            print("(",x+2,",",y-1,")")
         return 3
     elif rock == 'L':
         for _ in range(3):
@@ -2358,6 +2368,12 @@ def draw_rock(cave,x,y, rock, init = False):
         cave[y][x+1] = symbol #bottom
         cave[y-1][x] = symbol #middle
         cave[y-1][x+1] = symbol #top
+        #if not init:
+        #    print("drew S on:")
+        #    print("(",x,",",y,")")
+        #    print("(",x+1,",",y,")")
+        #    print("(",x,",",y-1,")")
+        #    print("(",x+1,",",y-1,")")
         return 2
 
 
@@ -2408,27 +2424,28 @@ def day17_1(data):
     jet_active = True
     
     #debug
-    max_rocks_fallen = 15
+    max_rocks_fallen = 25
     #print("pattern:", list(jet_pattern))
     lower_edge = (len(cave)-1 - padding_height)  - default_height
     
     while rocks_fallen != max_rocks_fallen:       
         rock = rock_types[current_rock_type]        
         
-        #print("dropping rock", rock)
+        print()
+        print("dropping rock", rock)
         is_rested = False
         left_edge = 3 #left most point
         right_edge = left_edge + get_right_edge(rock)
         
         c_cave = copy.deepcopy(cave)  
-        draw_rock(c_cave, left_edge, lower_edge, rock, True)
-        if rocks_fallen == 11 or rocks_fallen == 12:
-                printMap(c_cave)
+        #draw_rock(c_cave, left_edge, lower_edge, rock, True)
         #printMap(c_cave)
 
         i = 1
         while not is_rested:
             jet_direction = jet_pattern[current_jet_direction]
+            
+            aux = lower_edge
             #print()
             #print("Round",i)
             #print('lower_edge is', lower_edge)
@@ -2466,12 +2483,15 @@ def day17_1(data):
         jet_active = True
 
         
-        if is_rested:
-            #print("rock dropped! HEIGHT:",lower_edge)
+        if is_rested:            
             rocks_fallen +=1    
             print(len(cave) - highest_block - 1)
-            if rocks_fallen == 11 or rocks_fallen == 12:
-                printMap(cave)
+            print("rock:", rock)
+            print("upper_edge",res,"(", len(cave) - res - 1,")")
+            print("left_edge, right_edge",left, right)
+            print("lower_edge",aux)
+            print("rock dropped! highest_block:",highest_block,"(", len(cave) - highest_block - 1,")")
+            #printMap(cave)
 
 
     result = len(cave) - highest_block - 1
