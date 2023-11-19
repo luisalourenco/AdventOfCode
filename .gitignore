@@ -12,3 +12,16 @@
 2022/MyMap.txt
 .gitignore
 2022/t.txt
+sbt-launch.jar
+.bsp/sbt.json
+2023/.DS_Store
+.gitignore
+2023/input/.DS_Store
+project/metals.sbt
+project/project/metals.sbt
+project/project/project/target/*
+project/*
+target/*
+.metals/*
+output/*
+2023/output/*

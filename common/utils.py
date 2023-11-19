@@ -106,18 +106,38 @@ def execute_day(_globals, year, day, part, new_timeout):
         except SignalCatchingError:
             result = HEAVY_EXERCISE
         end = timer()
-        print("Day {0}, part {1}: {2} ({3:.3f} secs)".format(
-            day, part, result, end - start))
+        result_str = "Day {0}, part {1}: {2} ({3:.3f} secs)".format(day, part, result, end - start)
+        print(result_str)
+        write_output(year, day, result_str)
+        
+def write_output(year, day, result):
+    if year < 2023:
+        return
+    
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    filename = filename = f"day{day}"
+    if year >= 2023:
+        if len(str(day)) == 1:
+            filename = f"day_0{day}"
+        else:
+            filename = f"day_{day}"
+
+    with open("{0}/../{1}/output/{2}".format(file_dir, year, filename), "a") as file:
+        file.write(result)
+        file.write("\n")
+
 
 def read_input(year, day):
     file_dir = os.path.dirname(os.path.realpath(__file__))
     
     filename = filename = f"day{day}"
-    if year == 2022:
+    if year >= 2022:
         if len(str(day)) == 1:
             filename = f"day_0{day}"
         else:
             filename = f"day_{day}"
+    if year > 2022:
+        filename +='.txt'
         
     with open("{0}/../{1}/input/{2}".format(file_dir, year, filename), "r") as fileReader:
         return [line.rstrip('\n') for line in fileReader]
