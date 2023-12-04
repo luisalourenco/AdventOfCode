@@ -147,7 +147,7 @@ def AssertExpectedResult(expected, result, part = 0):
     print("( Part",part,") Correct result:", expected == result)
 
 def ints(data):
-    return [int(n) for n in data]
+    return [int(n) for n in data if n != '']
 
 def main(argv_, globals_, year, new_timeout = EXERCISE_TIMEOUT):
     start_day = None

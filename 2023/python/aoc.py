@@ -239,8 +239,7 @@ def day2_2(data):
     games = parse_games(data) 
     fewest_cubes_per_game = get_fewest_cubes_per_game(games)
     for game in fewest_cubes_per_game.keys():
-        #[x for x in fewest_cubes_per_game[game]]
-        result += reduce(lambda x, y: x*y,fewest_cubes_per_game[game])
+        result += reduce(lambda x, y: x*y, fewest_cubes_per_game[game])
              
     AssertExpectedResult(0, result)
     return result
@@ -249,25 +248,181 @@ def day2_2(data):
 
 #region ##### Day 3 #####
 
+
+def check_if_is_part_number(engine_map, x, y, part_number):
+    rows = len(engine_map)
+    columns = len(engine_map[0])
+    size = len(part_number)
+    above = []
+    below = []
+                
+    #print("checking if", part_number,"is part number with values (x,y):",x,y)
+    
+    xx = x-size-1
+    if xx < 0:
+        xx = 0
+        left = ''
+    else:
+        left = engine_map[y][xx]
+            
+    xxx = x
+    if xxx == columns:
+        xxx = columns - 1
+        right = ''
+    else:
+        right = engine_map[y][xxx]    
+    # row above
+    if y != 0:
+        above = engine_map[y-1][xx : x+1]
+    
+    # row below
+    if y+1 != rows:                  
+        below = engine_map[y+1][xx : x+1]        
+    
+    is_part_number = False
+    symbols_above = sum(1 for c in above if not c.isdigit() and c != '.')
+    symbols_below = sum(1 for c in below if not c.isdigit() and c != '.')
+    
+    
+    #print(above)
+    #print(left, end="")
+    #print(part_number, end="")
+    #print(right)
+    #print(below)
+    #print("symbols_above", symbols_above)
+    #print("symbols_below", symbols_below)
+
+    if symbols_above > 0:        
+        is_part_number = True
+    if symbols_below > 0: 
+        is_part_number = True
+    if left != '' and left != '.' and not left.isdigit():
+        is_part_number = True
+    if right != '' and right != '.' and not right.isdigit():
+        is_part_number = True
+    
+    return is_part_number
+
+# Test case values
+#Part 1: 925
+#Part 2: 6756
+#
+def get_part_numbers(engine_map):
+    rows = len(engine_map)
+    columns = len(engine_map[0])      
+    part_numbers = []
+    ignored_numbers = []
+    part_number = ''
+    
+    for y in range(rows):   
+        if part_number != '':
+            is_part_number = check_if_is_part_number(engine_map, columns, y-1, part_number)
+            #print(part_number,'is part number?', is_part_number)
+            #print()
+            if not is_part_number:
+                ignored_numbers.append(int(part_number))
+            else:
+                part_numbers.append(int(part_number))
+            part_number = ''
+            
+        for x in range(columns):
+            elem = engine_map[y][x]
+            if elem.isdigit():
+                part_number += elem
+            elif part_number != '':                
+                is_part_number = check_if_is_part_number(engine_map, x, y, part_number)                    
+                
+                #print(part_number,'is part number?', is_part_number)
+                #print()
+                if not is_part_number:
+                    ignored_numbers.append(int(part_number))
+                else:
+                    part_numbers.append(int(part_number))
+                    
+                part_number = '' 
+                               
+    if part_number != '':
+        is_part_number = check_if_is_part_number(engine_map, x, y, part_number)
+        #print(part_number,'is part number?', is_part_number)
+        #print()
+        if not is_part_number:
+            ignored_numbers.append(int(part_number))
+        else:
+            part_numbers.append(int(part_number))
+            
+    return part_numbers
+                
+
 #Day 3, part 1: 8401 (0.075 secs)
 #Day 3, part 2: 2641 (0.188 secs)
+# 505770 too low
 def day3_1(data):
-    #data = read_input(2023, "01_teste")    
+    #data = read_input(2023, "03_teste")    
     result = 0    
-    #for line in data:           
-    AssertExpectedResult(0, result)
+    
+    engine_map = buildMapGrid(data, initValue='.')       
+    
+    y = 0
+    for line in data:
+        for x in range(len(line)):
+            engine_map[y][x] = line[x]
+        y += 1
+    
+    #printMap(engine_map)
+    part_numbers = get_part_numbers(engine_map)
+    #print(part_numbers)
+    result = sum(part_numbers)
+    
+    AssertExpectedResult(532445, result)
     return result
 
 
 # Day 3, part 2: 2641 (0.188 secs)
 def day3_2(data):
-    ##data = read_input(2023, "01_teste")    
+    data = read_input(2023, "03_teste")     
     result = 0    
-    #for line in data:           
+    engine_map = buildMapGrid(data, initValue='.')       
+    
+    y = 0
+    for line in data:
+        for x in range(len(line)):
+            engine_map[y][x] = line[x]
+        y += 1
+    
+    #printMap(engine_map)
+    part_numbers = get_part_numbers(engine_map)  
+    print(part_numbers)
+    
     AssertExpectedResult(0, result)
     return result
 
 #endregion
+
+#region ##### Day 4 #####
+#Day 4, part 1: 26443 (0.096 secs)
+def day4_1(data):
+    #data = read_input(2023, "04_teste")    
+    result = 0    
+    
+    for line in data:
+        points = 0
+        ndata = parse("Card {}: {}", line)[1]
+        numbers = ndata.split("|")
+        winning_numbers = ints(numbers[0].split())
+        played_numbers = ints(numbers[1].split() )
+        
+        winning_numbers.sort()
+        for n in played_numbers:
+            if n in winning_numbers:
+                points = 1 if points == 0 else points*2
+        result += points
+    
+    AssertExpectedResult(26443, result)
+    return result
+
+#endregion
+
+
 
 if __name__ == "__main__":
     # override timeout

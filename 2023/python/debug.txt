@@ -1,0 +1,162 @@
+C:\git\AdventOfCode\2023\python
+checking if 12 is part number with values (x,y): 2 0
+[]
+12.
+['+', '.', '.']
+symbols_above 0
+symbols_below 1
+12 is part number? True
+
+TESTE 2
+checking if 34 is part number with values (x,y): 12 1
+['*', '.', '.']
+.34
+['2', '.', '.']
+symbols_above 1
+symbols_below 0
+34 is part number? True
+
+checking if 12 is part number with values (x,y): 10 2
+['.', '.', '.', '3']
+-12.
+['.', '.', '.', '.']
+symbols_above 0
+symbols_below 0
+12 is part number? True
+
+checking if 78 is part number with values (x,y): 4 3
+['.', '.', '.', '.']
+.78.
+['.', '*', '.', '.']
+symbols_above 0
+symbols_below 1
+78 is part number? True
+
+checking if 60 is part number with values (x,y): 9 4
+['.', '.', '.', '.']
+.60.
+['.', '.', '.', '.']
+symbols_above 0
+symbols_below 0
+60 is part number? False
+
+checking if 78 is part number with values (x,y): 2 5
+['.', '.', '*']
+78.
+['.', '5', '.']
+symbols_above 1
+symbols_below 0
+78 is part number? True
+
+TESTE 2
+checking if 9 is part number with values (x,y): 12 5
+['.', '.']
+.9
+['.', '$']
+symbols_above 0
+symbols_below 1
+9 is part number? True
+
+checking if 5 is part number with values (x,y): 2 6
+['7', '8', '.']
+.5.
+['8', '.', '.']
+symbols_above 0
+symbols_below 0
+5 is part number? False
+
+checking if 23 is part number with values (x,y): 9 6
+['.', '.', '.', '.']
+.23.
+['*', '1', '2', '.']
+symbols_above 0
+symbols_below 1
+23 is part number? True
+
+checking if 8 is part number with values (x,y): 1 7
+['.', '5']
+8.
+['.', '.']
+symbols_above 0
+symbols_below 0
+8 is part number? False
+
+checking if 90 is part number with values (x,y): 6 7
+['.', '.', '.', '.']
+.90*
+['.', '.', '.', '.']
+symbols_above 0
+symbols_below 0
+90 is part number? True
+
+checking if 12 is part number with values (x,y): 9 7
+['.', '2', '3', '.']
+*12.
+['.', '.', '.', '.']
+symbols_above 0
+symbols_below 0
+12 is part number? True
+
+checking if 2 is part number with values (x,y): 1 9
+['.', '.']
+2.
+['.', '*']
+symbols_above 0
+symbols_below 1
+2 is part number? True
+
+checking if 2 is part number with values (x,y): 3 9
+['.', '.', '.']
+.2.
+['*', '.', '.']
+symbols_above 0
+symbols_below 1
+2 is part number? True
+
+checking if 12 is part number with values (x,y): 11 9
+['.', '.', '.', '.']
+.12.
+['.', '.', '.', '*']
+symbols_above 0
+symbols_below 1
+12 is part number? True
+
+checking if 1 is part number with values (x,y): 1 11
+['.', '*']
+1.
+[]
+symbols_above 1
+symbols_below 0
+1 is part number? True
+
+checking if 1 is part number with values (x,y): 3 11
+['*', '.', '.']
+.1.
+[]
+symbols_above 1
+symbols_below 0
+1 is part number? True
+
+checking if 503 is part number with values (x,y): 8 11
+['.', '.', '.', '.', '.']
+.503+
+[]
+symbols_above 0
+symbols_below 0
+503 is part number? True
+
+TESTE
+checking if 56 is part number with values (x,y): 11 11
+['.', '.', '.', '*']
++566
+[]
+symbols_above 1
+symbols_below 0
+56 is part number? True
+
+[12, 34, 12, 78, 78, 9, 23, 90, 12, 2, 2, 12, 1, 1, 503, 56]
+925
+( Part 1 ) Correct result: True
+Day 3, part 1: 0 (0.093 secs)
+( Part 2 ) Correct result: True
+Day 3, part 2: 0 (0.001 secs)
