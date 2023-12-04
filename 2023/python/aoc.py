@@ -10,6 +10,7 @@ from io import DEFAULT_BUFFER_SIZE
 from threading import current_thread
 from timeit import default_timer as timer
 from collections import deque
+from functools import reduce
 import functools
 import math
 import os
@@ -34,6 +35,7 @@ from termcolor import colored
 import termcolor
 import random
 from parse import parse
+from parse import search
 from aocd import get_data
 from aocd import submit
 
@@ -164,19 +166,82 @@ def day1_2(data):
 
 #region ##### Day 2 #####
 
-#Day 2, part 1: 11150 (0.064 secs)
-#Day 2, part 2: 8295 (0.013 secs)
+def check_possible_games(games, cubes_limit):
+    possible_games = []
+    for game in games.keys():
+        sets = games[game]
+        possible = True
+        for s in sets:
+            if not (s['red'] <= cubes_limit['red'] and s['green'] <= cubes_limit['green'] and s['blue'] <= cubes_limit['blue']):
+                possible = False
+        if possible:
+            possible_games.append(int(game))
+    return possible_games
+
+def parse_games(data):
+    games = {}
+    for line in data:           
+        game = [parse("Game {}: {}", line)][0]
+        cubes = game[1].split(";")        
+        games[game[0]] = []
+        for cube_set in cubes:
+            red = search('{:d} red', cube_set)
+            green = search('{:d} green', cube_set)
+            blue = search('{:d} blue', cube_set)
+            c = {
+                'red':  0 if (red is None) else red[0],
+                'green': 0 if (green is None) else green[0],
+                'blue': 0 if (blue is None) else blue[0]
+            } 
+            games[game[0]].append(c)
+    return games
+
+#Day 2, part 1: 1734 (0.116 secs)
+#Day 2, part 2: 70387 (0.021 secs)
 def day2_1(data):
-    #data = read_input(2023, "01_teste")    
-    result = 0    
-    #for line in data:           
-    AssertExpectedResult(0, result)
+    #data = read_input(2023, "02_teste")    
+    result = 0  
+    cubes_limits = {
+        'red': 12,
+        'green': 13,
+        'blue': 14
+    }  
+    
+    games = parse_games(data)          
+    possible_games = check_possible_games(games, cubes_limits)
+    result = sum(possible_games)
+    AssertExpectedResult(1734, result)
     return result
 
+def get_fewest_cubes_per_game(games):
+    fewest_cubes_per_game = {}
+
+    for game in games.keys():
+        fewest_cubes = {
+            'red': 0,
+            'green': 0,
+            'blue': 0 
+        }
+        for s in games[game]:
+            if s['red'] > fewest_cubes['red']:
+                fewest_cubes['red'] = s['red']
+            if s['green'] > fewest_cubes['green']:
+                fewest_cubes['green'] = s['green']
+            if s['blue'] > fewest_cubes['blue']:
+                fewest_cubes['blue'] = s['blue']
+        fewest_cubes_per_game[game] = fewest_cubes.values()
+    return fewest_cubes_per_game
+
 def day2_2(data):
-    #data = read_input(2023, "01_teste")    
+    #data = read_input(2023, "02_teste")    
     result = 0    
-    #for line in data:           
+    
+    games = parse_games(data) 
+    fewest_cubes_per_game = get_fewest_cubes_per_game(games)
+    for game in fewest_cubes_per_game.keys():
+        #[x for x in fewest_cubes_per_game[game]]
+        result += reduce(lambda x, y: x*y,fewest_cubes_per_game[game])
+             
     AssertExpectedResult(0, result)
     return result
 
