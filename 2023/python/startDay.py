@@ -4,6 +4,7 @@ from datetime import date
 import browser_cookie3
 import sys
 
+# 53616c7465645f5f5d61230bc5d6de273b2978806c2b7da95fe7f05b61c02ada6f9fe4958b9ffdaba3b5fadf9cf7c695e4c9aa59cdf9e1c1e214f9b1239e1aa7
 #Get cookies from the browser
 #cj = browser_cookie3.firefox()
 cj = None
@@ -33,7 +34,7 @@ headers = {
 }
 
 
-r = requests.get(f"https://adventofcode.com/2022/day/{day}/input", headers=headers, cookies = cj)
+r = requests.get(f"https://adventofcode.com/2023/day/{day}/input", headers=headers, cookies = cj)
 if len(str(day)) == 1:
     filename = f"day_0{day}.txt"
 else:

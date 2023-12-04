@@ -34,6 +34,8 @@ from termcolor import colored
 import termcolor
 import random
 from parse import parse
+from aocd import get_data
+from aocd import submit
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2023
@@ -63,35 +65,99 @@ from itertools import islice
 
 #region ##### Day 1 #####
 
-#Day 1, part 1: 73211 (0.056 secs)
-#Day 1, part 2: 213958 (0.006 secs)
+#Day 1, part 1: 55029 (0.036 secs) 
+#Day 1, part 2: 55686 (0.008 secs) 
 def day1_1(data):    
-    #data = read_input(2023, "01")    
-    #data = read_input(2022, "01t")    
+    data = read_input(2023, "01")    
+    first_number = ''
+    last_number = ''
     result = 0
-    max_calories = 0
-    elves = []
+
     for line in data:
         if line != '':
-            n = int(line)
-            result += n   
-        else:
-            elves.append(result)
-            if result > max_calories:
-                max_calories = result
-            result = 0
+            for c in line:
+                if c.isdigit():
+                    if first_number == '':
+                        first_number = c
+                        last_number = c
+                    else:
+                        last_number = c
+            result += int(first_number + last_number)
+            print(first_number + last_number)
+            first_number = ''
+            last_number = ''
 
-    elves.sort(reverse=True)
-    result = sum(elves[:3])
-    AssertExpectedResult(213958, result)
+            
+
+    AssertExpectedResult(55029, result)
     return result
 
 
 def day1_2(data):
     #data = read_input(2023, "01_teste")    
-    result = 0    
-    #for line in data:           
-    AssertExpectedResult(0, result)
+
+    numbers = {
+        "one": 1,
+        "two": 2,
+        "three": 3,
+        "four": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "nine": 9,
+    }
+
+    first_number = ''
+    last_number = ''
+    result = 0
+    
+    for line in data:
+        if line != '':
+            pos = 0
+            for c in line:
+                
+                if c.isdigit():
+                    if first_number == '':
+                        first_number = c
+                        last_number = c
+                    else:
+                        last_number = c
+                else:
+                    p1 = line[pos:pos+3]
+                    p2 = line[pos:pos+4]
+                    p3 = line[pos:pos+5]
+                    n1 = numbers.get(p1)
+                    n2 = numbers.get(p2)
+                    n3 = numbers.get(p3)
+         
+                    if not n1:
+                        n = n2
+                        if not n2:
+                            n = n3
+                        if not n3:
+                            n = n2 
+                    else:
+                        n = n1
+                    if n:
+                        
+                        if first_number == '':
+                            first_number = str(n)
+                            last_number = str(n)
+                        else:
+                            last_number = str(n)
+
+                pos += 1 
+
+
+            result += int(first_number + last_number)
+            #print(first_number + last_number)
+            first_number = ''
+            last_number = ''
+
+            
+
+    AssertExpectedResult(55686, result)
     return result
 
 #endregion
