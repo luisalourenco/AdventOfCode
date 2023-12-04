@@ -155,9 +155,7 @@ def day1_2(data):
             result += int(first_number + last_number)
             #print(first_number + last_number)
             first_number = ''
-            last_number = ''
-
-            
+            last_number = ''            
 
     AssertExpectedResult(55686, result)
     return result
@@ -256,7 +254,7 @@ def check_if_is_part_number(engine_map, x, y, part_number):
     above = []
     below = []
                 
-    #print("checking if", part_number,"is part number with values (x,y):",x,y)
+    print("checking if", part_number,"is part number with values (x,y):",x,y)
     
     xx = x-size-1
     if xx < 0:
@@ -377,21 +375,69 @@ def day3_1(data):
     return result
 
 
-# Day 3, part 2: 2641 (0.188 secs)
+# y correcto, x seguinte
+def check_gears(engine_map, gears, x, y, part_number):
+    for gear in gears.keys():
+        (xx,yy) = gear
+        print(gear, part_number)
+        if yy == y: # same line, must be on left or right
+            left = list(part_number) == engine_map[y][x-len(part_number):x]
+            right = list(part_number) == engine_map[y][x+1:x+len(part_number)+1]            
+            if left or right:
+                gears[gear].append(part_number)
+        elif yy == y-1: #or yy == y+1:
+            left = engine_map[y-1][x-len(part_number):x]
+            right = engine_map[y-1][x+1:x+len(part_number)+1]
+            print(left)
+            print(right)
+            if xx-1 <= x <= xx+1:
+                gears[gear].append(part_number)
+
+    print()
+    return gears
+
+
+def get_gears_ratios(engine_map, gears):
+    rows = len(engine_map)
+    columns = len(engine_map[0])      
+    part_number = ''
+    
+    for y in range(rows):   
+        if part_number != '':
+            gears = check_gears(engine_map, gears, x, y, part_number)
+            part_number = ''
+            
+        for x in range(columns):
+            elem = engine_map[y][x]
+            if elem.isdigit():
+                part_number += elem
+            elif part_number != '':                
+                gears = check_gears(engine_map, gears, x, y, part_number)                                   
+                part_number = '' 
+                               
+    if part_number != '':
+        gears = check_gears(engine_map, gears, x, y, part_number)     
+            
+    return gears
+
+
 def day3_2(data):
     data = read_input(2023, "03_teste")     
     result = 0    
     engine_map = buildMapGrid(data, initValue='.')       
     
     y = 0
+    gears = {}
     for line in data:
         for x in range(len(line)):
             engine_map[y][x] = line[x]
+            if line[x] == '*':
+                gears[(x,y)] = []
         y += 1
     
     #printMap(engine_map)
-    part_numbers = get_part_numbers(engine_map)  
-    print(part_numbers)
+    gears = get_gears_ratios(engine_map, gears) 
+    print(gears)
     
     AssertExpectedResult(0, result)
     return result
@@ -400,6 +446,7 @@ def day3_2(data):
 
 #region ##### Day 4 #####
 #Day 4, part 1: 26443 (0.096 secs)
+#Day 4, part 2: 6284877 (1.065 secs)
 def day4_1(data):
     #data = read_input(2023, "04_teste")    
     result = 0    
@@ -411,7 +458,6 @@ def day4_1(data):
         winning_numbers = ints(numbers[0].split())
         played_numbers = ints(numbers[1].split() )
         
-        winning_numbers.sort()
         for n in played_numbers:
             if n in winning_numbers:
                 points = 1 if points == 0 else points*2
@@ -420,8 +466,54 @@ def day4_1(data):
     AssertExpectedResult(26443, result)
     return result
 
+def day4_2(data):
+    #data = read_input(2023, "04_teste")    
+    result = 0    
+    cards = {}
+
+    for line in data:
+        wins = 0
+        ndata = parse("Card {}: {}", line)
+        numbers = ndata[1].split("|")
+        winning_numbers = ints(numbers[0].split())
+        played_numbers = ints(numbers[1].split() )
+        
+        for n in played_numbers:
+            if n in winning_numbers:
+                wins+= 1
+        cards[int(ndata[0])] = wins
+    
+    scratchcards = list(cards.keys())
+    scratchcards.reverse()
+    result = len(scratchcards)
+    
+    while (scratchcards):
+        card = scratchcards.pop()
+        wins = cards[card]
+        result += wins
+        for i in range(card+1, card + wins+1):
+            scratchcards.append(i)
+
+    
+    AssertExpectedResult(6284877, result)
+    return result
+
 #endregion
 
+#region ##### Day 5 #####
+
+def day5_1(data):
+    #data = read_input(2023, "05_teste")    
+    result = 0    
+    
+    for line in data:        
+        result += 1
+    
+    AssertExpectedResult(0, result)
+    return result
+
+
+#endregion
 
 
 if __name__ == "__main__":
