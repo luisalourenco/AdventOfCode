@@ -502,12 +502,74 @@ def day4_2(data):
 
 #region ##### Day 5 #####
 
+
+def get_locations_for_all_seeds(seeds, all_maps):
+    locations = sys.maxsize
+
+    mapIndex = 0
+    for seed in seeds:
+        for mapIndex in range(7):
+            try:
+                current_map = all_maps[mapIndex]
+                seed = current_map[seed]
+            except KeyError:
+                seed = seed
+        if seed < locations:
+            locations = seed
+    return locations
+
 def day5_1(data):
     #data = read_input(2023, "05_teste")    
     result = 0    
+    seed_to_soil = {}
+    soil_to_fertilizer = {}
+    fertilizer_to_water = {}
+    water_to_light = {}
+    light_to_temperature = {}
+    temperature_to_humidity = {}
+    humidity_to_location = {}
+    mapIndex = 0
+
+    all_maps = [seed_to_soil, soil_to_fertilizer, fertilizer_to_water, water_to_light, light_to_temperature, temperature_to_humidity, humidity_to_location]
+
+    for line in data:   
+        line = line.strip()    
+        if line != "":
+
+            val = parse("seeds: {}", line)
+            if val:
+                seeds = ints(val[0].split())
+            elif line == "seed-to-soil map:":
+                mapIndex = 0
+            elif line == "soil-to-fertilizer map:":
+                mapIndex = 1
+            elif line == "fertilizer-to-water map:":
+                mapIndex = 2
+            elif line == "water-to-light map:":
+                mapIndex = 3
+            elif line == "light-to-temperature map:":
+                mapIndex = 4
+            elif line == "temperature-to-humidity map:":
+                mapIndex = 5
+            elif line == "humidity-to-location map:":
+                mapIndex = 6
+            else:
+                line_data = line.split(" ")
+                destination_start = int(line_data[0])
+                source_start = int(line_data[1])
+                ranges = int(line_data[2])
+                map_to_update = all_maps[mapIndex]
+
+                steps = 0
+                for i in range(source_start, source_start + ranges):
+                    map_to_update[i] = destination_start + steps
+                    steps += 1
+                all_maps[mapIndex] = map_to_update
     
-    for line in data:        
-        result += 1
+    locations = get_locations_for_all_seeds(seeds, all_maps)
+
+    result = locations
+
     
     AssertExpectedResult(0, result)
     return result
