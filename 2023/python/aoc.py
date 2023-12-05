@@ -626,12 +626,27 @@ def day5_2(data):
 
     (seeds_ranges, all_maps) = parse_mappings(data)
     seeds = set()
+    rr = []
     for i in range(0, len(seeds_ranges), 2):
         seed, r = seeds_ranges[i : i + 2]
         print(seed, r)
+        rr.append((seed, seed+r))
         #for j in range(seed, seed + r):
         #    seeds.add(j)
     #print(seeds)
+    
+    for (li, ls) in rr:
+        print("testing", li,",",ls)
+        for (a, b) in rr:
+            if a!= li and b!= ls:
+                if a <= li <=b and a <= ls <= b:
+                    print("contained by",a,b)
+                elif li <= a <= ls and a <= ls <= b:
+                    print("partial contained left by",a,b)
+                elif a <= li <= b and li <= b <= ls:
+                    print("partial contained right by",a,b)
+                else:
+                    print("disjoint by",a,b)
     
     #for mapping in all_maps:
     #    print(mapping)
