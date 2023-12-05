@@ -502,32 +502,78 @@ def day4_2(data):
 
 #region ##### Day 5 #####
 
+def get_map_used(seed, mapIndex):
+    # [seed_to_soil, soil_to_fertilizer, 
+    # fertilizer_to_water, water_to_light, 
+    # light_to_temperature, temperature_to_humidity, 
+    # humidity_to_location]
+    map_used = ""
+    if mapIndex == 0:
+        map_used = "soil"
+    elif mapIndex == 1:
+        map_used = "fertilizer"
+    elif mapIndex == 2:
+        map_used = "water"
+    elif mapIndex == 3:
+        map_used = "light"
+    elif mapIndex == 4:
+        map_used = "temperature"
+    elif mapIndex == 5:
+        map_used = "humidity"
+    elif mapIndex == 6:
+        map_used = "location"
+    
+    return map_used
+    
 
-def get_locations_for_all_seeds(seeds, all_maps):
+def get_minimum_location_for_all_seeds(seeds, all_maps):
     locations = sys.maxsize
 
     mapIndex = 0
     for seed in seeds:
+        #print("Seed:", seed)
+        found = False
         for mapIndex in range(7):
-            try:
-                current_map = all_maps[mapIndex]
-                seed = current_map[seed]
-            except KeyError:
+            # (source_start, destination_start, ranges)
+            mappings = all_maps[mapIndex]
+            #print(get_map_used(seed, mapIndex))
+            #print()
+            for (source_start, destination_start, ranges) in mappings:                
+                #print("source_start:", source_start)
+                #print("destination_start:", destination_start)
+                #print("range:", ranges)
+                
+                if source_start <= seed < source_start + ranges:
+                    #print("found! moving to next map")
+                    diff = seed - source_start
+                    seed = destination_start + diff
+                    found = True
+                if found:
+                    found = False
+                    break
+                #print()
+            
+            if not found:
+                #print("did not find, using same value")
                 seed = seed
+
+            map_used = get_map_used(seed, mapIndex)
+            #print(map_used, seed)
+            #print()
         if seed < locations:
             locations = seed
+        #print()
+        
     return locations
 
-def day5_1(data):
-    #data = read_input(2023, "05_teste")    
-    result = 0    
-    seed_to_soil = {}
-    soil_to_fertilizer = {}
-    fertilizer_to_water = {}
-    water_to_light = {}
-    light_to_temperature = {}
-    temperature_to_humidity = {}
-    humidity_to_location = {}
+def parse_mappings(data):
+    seed_to_soil = []
+    soil_to_fertilizer = []
+    fertilizer_to_water = []
+    water_to_light = []
+    light_to_temperature = []
+    temperature_to_humidity = []
+    humidity_to_location = []
     mapIndex = 0
 
     all_maps = [seed_to_soil, soil_to_fertilizer, fertilizer_to_water, water_to_light, light_to_temperature, temperature_to_humidity, humidity_to_location]
@@ -558,20 +604,41 @@ def day5_1(data):
                 destination_start = int(line_data[0])
                 source_start = int(line_data[1])
                 ranges = int(line_data[2])
-                map_to_update = all_maps[mapIndex]
 
-                steps = 0
-                for i in range(source_start, source_start + ranges):
-                    map_to_update[i] = destination_start + steps
-                    steps += 1
-                all_maps[mapIndex] = map_to_update
+                all_maps[mapIndex].append( (source_start, destination_start, ranges) )
+    return (seeds, all_maps)
+
+#Day 5, part 1: 240320250 (0.110 secs)
+def day5_1(data):
+    #data = read_input(2023, "05_teste")        
+
+    (seeds, all_maps) = parse_mappings(data)    
     
-    locations = get_locations_for_all_seeds(seeds, all_maps)
+    #for mapping in all_maps:
+    #    print(mapping)
+    result = get_minimum_location_for_all_seeds(seeds, all_maps)
+  
+    AssertExpectedResult(240320250, result)
+    return result
 
-    result = locations
+def day5_2(data):
+    #data = read_input(2023, "05_teste")        
 
+    (seeds_ranges, all_maps) = parse_mappings(data)
+    seeds = set()
+    for i in range(0, len(seeds_ranges), 2):
+        seed, r = seeds_ranges[i : i + 2]
+        print(seed, r)
+        #for j in range(seed, seed + r):
+        #    seeds.add(j)
+    #print(seeds)
     
-    AssertExpectedResult(0, result)
+    #for mapping in all_maps:
+    #    print(mapping)
+    result = get_minimum_location_for_all_seeds(seeds, all_maps)
+   
+    #result = 0
+    AssertExpectedResult(240320250, result)
     return result
 
 
