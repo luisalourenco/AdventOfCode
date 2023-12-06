@@ -502,26 +502,26 @@ def day4_2(data):
 
 #region ##### Day 5 #####
 
-def get_map_used(seed, mapIndex):
+def get_map_used(mapIndex):
     # [seed_to_soil, soil_to_fertilizer, 
     # fertilizer_to_water, water_to_light, 
     # light_to_temperature, temperature_to_humidity, 
     # humidity_to_location]
     map_used = ""
     if mapIndex == 0:
-        map_used = "soil"
+        map_used = "seed to soil"
     elif mapIndex == 1:
-        map_used = "fertilizer"
+        map_used = "soil to fertilizer"
     elif mapIndex == 2:
-        map_used = "water"
+        map_used = "fertilizer to water"
     elif mapIndex == 3:
-        map_used = "light"
+        map_used = "water to light"
     elif mapIndex == 4:
-        map_used = "temperature"
+        map_used = "light to temperature"
     elif mapIndex == 5:
-        map_used = "humidity"
+        map_used = "temperature to humidity"
     elif mapIndex == 6:
-        map_used = "location"
+        map_used = "humidity to location"
     
     return map_used
     
@@ -557,7 +557,6 @@ def get_minimum_location_for_all_seeds(seeds, all_maps):
                 #print("did not find, using same value")
                 seed = seed
 
-            map_used = get_map_used(seed, mapIndex)
             #print(map_used, seed)
             #print()
         if seed < locations:
@@ -604,7 +603,9 @@ def parse_mappings(data):
                 destination_start = int(line_data[0])
                 source_start = int(line_data[1])
                 ranges = int(line_data[2])
-
+                
+                print(get_map_used(mapIndex),":",source_start,"-",source_start+ranges-1," -> ", destination_start, destination_start+ranges-1)
+                
                 all_maps[mapIndex].append( (source_start, destination_start, ranges) )
     return (seeds, all_maps)
 
@@ -622,31 +623,19 @@ def day5_1(data):
     return result
 
 def day5_2(data):
-    #data = read_input(2023, "05_teste")        
+    data = read_input(2023, "05_teste")        
 
     (seeds_ranges, all_maps) = parse_mappings(data)
     seeds = set()
     rr = []
     for i in range(0, len(seeds_ranges), 2):
         seed, r = seeds_ranges[i : i + 2]
-        print(seed, r)
+        #print(seed, r)
         rr.append((seed, seed+r))
         #for j in range(seed, seed + r):
         #    seeds.add(j)
-    #print(seeds)
     
-    for (li, ls) in rr:
-        print("testing", li,",",ls)
-        for (a, b) in rr:
-            if a!= li and b!= ls:
-                if a <= li <=b and a <= ls <= b:
-                    print("contained by",a,b)
-                elif li <= a <= ls and a <= ls <= b:
-                    print("partial contained left by",a,b)
-                elif a <= li <= b and li <= b <= ls:
-                    print("partial contained right by",a,b)
-                else:
-                    print("disjoint by",a,b)
+    #print(seeds)    
     
     #for mapping in all_maps:
     #    print(mapping)
@@ -656,6 +645,53 @@ def day5_2(data):
     AssertExpectedResult(240320250, result)
     return result
 
+#endregion
+
+#region ##### Day 6 #####
+
+def how_many_times_beats_record(time, distance):
+    time_left = time
+    total_distance = 0
+    speed = 0
+    wins = 0
+    for i in range(1, time):
+        speed = i
+        time_left = time - i
+        total_distance = speed * time_left
+
+        if total_distance > distance:
+            wins += 1
+
+    return wins
+
+#Day 6, part 1: 393120 (0.034 secs)
+#Day 6, part 2: 36872656 (3.633 secs)
+def day6_1(data):
+    #data = read_input(2023, "06_teste")        
+
+    times = ints(data[0].split(':')[1].split())
+    distances = ints(data[1].split(':')[1].split())
+    result =  1
+    for i in range(len(times)):
+        result *= how_many_times_beats_record(times[i], distances[i])
+  
+    AssertExpectedResult(393120, result)
+    return result
+
+
+def day6_2(data):
+    #data = read_input(2023, "06_teste")        
+
+    time = data[0].split(':')[1].split()
+    time = int(''.join(time))
+    distance = data[1].split(':')[1].split()
+    distance = int(''.join(distance))
+
+    result =  1
+    result = how_many_times_beats_record(time, distance)
+  
+    AssertExpectedResult(36872656, result)
+    return result
 
 #endregion
 
