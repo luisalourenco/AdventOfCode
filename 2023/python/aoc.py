@@ -604,12 +604,13 @@ def parse_mappings(data):
                 source_start = int(line_data[1])
                 ranges = int(line_data[2])
                 
-                print(get_map_used(mapIndex),":",source_start,"-",source_start+ranges-1," -> ", destination_start, destination_start+ranges-1)
+                #print(get_map_used(mapIndex),":",source_start,"-",source_start+ranges-1," -> ", destination_start, destination_start+ranges-1)
                 
                 all_maps[mapIndex].append( (source_start, destination_start, ranges) )
     return (seeds, all_maps)
 
 #Day 5, part 1: 240320250 (0.110 secs)
+#Day 5, part 2: 28580589 (0.003 secs)
 def day5_1(data):
     #data = read_input(2023, "05_teste")        
 
@@ -622,27 +623,86 @@ def day5_1(data):
     AssertExpectedResult(240320250, result)
     return result
 
+
+def get_minimum_location_for_all_seeds_v2(seeds, all_maps):
+    locations = sys.maxsize
+
+    mapIndex = 0
+    new_seeds = []
+    for mapIndex in range(7):   
+        
+        if len(seeds) == 0:
+            seeds = new_seeds
+            new_seeds = []   
+             
+        while(len(seeds)> 0):
+            (init, end) = seeds.pop()
+            #print(get_map_used(mapIndex), init, end)  
+            
+            found = False            
+            mappings = all_maps[mapIndex]
+            #print("seed:(",init,",",end,")")
+            # check each interval in a given map for each "seed" before moving to the next map
+            for (source_start, destination_start, ranges) in mappings:                
+                #print("source:", source_start, source_start + ranges-1)
+                #print("destination", destination_start, destination_start + ranges-1)
+                
+                # x <= a < y and x <= b < y
+                y = source_start + ranges
+                x = source_start
+                a = init
+                b = end
+                if x <= a < y and x <= b < y:
+                    #print("found match! moving to next seed")
+                    delta = destination_start - source_start
+                    #print("delta:", delta)
+                    init = init + delta
+                    end = end + delta
+                    #print("mapping to", init, end)
+                    #print()
+                    new_seeds.append((init,end))
+                    found = True
+                    if init < locations and mapIndex == 6:
+                        locations = init
+                    # a <= x < b and x < b < y
+                elif a <= x < b and x < b < y:
+                    found = True
+                    seeds.append((a, x-1))
+                    seeds.append((x, b))
+                    #print("partial match on left, new seeds:",a,x-1,'and',x,b)
+                elif x <= a < y and a < y < b:
+                    found = True
+                    seeds.append((a, y-1))
+                    seeds.append((y, b))
+                    #print("partial match on right, new seeds:",a,y-1,'and',y,b)
+                    
+                if found:
+                    #found = False
+                    break
+            
+            if not found:
+                #print("did not find, using same value:",init,end)
+                new_seeds.append((init,end))
+                if init < locations and mapIndex == 6:
+                    locations = init
+            
+            
+    return locations
+
+
 def day5_2(data):
-    data = read_input(2023, "05_teste")        
+    #data = read_input(2023, "05_teste")        
 
     (seeds_ranges, all_maps) = parse_mappings(data)
-    seeds = set()
+    seeds = []
     rr = []
     for i in range(0, len(seeds_ranges), 2):
         seed, r = seeds_ranges[i : i + 2]
-        #print(seed, r)
-        rr.append((seed, seed+r))
-        #for j in range(seed, seed + r):
-        #    seeds.add(j)
+        seeds.append((seed, seed+r-1))
     
-    #print(seeds)    
-    
-    #for mapping in all_maps:
-    #    print(mapping)
-    result = get_minimum_location_for_all_seeds(seeds, all_maps)
-   
-    #result = 0
-    AssertExpectedResult(240320250, result)
+    result = get_minimum_location_for_all_seeds_v2(seeds, all_maps)
+
+    AssertExpectedResult(28580589, result)
     return result
 
 #endregion
