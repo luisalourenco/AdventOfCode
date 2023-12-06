@@ -397,32 +397,154 @@ def check_gears(engine_map, gears, x, y, part_number):
     return gears
 
 
-def get_gears_ratios(engine_map, gears):
+def get_numbers_positions(engine_map):
     rows = len(engine_map)
     columns = len(engine_map[0])      
     part_number = ''
-    
+    numbers = {(-1,-1): []}
+
     for y in range(rows):   
         if part_number != '':
-            gears = check_gears(engine_map, gears, x, y, part_number)
+            number = int(part_number)
+            #numbers[(x,y)] = number
             part_number = ''
             
         for x in range(columns):
             elem = engine_map[y][x]
             if elem.isdigit():
                 part_number += elem
+                numbers[(-1,-1)].append((x,y))
             elif part_number != '':                
-                gears = check_gears(engine_map, gears, x, y, part_number)                                   
+                number = int(part_number)
+                #numbers[(x,y)] = number
+                for (xx,yy) in numbers[(-1,-1)]:
+                    numbers[(xx,yy)] = number
+                numbers[(-1,-1)] = []
                 part_number = '' 
                                
     if part_number != '':
-        gears = check_gears(engine_map, gears, x, y, part_number)     
+        number = int(part_number)
+        #numbers[(x,y)] = number
+
+    #print(numbers)         
+    return numbers
+
+def get_gears_ratios(engine_map, gears, numbers_positions):
+    rows = len(engine_map)
+    columns = len(engine_map[0]) 
+    gears_numbers = dict()
+    for gear in gears:
+        gears_numbers[gear] = []
+
+    res = set()
+    ratio = 0
+    for (x,y) in gears:
+
+        if x != 0: #not first column
+            n = numbers_positions.get((x-1,y))
             
-    return gears
+            if n is not None:
+                res.add(n)
+        if y != 0: #not first row
+            n = numbers_positions.get((x,y-1))
+            if n is not None:
+                res.add(n)
+        if x != columns-1: #not last column
+            n = numbers_positions.get((x+1,y))
+            if n is not None:
+                res.add(n)
+        if y != rows-1: #not last row
+            n = numbers_positions.get((x,y+1))
+            if n is not None:
+                res.add(n)
+
+        if y != 0 and x != 0: #not first row nor first column
+            n = numbers_positions.get((x-1,y-1))
+            if n is not None:
+                res.add(n)
+        
+        if y != rows-1 and x != columns-1: #not last row nor last column
+            n = numbers_positions.get((x+1,y+1))
+            if n is not None:
+                res.add(n)
+
+        if y != 0 and x != columns-1: #not first row nor last column
+            n = numbers_positions.get((x+1,y-1))
+            if n is not None:
+                res.add(n)
+
+        if y != rows-1 and x != 0: #not first row nor last column
+            n = numbers_positions.get((x-1,y+1))
+            if n is not None:
+                res.add(n)
+
+        gears_numbers[(x,y)] = res
+        if len(res) == 2:
+            res = list(res)
+            ratio += res[0]*res[1]
+            print(res)
+        res = set()
+    return ratio
+    
+def get_gears_ratios_v2(engine_map, gears, numbers_positions):
+    rows = len(engine_map)
+    columns = len(engine_map[0]) 
+    gears_numbers = dict()
+    for gear in gears:
+        gears_numbers[gear] = []
+
+    res = set()
+    ratio = 0
+    for (x,y) in gears:
+
+        n = numbers_positions.get((x-1,y))
+            
+        if n is not None:
+            res.add(n)
+        
+        n = numbers_positions.get((x,y-1))
+        if n is not None:
+            res.add(n)
+        
+        n = numbers_positions.get((x+1,y))
+        if n is not None:
+            res.add(n)
+        
+        n = numbers_positions.get((x,y+1))
+        if n is not None:
+            res.add(n)
+
+        n = numbers_positions.get((x-1,y-1))
+        if n is not None:
+            res.add(n)
+        
+        n = numbers_positions.get((x+1,y+1))
+        if n is not None:
+            res.add(n)
+
+        n = numbers_positions.get((x+1,y-1))
+        if n is not None:
+            res.add(n)
+
+        n = numbers_positions.get((x-1,y+1))
+        if n is not None:
+            res.add(n)
+
+        gears_numbers[(x,y)] = res
+        if len(res) == 2:
+            res = list(res)
+            ratio += res[0]*res[1]
+            print("numbers for gear",x,y,"are",res)
+       
+       
+        res = set()
+    return ratio
 
 
+# 80364588 too high
+# 79841031 too low
 def day3_2(data):
-    data = read_input(2023, "03_teste")     
+    #data = read_input(2023, "03_teste")     
     result = 0    
     engine_map = buildMapGrid(data, initValue='.')       
     
@@ -435,9 +557,25 @@ def day3_2(data):
                 gears[(x,y)] = []
         y += 1
     
-    #printMap(engine_map)
-    gears = get_gears_ratios(engine_map, gears) 
     print(gears)
+    #printMap(engine_map)
+    numbers_positions = get_numbers_positions(engine_map)
+    
+    #print numbers positions
+    rows = len(engine_map)
+    columns = len(engine_map[0]) 
+    for y in range(rows): 
+        for x in range(columns):
+            n = numbers_positions.get((x,y))
+            if n is not None:
+                print("(",x,y,"):",n)
+        print()
+    #####    
+
+
+    gears_ratio = get_gears_ratios_v2(engine_map, gears, numbers_positions) 
+    result = gears_ratio
+    print(gears_ratio)
     
     AssertExpectedResult(0, result)
     return result
@@ -755,6 +893,18 @@ def day6_2(data):
 
 #endregion
 
+
+#region ##### Day 7 #####
+
+def day7_1(data):
+    data = read_input(2023, "07_teste")        
+
+    result = 0
+  
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
 
 if __name__ == "__main__":
     # override timeout

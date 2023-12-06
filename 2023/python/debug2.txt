@@ -1,115 +1,4850 @@
-C:\git\AdventOfCode\2023\python
+/Volumes/Samsung 980 PRO/git/AdventOfCode/2023/python
+checking if 311 is part number with values (x,y): 4 1
+checking if 672 is part number with values (x,y): 10 1
+checking if 34 is part number with values (x,y): 15 1
+checking if 391 is part number with values (x,y): 21 1
+checking if 591 is part number with values (x,y): 29 1
+checking if 828 is part number with values (x,y): 38 1
+checking if 738 is part number with values (x,y): 64 1
+checking if 223 is part number with values (x,y): 87 1
+checking if 803 is part number with values (x,y): 94 1
+checking if 472 is part number with values (x,y): 99 1
+checking if 714 is part number with values (x,y): 136 1
+checking if 840 is part number with values (x,y): 140 1
+checking if 631 is part number with values (x,y): 50 2
+checking if 703 is part number with values (x,y): 57 2
+checking if 12 is part number with values (x,y): 69 2
+checking if 652 is part number with values (x,y): 76 2
+checking if 368 is part number with values (x,y): 111 2
+checking if 769 is part number with values (x,y): 115 2
+checking if 148 is part number with values (x,y): 119 2
+checking if 411 is part number with values (x,y): 8 3
+checking if 2 is part number with values (x,y): 20 3
+checking if 837 is part number with values (x,y): 27 3
+checking if 121 is part number with values (x,y): 31 3
+checking if 511 is part number with values (x,y): 42 3
+checking if 745 is part number with values (x,y): 46 3
+checking if 48 is part number with values (x,y): 61 3
+checking if 422 is part number with values (x,y): 65 3
+checking if 311 is part number with values (x,y): 93 3
+checking if 887 is part number with values (x,y): 104 3
+checking if 457 is part number with values (x,y): 130 3
+checking if 595 is part number with values (x,y): 141 3
+checking if 328 is part number with values (x,y): 13 4
+checking if 144 is part number with values (x,y): 58 4
+checking if 138 is part number with values (x,y): 82 4
+checking if 48 is part number with values (x,y): 96 4
+checking if 682 is part number with values (x,y): 113 4
+checking if 777 is part number with values (x,y): 137 4
+checking if 144 is part number with values (x,y): 9 5
+checking if 170 is part number with values (x,y): 26 5
+checking if 207 is part number with values (x,y): 48 5
+checking if 813 is part number with values (x,y): 63 5
+checking if 139 is part number with values (x,y): 77 5
+checking if 346 is part number with values (x,y): 88 5
+checking if 147 is part number with values (x,y): 102 5
+checking if 143 is part number with values (x,y): 107 5
+checking if 78 is part number with values (x,y): 116 5
+checking if 536 is part number with values (x,y): 123 5
+checking if 79 is part number with values (x,y): 127 5
+checking if 828 is part number with values (x,y): 15 6
+checking if 559 is part number with values (x,y): 21 6
+checking if 181 is part number with values (x,y): 41 6
+checking if 613 is part number with values (x,y): 58 6
+checking if 10 is part number with values (x,y): 67 6
+checking if 928 is part number with values (x,y): 73 6
+checking if 993 is part number with values (x,y): 83 6
+checking if 758 is part number with values (x,y): 97 6
+checking if 471 is part number with values (x,y): 111 6
+checking if 573 is part number with values (x,y): 136 6
+checking if 164 is part number with values (x,y): 25 7
+checking if 132 is part number with values (x,y): 31 7
+checking if 47 is part number with values (x,y): 78 7
+checking if 186 is part number with values (x,y): 90 7
+checking if 313 is part number with values (x,y): 102 7
+checking if 411 is part number with values (x,y): 119 7
+checking if 342 is part number with values (x,y): 19 8
+checking if 823 is part number with values (x,y): 37 8
+checking if 533 is part number with values (x,y): 45 8
+checking if 519 is part number with values (x,y): 52 8
+checking if 899 is part number with values (x,y): 60 8
+checking if 310 is part number with values (x,y): 66 8
+checking if 325 is part number with values (x,y): 94 8
+checking if 15 is part number with values (x,y): 107 8
+checking if 407 is part number with values (x,y): 130 8
+checking if 515 is part number with values (x,y): 4 9
+checking if 916 is part number with values (x,y): 13 9
+checking if 961 is part number with values (x,y): 73 9
+checking if 827 is part number with values (x,y): 85 9
+checking if 567 is part number with values (x,y): 112 9
+checking if 238 is part number with values (x,y): 120 9
+checking if 874 is part number with values (x,y): 126 9
+checking if 420 is part number with values (x,y): 137 9
+checking if 207 is part number with values (x,y): 19 10
+checking if 882 is part number with values (x,y): 25 10
+checking if 719 is part number with values (x,y): 34 10
+checking if 455 is part number with values (x,y): 41 10
+checking if 973 is part number with values (x,y): 45 10
+checking if 369 is part number with values (x,y): 67 10
+checking if 913 is part number with values (x,y): 80 10
+checking if 978 is part number with values (x,y): 91 10
+checking if 720 is part number with values (x,y): 100 10
+checking if 306 is part number with values (x,y): 12 11
+checking if 182 is part number with values (x,y): 63 11
+checking if 534 is part number with values (x,y): 71 11
+checking if 229 is part number with values (x,y): 96 11
+checking if 744 is part number with values (x,y): 107 11
+checking if 918 is part number with values (x,y): 136 11
+checking if 303 is part number with values (x,y): 4 12
+checking if 745 is part number with values (x,y): 18 12
+checking if 361 is part number with values (x,y): 32 12
+checking if 223 is part number with values (x,y): 49 12
+checking if 243 is part number with values (x,y): 54 12
+checking if 129 is part number with values (x,y): 58 12
+checking if 830 is part number with values (x,y): 84 12
+checking if 493 is part number with values (x,y): 117 12
+checking if 106 is part number with values (x,y): 124 12
+checking if 209 is part number with values (x,y): 22 13
+checking if 17 is part number with values (x,y): 26 13
+checking if 494 is part number with values (x,y): 38 13
+checking if 910 is part number with values (x,y): 42 13
+checking if 90 is part number with values (x,y): 61 13
+checking if 496 is part number with values (x,y): 68 13
+checking if 709 is part number with values (x,y): 76 13
+checking if 896 is part number with values (x,y): 90 13
+checking if 562 is part number with values (x,y): 11 14
+checking if 528 is part number with values (x,y): 47 14
+checking if 321 is part number with values (x,y): 57 14
+checking if 673 is part number with values (x,y): 72 14
+checking if 887 is part number with values (x,y): 97 14
+checking if 231 is part number with values (x,y): 103 14
+checking if 700 is part number with values (x,y): 121 14
+checking if 116 is part number with values (x,y): 138 14
+checking if 988 is part number with values (x,y): 5 15
+checking if 944 is part number with values (x,y): 15 15
+checking if 596 is part number with values (x,y): 21 15
+checking if 806 is part number with values (x,y): 32 15
+checking if 24 is part number with values (x,y): 37 15
+checking if 519 is part number with values (x,y): 42 15
+checking if 146 is part number with values (x,y): 82 15
+checking if 554 is part number with values (x,y): 116 15
+checking if 822 is part number with values (x,y): 54 16
+checking if 621 is part number with values (x,y): 60 16
+checking if 771 is part number with values (x,y): 65 16
+checking if 151 is part number with values (x,y): 70 16
+checking if 504 is part number with values (x,y): 74 16
+checking if 628 is part number with values (x,y): 86 16
+checking if 343 is part number with values (x,y): 90 16
+checking if 34 is part number with values (x,y): 94 16
+checking if 329 is part number with values (x,y): 120 16
+checking if 303 is part number with values (x,y): 124 16
+checking if 641 is part number with values (x,y): 129 16
+checking if 678 is part number with values (x,y): 134 16
+checking if 361 is part number with values (x,y): 28 17
+checking if 347 is part number with values (x,y): 36 17
+checking if 524 is part number with values (x,y): 40 17
+checking if 538 is part number with values (x,y): 45 17
+checking if 790 is part number with values (x,y): 82 17
+checking if 933 is part number with values (x,y): 98 17
+checking if 724 is part number with values (x,y): 103 17
+checking if 699 is part number with values (x,y): 112 17
+checking if 262 is part number with values (x,y): 140 17
+checking if 716 is part number with values (x,y): 5 18
+checking if 517 is part number with values (x,y): 10 18
+checking if 955 is part number with values (x,y): 51 18
+checking if 544 is part number with values (x,y): 57 18
+checking if 238 is part number with values (x,y): 65 18
+checking if 593 is part number with values (x,y): 70 18
+checking if 399 is part number with values (x,y): 78 18
+checking if 241 is part number with values (x,y): 123 18
+checking if 930 is part number with values (x,y): 131 18
+checking if 744 is part number with values (x,y): 17 19
+checking if 550 is part number with values (x,y): 24 19
+checking if 131 is part number with values (x,y): 38 19
+checking if 964 is part number with values (x,y): 45 19
+checking if 234 is part number with values (x,y): 61 19
+checking if 856 is part number with values (x,y): 86 19
+checking if 809 is part number with values (x,y): 91 19
+checking if 450 is part number with values (x,y): 96 19
+checking if 332 is part number with values (x,y): 108 19
+checking if 419 is part number with values (x,y): 116 19
+checking if 389 is part number with values (x,y): 137 19
+checking if 264 is part number with values (x,y): 12 20
+checking if 798 is part number with values (x,y): 30 20
+checking if 816 is part number with values (x,y): 55 20
+checking if 228 is part number with values (x,y): 67 20
+checking if 501 is part number with values (x,y): 77 20
+checking if 224 is part number with values (x,y): 82 20
+checking if 645 is part number with values (x,y): 103 20
+checking if 499 is part number with values (x,y): 120 20
+checking if 939 is part number with values (x,y): 19 21
+checking if 795 is part number with values (x,y): 51 21
+checking if 789 is part number with values (x,y): 110 21
+checking if 907 is part number with values (x,y): 129 21
+checking if 647 is part number with values (x,y): 137 21
+checking if 612 is part number with values (x,y): 9 22
+checking if 612 is part number with values (x,y): 24 22
+checking if 291 is part number with values (x,y): 29 22
+checking if 592 is part number with values (x,y): 34 22
+checking if 567 is part number with values (x,y): 63 22
+checking if 391 is part number with values (x,y): 85 22
+checking if 387 is part number with values (x,y): 118 22
+checking if 64 is part number with values (x,y): 132 22
+checking if 24 is part number with values (x,y): 19 23
+checking if 814 is part number with values (x,y): 45 23
+checking if 346 is part number with values (x,y): 76 23
+checking if 444 is part number with values (x,y): 95 23
+checking if 833 is part number with values (x,y): 110 23
+checking if 845 is part number with values (x,y): 128 23
+checking if 303 is part number with values (x,y): 15 24
+checking if 605 is part number with values (x,y): 27 24
+checking if 326 is part number with values (x,y): 32 24
+checking if 108 is part number with values (x,y): 40 24
+checking if 56 is part number with values (x,y): 52 24
+checking if 842 is part number with values (x,y): 57 24
+checking if 387 is part number with values (x,y): 71 24
+checking if 478 is part number with values (x,y): 80 24
+checking if 272 is part number with values (x,y): 86 24
+checking if 778 is part number with values (x,y): 114 24
+checking if 299 is part number with values (x,y): 122 24
+checking if 722 is part number with values (x,y): 132 24
+checking if 484 is part number with values (x,y): 10 25
+checking if 753 is part number with values (x,y): 22 25
+checking if 449 is part number with values (x,y): 48 25
+checking if 559 is part number with values (x,y): 66 25
+checking if 144 is part number with values (x,y): 76 25
+checking if 695 is part number with values (x,y): 92 25
+checking if 675 is part number with values (x,y): 104 25
+checking if 253 is part number with values (x,y): 141 25
+checking if 987 is part number with values (x,y): 98 26
+checking if 200 is part number with values (x,y): 108 26
+checking if 445 is part number with values (x,y): 124 26
+checking if 124 is part number with values (x,y): 134 26
+checking if 825 is part number with values (x,y): 8 27
+checking if 603 is part number with values (x,y): 23 27
+checking if 544 is part number with values (x,y): 30 27
+checking if 634 is part number with values (x,y): 34 27
+checking if 432 is part number with values (x,y): 61 27
+checking if 875 is part number with values (x,y): 68 27
+checking if 738 is part number with values (x,y): 74 27
+checking if 731 is part number with values (x,y): 92 27
+checking if 488 is part number with values (x,y): 114 27
+checking if 363 is part number with values (x,y): 118 27
+checking if 663 is part number with values (x,y): 129 27
+checking if 876 is part number with values (x,y): 141 27
+checking if 755 is part number with values (x,y): 12 28
+checking if 470 is part number with values (x,y): 98 28
+checking if 314 is part number with values (x,y): 103 28
+checking if 145 is part number with values (x,y): 107 28
+checking if 277 is part number with values (x,y): 124 28
+checking if 234 is part number with values (x,y): 136 28
+checking if 323 is part number with values (x,y): 8 29
+checking if 221 is part number with values (x,y): 20 29
+checking if 892 is part number with values (x,y): 37 29
+checking if 284 is part number with values (x,y): 43 29
+checking if 473 is part number with values (x,y): 48 29
+checking if 44 is part number with values (x,y): 55 29
+checking if 342 is part number with values (x,y): 64 29
+checking if 622 is part number with values (x,y): 68 29
+checking if 707 is part number with values (x,y): 80 29
+checking if 413 is part number with values (x,y): 87 29
+checking if 984 is part number with values (x,y): 93 29
+checking if 351 is part number with values (x,y): 75 30
+checking if 226 is part number with values (x,y): 112 30
+checking if 155 is part number with values (x,y): 125 30
+checking if 973 is part number with values (x,y): 132 30
+checking if 177 is part number with values (x,y): 19 31
+checking if 991 is part number with values (x,y): 23 31
+checking if 268 is part number with values (x,y): 36 31
+checking if 532 is part number with values (x,y): 52 31
+checking if 277 is part number with values (x,y): 69 31
+checking if 183 is part number with values (x,y): 80 31
+checking if 935 is part number with values (x,y): 90 31
+checking if 917 is part number with values (x,y): 102 31
+checking if 825 is part number with values (x,y): 118 31
+checking if 413 is part number with values (x,y): 32 32
+checking if 304 is part number with values (x,y): 43 32
+checking if 384 is part number with values (x,y): 61 32
+checking if 748 is part number with values (x,y): 86 32
+checking if 955 is part number with values (x,y): 107 32
+checking if 885 is part number with values (x,y): 129 32
+checking if 970 is part number with values (x,y): 133 32
+checking if 44 is part number with values (x,y): 6 33
+checking if 627 is part number with values (x,y): 12 33
+checking if 368 is part number with values (x,y): 25 33
+checking if 314 is part number with values (x,y): 69 33
+checking if 293 is part number with values (x,y): 74 33
+checking if 102 is part number with values (x,y): 96 33
+checking if 108 is part number with values (x,y): 101 33
+checking if 733 is part number with values (x,y): 45 34
+checking if 433 is part number with values (x,y): 50 34
+checking if 128 is part number with values (x,y): 56 34
+checking if 889 is part number with values (x,y): 81 34
+checking if 661 is part number with values (x,y): 111 34
+checking if 358 is part number with values (x,y): 124 34
+checking if 281 is part number with values (x,y): 135 34
+checking if 35 is part number with values (x,y): 8 35
+checking if 834 is part number with values (x,y): 33 35
+checking if 699 is part number with values (x,y): 40 35
+checking if 461 is part number with values (x,y): 73 35
+checking if 374 is part number with values (x,y): 131 35
+checking if 412 is part number with values (x,y): 141 35
+checking if 763 is part number with values (x,y): 16 36
+checking if 201 is part number with values (x,y): 21 36
+checking if 392 is part number with values (x,y): 55 36
+checking if 341 is part number with values (x,y): 66 36
+checking if 96 is part number with values (x,y): 76 36
+checking if 723 is part number with values (x,y): 85 36
+checking if 340 is part number with values (x,y): 89 36
+checking if 327 is part number with values (x,y): 101 36
+checking if 736 is part number with values (x,y): 105 36
+checking if 1 is part number with values (x,y): 109 36
+checking if 897 is part number with values (x,y): 115 36
+checking if 471 is part number with values (x,y): 123 36
+checking if 512 is part number with values (x,y): 10 37
+checking if 221 is part number with values (x,y): 25 37
+checking if 125 is part number with values (x,y): 41 37
+checking if 257 is part number with values (x,y): 49 37
+checking if 277 is part number with values (x,y): 81 37
+checking if 301 is part number with values (x,y): 6 38
+checking if 694 is part number with values (x,y): 15 38
+checking if 54 is part number with values (x,y): 31 38
+checking if 611 is part number with values (x,y): 59 38
+checking if 596 is part number with values (x,y): 77 38
+checking if 100 is part number with values (x,y): 86 38
+checking if 164 is part number with values (x,y): 96 38
+checking if 801 is part number with values (x,y): 100 38
+checking if 596 is part number with values (x,y): 107 38
+checking if 490 is part number with values (x,y): 112 38
+checking if 361 is part number with values (x,y): 120 38
+checking if 415 is part number with values (x,y): 132 38
+checking if 412 is part number with values (x,y): 139 38
+checking if 243 is part number with values (x,y): 22 39
+checking if 927 is part number with values (x,y): 28 39
+checking if 29 is part number with values (x,y): 40 39
+checking if 293 is part number with values (x,y): 44 39
+checking if 645 is part number with values (x,y): 55 39
+checking if 862 is part number with values (x,y): 66 39
+checking if 2 is part number with values (x,y): 68 39
+checking if 655 is part number with values (x,y): 33 40
+checking if 906 is part number with values (x,y): 37 40
+checking if 500 is part number with values (x,y): 51 40
+checking if 125 is part number with values (x,y): 74 40
+checking if 613 is part number with values (x,y): 78 40
+checking if 844 is part number with values (x,y): 83 40
+checking if 435 is part number with values (x,y): 102 40
+checking if 984 is part number with values (x,y): 111 40
+checking if 725 is part number with values (x,y): 118 40
+checking if 531 is part number with values (x,y): 124 40
+checking if 711 is part number with values (x,y): 132 40
+checking if 79 is part number with values (x,y): 136 40
+checking if 817 is part number with values (x,y): 7 41
+checking if 450 is part number with values (x,y): 13 41
+checking if 431 is part number with values (x,y): 46 41
+checking if 957 is part number with values (x,y): 88 41
+checking if 739 is part number with values (x,y): 96 41
+checking if 237 is part number with values (x,y): 18 42
+checking if 122 is part number with values (x,y): 27 42
+checking if 66 is part number with values (x,y): 30 42
+checking if 942 is part number with values (x,y): 34 42
+checking if 548 is part number with values (x,y): 59 42
+checking if 506 is part number with values (x,y): 80 42
+checking if 435 is part number with values (x,y): 84 42
+checking if 73 is part number with values (x,y): 101 42
+checking if 883 is part number with values (x,y): 105 42
+checking if 644 is part number with values (x,y): 120 42
+checking if 101 is part number with values (x,y): 126 42
+checking if 863 is part number with values (x,y): 5 43
+checking if 98 is part number with values (x,y): 49 43
+checking if 283 is part number with values (x,y): 54 43
+checking if 532 is part number with values (x,y): 65 43
+checking if 750 is part number with values (x,y): 74 43
+checking if 594 is part number with values (x,y): 113 43
+checking if 451 is part number with values (x,y): 18 44
+checking if 623 is part number with values (x,y): 30 44
+checking if 50 is part number with values (x,y): 70 44
+checking if 44 is part number with values (x,y): 80 44
+checking if 123 is part number with values (x,y): 88 44
+checking if 951 is part number with values (x,y): 97 44
+checking if 62 is part number with values (x,y): 116 44
+checking if 943 is part number with values (x,y): 120 44
+checking if 365 is part number with values (x,y): 129 44
+checking if 995 is part number with values (x,y): 135 44
+checking if 639 is part number with values (x,y): 5 45
+checking if 827 is part number with values (x,y): 22 45
+checking if 265 is part number with values (x,y): 26 45
+checking if 132 is part number with values (x,y): 35 45
+checking if 354 is part number with values (x,y): 40 45
+checking if 127 is part number with values (x,y): 44 45
+checking if 350 is part number with values (x,y): 58 45
+checking if 11 is part number with values (x,y): 107 45
+checking if 41 is part number with values (x,y): 11 46
+checking if 175 is part number with values (x,y): 17 46
+checking if 247 is part number with values (x,y): 63 46
+checking if 353 is part number with values (x,y): 67 46
+checking if 44 is part number with values (x,y): 78 46
+checking if 912 is part number with values (x,y): 86 46
+checking if 757 is part number with values (x,y): 96 46
+checking if 144 is part number with values (x,y): 114 46
+checking if 481 is part number with values (x,y): 119 46
+checking if 693 is part number with values (x,y): 123 46
+checking if 271 is part number with values (x,y): 127 46
+checking if 993 is part number with values (x,y): 139 46
+checking if 993 is part number with values (x,y): 27 47
+checking if 707 is part number with values (x,y): 31 47
+checking if 857 is part number with values (x,y): 37 47
+checking if 375 is part number with values (x,y): 52 47
+checking if 90 is part number with values (x,y): 59 47
+checking if 386 is part number with values (x,y): 72 47
+checking if 403 is part number with values (x,y): 82 47
+checking if 208 is part number with values (x,y): 132 47
+checking if 343 is part number with values (x,y): 11 48
+checking if 437 is part number with values (x,y): 15 48
+checking if 391 is part number with values (x,y): 22 48
+checking if 117 is part number with values (x,y): 41 48
+checking if 637 is part number with values (x,y): 48 48
+checking if 345 is part number with values (x,y): 56 48
+checking if 43 is part number with values (x,y): 67 48
+checking if 662 is part number with values (x,y): 78 48
+checking if 908 is part number with values (x,y): 95 48
+checking if 956 is part number with values (x,y): 107 48
+checking if 908 is part number with values (x,y): 117 48
+checking if 389 is part number with values (x,y): 4 49
+checking if 670 is part number with values (x,y): 32 49
+checking if 42 is part number with values (x,y): 51 49
+checking if 564 is part number with values (x,y): 74 49
+checking if 435 is part number with values (x,y): 20 50
+checking if 913 is part number with values (x,y): 41 50
+checking if 574 is part number with values (x,y): 58 50
+checking if 149 is part number with values (x,y): 63 50
+checking if 962 is part number with values (x,y): 89 50
+checking if 953 is part number with values (x,y): 112 50
+checking if 77 is part number with values (x,y): 117 50
+checking if 641 is part number with values (x,y): 122 50
+checking if 514 is part number with values (x,y): 129 50
+checking if 448 is part number with values (x,y): 8 51
+checking if 783 is part number with values (x,y): 16 51
+checking if 892 is part number with values (x,y): 24 51
+checking if 381 is part number with values (x,y): 29 51
+checking if 593 is part number with values (x,y): 37 51
+checking if 403 is part number with values (x,y): 67 51
+checking if 149 is part number with values (x,y): 71 51
+checking if 863 is part number with values (x,y): 93 51
+checking if 954 is part number with values (x,y): 97 51
+checking if 373 is part number with values (x,y): 104 51
+checking if 663 is part number with values (x,y): 137 51
+checking if 906 is part number with values (x,y): 4 52
+checking if 922 is part number with values (x,y): 42 52
+checking if 950 is part number with values (x,y): 54 52
+checking if 993 is part number with values (x,y): 79 52
+checking if 3 is part number with values (x,y): 83 52
+checking if 379 is part number with values (x,y): 111 52
+checking if 450 is part number with values (x,y): 118 52
+checking if 877 is part number with values (x,y): 128 52
+checking if 804 is part number with values (x,y): 133 52
+checking if 768 is part number with values (x,y): 19 53
+checking if 198 is part number with values (x,y): 38 53
+checking if 160 is part number with values (x,y): 50 53
+checking if 820 is part number with values (x,y): 66 53
+checking if 382 is part number with values (x,y): 75 53
+checking if 169 is part number with values (x,y): 88 53
+checking if 555 is part number with values (x,y): 101 53
+checking if 257 is part number with values (x,y): 106 53
+checking if 260 is part number with values (x,y): 4 54
+checking if 68 is part number with values (x,y): 26 54
+checking if 281 is part number with values (x,y): 34 54
+checking if 871 is part number with values (x,y): 44 54
+checking if 980 is part number with values (x,y): 70 54
+checking if 875 is part number with values (x,y): 79 54
+checking if 169 is part number with values (x,y): 97 54
+checking if 531 is part number with values (x,y): 122 54
+checking if 587 is part number with values (x,y): 21 55
+checking if 48 is part number with values (x,y): 49 55
+checking if 251 is part number with values (x,y): 54 55
+checking if 316 is part number with values (x,y): 59 55
+checking if 848 is part number with values (x,y): 66 55
+checking if 303 is part number with values (x,y): 87 55
+checking if 931 is part number with values (x,y): 106 55
+checking if 132 is part number with values (x,y): 111 55
+checking if 790 is part number with values (x,y): 128 55
+checking if 205 is part number with values (x,y): 9 56
+checking if 572 is part number with values (x,y): 15 56
+checking if 696 is part number with values (x,y): 34 56
+checking if 709 is part number with values (x,y): 70 56
+checking if 611 is part number with values (x,y): 75 56
+checking if 270 is part number with values (x,y): 99 56
+checking if 165 is part number with values (x,y): 115 56
+checking if 783 is part number with values (x,y): 124 56
+checking if 790 is part number with values (x,y): 134 56
+checking if 965 is part number with values (x,y): 26 57
+checking if 709 is part number with values (x,y): 38 57
+checking if 826 is part number with values (x,y): 43 57
+checking if 882 is part number with values (x,y): 66 57
+checking if 775 is part number with values (x,y): 79 57
+checking if 391 is part number with values (x,y): 91 57
+checking if 985 is part number with values (x,y): 105 57
+checking if 5 is part number with values (x,y): 107 57
+checking if 179 is part number with values (x,y): 119 57
+checking if 47 is part number with values (x,y): 127 57
+checking if 451 is part number with values (x,y): 9 58
+checking if 804 is part number with values (x,y): 60 58
+checking if 161 is part number with values (x,y): 84 58
+checking if 837 is part number with values (x,y): 98 58
+checking if 904 is part number with values (x,y): 133 58
+checking if 176 is part number with values (x,y): 140 58
+checking if 720 is part number with values (x,y): 4 59
+checking if 70 is part number with values (x,y): 23 59
+checking if 899 is part number with values (x,y): 36 59
+checking if 868 is part number with values (x,y): 44 59
+checking if 357 is part number with values (x,y): 69 59
+checking if 252 is part number with values (x,y): 73 59
+checking if 707 is part number with values (x,y): 102 59
+checking if 898 is part number with values (x,y): 112 59
+checking if 139 is part number with values (x,y): 116 59
+checking if 704 is part number with values (x,y): 124 59
+checking if 307 is part number with values (x,y): 40 60
+checking if 510 is part number with values (x,y): 48 60
+checking if 17 is part number with values (x,y): 82 60
+checking if 501 is part number with values (x,y): 87 60
+checking if 855 is part number with values (x,y): 136 60
+checking if 745 is part number with values (x,y): 17 61
+checking if 451 is part number with values (x,y): 32 61
+checking if 689 is part number with values (x,y): 54 61
+checking if 980 is part number with values (x,y): 59 61
+checking if 670 is part number with values (x,y): 65 61
+checking if 594 is part number with values (x,y): 69 61
+checking if 716 is part number with values (x,y): 73 61
+checking if 565 is part number with values (x,y): 104 61
+checking if 595 is part number with values (x,y): 113 61
+checking if 622 is part number with values (x,y): 118 61
+checking if 793 is part number with values (x,y): 126 61
+checking if 890 is part number with values (x,y): 9 62
+checking if 73 is part number with values (x,y): 21 62
+checking if 422 is part number with values (x,y): 27 62
+checking if 977 is part number with values (x,y): 37 62
+checking if 324 is part number with values (x,y): 48 62
+checking if 29 is part number with values (x,y): 77 62
+checking if 945 is part number with values (x,y): 87 62
+checking if 298 is part number with values (x,y): 108 62
+checking if 642 is part number with values (x,y): 141 62
+checking if 645 is part number with values (x,y): 66 63
+checking if 150 is part number with values (x,y): 83 63
+checking if 434 is part number with values (x,y): 91 63
+checking if 259 is part number with values (x,y): 95 63
+checking if 609 is part number with values (x,y): 100 63
+checking if 560 is part number with values (x,y): 104 63
+checking if 266 is part number with values (x,y): 126 63
+checking if 524 is part number with values (x,y): 131 63
+checking if 203 is part number with values (x,y): 9 64
+checking if 133 is part number with values (x,y): 22 64
+checking if 596 is part number with values (x,y): 30 64
+checking if 619 is part number with values (x,y): 34 64
+checking if 676 is part number with values (x,y): 70 64
+checking if 107 is part number with values (x,y): 74 64
+checking if 811 is part number with values (x,y): 79 64
+checking if 115 is part number with values (x,y): 113 64
+checking if 178 is part number with values (x,y): 137 64
+checking if 157 is part number with values (x,y): 51 65
+checking if 682 is part number with values (x,y): 55 65
+checking if 262 is part number with values (x,y): 65 65
+checking if 196 is part number with values (x,y): 83 65
+checking if 707 is part number with values (x,y): 103 65
+checking if 14 is part number with values (x,y): 121 65
+checking if 386 is part number with values (x,y): 126 65
+checking if 871 is part number with values (x,y): 13 66
+checking if 605 is part number with values (x,y): 28 66
+checking if 721 is part number with values (x,y): 35 66
+checking if 867 is part number with values (x,y): 69 66
+checking if 685 is part number with values (x,y): 89 66
+checking if 866 is part number with values (x,y): 94 66
+checking if 602 is part number with values (x,y): 118 66
+checking if 628 is part number with values (x,y): 136 66
+checking if 413 is part number with values (x,y): 21 67
+checking if 380 is part number with values (x,y): 39 67
+checking if 872 is part number with values (x,y): 46 67
+checking if 372 is part number with values (x,y): 65 67
+checking if 277 is part number with values (x,y): 75 67
+checking if 277 is part number with values (x,y): 84 67
+checking if 166 is part number with values (x,y): 104 67
+checking if 656 is part number with values (x,y): 129 67
+checking if 748 is part number with values (x,y): 141 67
+checking if 841 is part number with values (x,y): 9 68
+checking if 664 is part number with values (x,y): 14 68
+checking if 422 is part number with values (x,y): 26 68
+checking if 945 is part number with values (x,y): 57 68
+checking if 959 is part number with values (x,y): 94 68
+checking if 863 is part number with values (x,y): 98 68
+checking if 187 is part number with values (x,y): 110 68
+checking if 299 is part number with values (x,y): 121 68
+checking if 887 is part number with values (x,y): 137 68
+checking if 708 is part number with values (x,y): 5 69
+checking if 311 is part number with values (x,y): 22 69
+checking if 296 is part number with values (x,y): 32 69
+checking if 497 is part number with values (x,y): 36 69
+checking if 751 is part number with values (x,y): 44 69
+checking if 639 is part number with values (x,y): 50 69
+checking if 269 is part number with values (x,y): 68 69
+checking if 875 is part number with values (x,y): 81 69
+checking if 36 is part number with values (x,y): 131 69
+checking if 834 is part number with values (x,y): 13 70
+checking if 708 is part number with values (x,y): 58 70
+checking if 87 is part number with values (x,y): 87 70
+checking if 298 is part number with values (x,y): 94 70
+checking if 471 is part number with values (x,y): 100 70
+checking if 463 is part number with values (x,y): 114 70
+checking if 739 is part number with values (x,y): 20 71
+checking if 701 is part number with values (x,y): 33 71
+checking if 779 is part number with values (x,y): 76 71
+checking if 265 is part number with values (x,y): 105 71
+checking if 642 is part number with values (x,y): 110 71
+checking if 504 is part number with values (x,y): 10 72
+checking if 871 is part number with values (x,y): 39 72
+checking if 314 is part number with values (x,y): 43 72
+checking if 127 is part number with values (x,y): 50 72
+checking if 36 is part number with values (x,y): 54 72
+checking if 639 is part number with values (x,y): 59 72
+checking if 196 is part number with values (x,y): 63 72
+checking if 48 is part number with values (x,y): 67 72
+checking if 96 is part number with values (x,y): 87 72
+checking if 785 is part number with values (x,y): 99 72
+checking if 854 is part number with values (x,y): 114 72
+checking if 607 is part number with values (x,y): 123 72
+checking if 542 is part number with values (x,y): 130 72
+checking if 73 is part number with values (x,y): 6 73
+checking if 254 is part number with values (x,y): 21 73
+checking if 591 is part number with values (x,y): 25 73
+checking if 35 is part number with values (x,y): 78 73
+checking if 150 is part number with values (x,y): 108 73
+checking if 340 is part number with values (x,y): 139 73
+checking if 224 is part number with values (x,y): 12 74
+checking if 214 is part number with values (x,y): 33 74
+checking if 949 is part number with values (x,y): 50 74
+checking if 455 is part number with values (x,y): 67 74
+checking if 377 is part number with values (x,y): 87 74
+checking if 88 is part number with values (x,y): 90 74
+checking if 823 is part number with values (x,y): 113 74
+checking if 582 is part number with values (x,y): 122 74
+checking if 643 is part number with values (x,y): 19 75
+checking if 901 is part number with values (x,y): 29 75
+checking if 191 is part number with values (x,y): 40 75
+checking if 267 is part number with values (x,y): 45 75
+checking if 293 is part number with values (x,y): 55 75
+checking if 194 is part number with values (x,y): 77 75
+checking if 266 is part number with values (x,y): 82 75
+checking if 987 is part number with values (x,y): 102 75
+checking if 545 is part number with values (x,y): 136 75
+checking if 604 is part number with values (x,y): 8 76
+checking if 583 is part number with values (x,y): 14 76
+checking if 742 is part number with values (x,y): 36 76
+checking if 365 is part number with values (x,y): 88 76
+checking if 880 is part number with values (x,y): 112 76
+checking if 55 is part number with values (x,y): 115 76
+checking if 540 is part number with values (x,y): 124 76
+checking if 520 is part number with values (x,y): 128 76
+checking if 272 is part number with values (x,y): 19 77
+checking if 843 is part number with values (x,y): 27 77
+checking if 201 is part number with values (x,y): 32 77
+checking if 128 is part number with values (x,y): 47 77
+checking if 433 is part number with values (x,y): 57 77
+checking if 563 is part number with values (x,y): 67 77
+checking if 281 is part number with values (x,y): 76 77
+checking if 77 is part number with values (x,y): 79 77
+checking if 540 is part number with values (x,y): 83 77
+checking if 979 is part number with values (x,y): 95 77
+checking if 134 is part number with values (x,y): 101 77
+checking if 514 is part number with values (x,y): 108 77
+checking if 46 is part number with values (x,y): 132 77
+checking if 966 is part number with values (x,y): 7 78
+checking if 67 is part number with values (x,y): 14 78
+checking if 19 is part number with values (x,y): 39 78
+checking if 934 is part number with values (x,y): 43 78
+checking if 224 is part number with values (x,y): 52 78
+checking if 693 is part number with values (x,y): 118 78
+checking if 525 is part number with values (x,y): 139 78
+checking if 188 is part number with values (x,y): 18 79
+checking if 904 is part number with values (x,y): 26 79
+checking if 210 is part number with values (x,y): 66 79
+checking if 958 is part number with values (x,y): 74 79
+checking if 811 is part number with values (x,y): 86 79
+checking if 574 is part number with values (x,y): 104 79
+checking if 965 is part number with values (x,y): 111 79
+checking if 288 is part number with values (x,y): 130 79
+checking if 20 is part number with values (x,y): 134 79
+checking if 213 is part number with values (x,y): 6 80
+checking if 137 is part number with values (x,y): 22 80
+checking if 325 is part number with values (x,y): 33 80
+checking if 628 is part number with values (x,y): 41 80
+checking if 406 is part number with values (x,y): 62 80
+checking if 34 is part number with values (x,y): 70 80
+checking if 406 is part number with values (x,y): 95 80
+checking if 867 is part number with values (x,y): 123 80
+checking if 810 is part number with values (x,y): 15 81
+checking if 926 is part number with values (x,y): 52 81
+checking if 372 is part number with values (x,y): 79 81
+checking if 372 is part number with values (x,y): 87 81
+checking if 266 is part number with values (x,y): 99 81
+checking if 716 is part number with values (x,y): 103 81
+checking if 985 is part number with values (x,y): 114 81
+checking if 1 is part number with values (x,y): 135 81
+checking if 399 is part number with values (x,y): 19 82
+checking if 126 is part number with values (x,y): 23 82
+checking if 379 is part number with values (x,y): 43 82
+checking if 729 is part number with values (x,y): 48 82
+checking if 245 is part number with values (x,y): 61 82
+checking if 893 is part number with values (x,y): 73 82
+checking if 866 is part number with values (x,y): 83 82
+checking if 101 is part number with values (x,y): 91 82
+checking if 299 is part number with values (x,y): 95 82
+checking if 8 is part number with values (x,y): 106 82
+checking if 544 is part number with values (x,y): 110 82
+checking if 784 is part number with values (x,y): 121 82
+checking if 954 is part number with values (x,y): 4 83
+checking if 63 is part number with values (x,y): 28 83
+checking if 501 is part number with values (x,y): 32 83
+checking if 529 is part number with values (x,y): 36 83
+checking if 695 is part number with values (x,y): 55 83
+checking if 320 is part number with values (x,y): 103 83
+checking if 211 is part number with values (x,y): 126 83
+checking if 55 is part number with values (x,y): 129 83
+checking if 533 is part number with values (x,y): 135 83
+checking if 457 is part number with values (x,y): 16 84
+checking if 375 is part number with values (x,y): 69 84
+checking if 961 is part number with values (x,y): 83 84
+checking if 720 is part number with values (x,y): 93 84
+checking if 542 is part number with values (x,y): 118 84
+checking if 327 is part number with values (x,y): 139 84
+checking if 396 is part number with values (x,y): 12 85
+checking if 476 is part number with values (x,y): 20 85
+checking if 774 is part number with values (x,y): 24 85
+checking if 680 is part number with values (x,y): 28 85
+checking if 189 is part number with values (x,y): 32 85
+checking if 438 is part number with values (x,y): 37 85
+checking if 669 is part number with values (x,y): 46 85
+checking if 936 is part number with values (x,y): 61 85
+checking if 195 is part number with values (x,y): 87 85
+checking if 405 is part number with values (x,y): 97 85
+checking if 926 is part number with values (x,y): 101 85
+checking if 213 is part number with values (x,y): 105 85
+checking if 254 is part number with values (x,y): 113 85
+checking if 22 is part number with values (x,y): 49 86
+checking if 732 is part number with values (x,y): 56 86
+checking if 121 is part number with values (x,y): 69 86
+checking if 200 is part number with values (x,y): 73 86
+checking if 522 is part number with values (x,y): 122 86
+checking if 825 is part number with values (x,y): 126 86
+checking if 77 is part number with values (x,y): 130 86
+checking if 272 is part number with values (x,y): 8 87
+checking if 925 is part number with values (x,y): 38 87
+checking if 378 is part number with values (x,y): 46 87
+checking if 53 is part number with values (x,y): 60 87
+checking if 605 is part number with values (x,y): 81 87
+checking if 329 is part number with values (x,y): 89 87
+checking if 116 is part number with values (x,y): 93 87
+checking if 501 is part number with values (x,y): 98 87
+checking if 765 is part number with values (x,y): 105 87
+checking if 537 is part number with values (x,y): 114 87
+checking if 680 is part number with values (x,y): 118 87
+checking if 817 is part number with values (x,y): 4 88
+checking if 109 is part number with values (x,y): 15 88
+checking if 209 is part number with values (x,y): 22 88
+checking if 690 is part number with values (x,y): 52 88
+checking if 573 is part number with values (x,y): 74 88
+checking if 48 is part number with values (x,y): 101 88
+checking if 169 is part number with values (x,y): 124 88
+checking if 581 is part number with values (x,y): 130 88
+checking if 537 is part number with values (x,y): 140 88
+checking if 747 is part number with values (x,y): 10 89
+checking if 171 is part number with values (x,y): 26 89
+checking if 70 is part number with values (x,y): 29 89
+checking if 990 is part number with values (x,y): 41 89
+checking if 529 is part number with values (x,y): 67 89
+checking if 482 is part number with values (x,y): 83 89
+checking if 383 is part number with values (x,y): 107 89
+checking if 531 is part number with values (x,y): 116 89
+checking if 53 is part number with values (x,y): 119 89
+checking if 211 is part number with values (x,y): 136 89
+checking if 470 is part number with values (x,y): 16 90
+checking if 812 is part number with values (x,y): 33 90
+checking if 664 is part number with values (x,y): 37 90
+checking if 141 is part number with values (x,y): 49 90
+checking if 82 is part number with values (x,y): 56 90
+checking if 888 is part number with values (x,y): 62 90
+checking if 312 is part number with values (x,y): 88 90
+checking if 9 is part number with values (x,y): 93 90
+checking if 860 is part number with values (x,y): 97 90
+checking if 529 is part number with values (x,y): 111 90
+checking if 952 is part number with values (x,y): 131 90
+checking if 906 is part number with values (x,y): 9 91
+checking if 810 is part number with values (x,y): 20 91
+checking if 966 is part number with values (x,y): 26 91
+checking if 616 is part number with values (x,y): 69 91
+checking if 327 is part number with values (x,y): 80 91
+checking if 80 is part number with values (x,y): 120 91
+checking if 655 is part number with values (x,y): 124 91
+checking if 323 is part number with values (x,y): 4 92
+checking if 459 is part number with values (x,y): 13 92
+checking if 185 is part number with values (x,y): 32 92
+checking if 894 is part number with values (x,y): 40 92
+checking if 891 is part number with values (x,y): 45 92
+checking if 254 is part number with values (x,y): 58 92
+checking if 938 is part number with values (x,y): 94 92
+checking if 262 is part number with values (x,y): 106 92
+checking if 602 is part number with values (x,y): 117 92
+checking if 110 is part number with values (x,y): 17 93
+checking if 55 is part number with values (x,y): 52 93
+checking if 155 is part number with values (x,y): 65 93
+checking if 248 is part number with values (x,y): 86 93
+checking if 600 is part number with values (x,y): 90 93
+checking if 66 is part number with values (x,y): 97 93
+checking if 75 is part number with values (x,y): 130 93
+checking if 880 is part number with values (x,y): 135 93
+checking if 459 is part number with values (x,y): 9 94
+checking if 928 is part number with values (x,y): 23 94
+checking if 900 is part number with values (x,y): 58 94
+checking if 27 is part number with values (x,y): 71 94
+checking if 526 is part number with values (x,y): 102 94
+checking if 434 is part number with values (x,y): 109 94
+checking if 402 is part number with values (x,y): 113 94
+checking if 840 is part number with values (x,y): 121 94
+checking if 816 is part number with values (x,y): 125 94
+checking if 241 is part number with values (x,y): 19 95
+checking if 70 is part number with values (x,y): 29 95
+checking if 465 is part number with values (x,y): 33 95
+checking if 668 is part number with values (x,y): 39 95
+checking if 110 is part number with values (x,y): 46 95
+checking if 905 is part number with values (x,y): 54 95
+checking if 252 is part number with values (x,y): 68 95
+checking if 74 is part number with values (x,y): 98 95
+checking if 817 is part number with values (x,y): 132 95
+checking if 290 is part number with values (x,y): 138 95
+checking if 540 is part number with values (x,y): 5 96
+checking if 224 is part number with values (x,y): 11 96
+checking if 42 is part number with values (x,y): 23 96
+checking if 705 is part number with values (x,y): 59 96
+checking if 128 is part number with values (x,y): 72 96
+checking if 758 is part number with values (x,y): 80 96
+checking if 512 is part number with values (x,y): 85 96
+checking if 884 is part number with values (x,y): 91 96
+checking if 648 is part number with values (x,y): 102 96
+checking if 259 is part number with values (x,y): 113 96
+checking if 486 is part number with values (x,y): 123 96
+checking if 627 is part number with values (x,y): 127 96
+checking if 467 is part number with values (x,y): 19 97
+checking if 462 is part number with values (x,y): 38 97
+checking if 321 is part number with values (x,y): 43 97
+checking if 296 is part number with values (x,y): 50 97
+checking if 211 is part number with values (x,y): 54 97
+checking if 283 is part number with values (x,y): 67 97
+checking if 488 is part number with values (x,y): 76 97
+checking if 796 is part number with values (x,y): 97 97
+checking if 774 is part number with values (x,y): 106 97
+checking if 200 is part number with values (x,y): 132 97
+checking if 87 is part number with values (x,y): 135 97
+checking if 663 is part number with values (x,y): 7 98
+checking if 961 is part number with values (x,y): 25 98
+checking if 579 is part number with values (x,y): 30 98
+checking if 189 is part number with values (x,y): 80 98
+checking if 71 is part number with values (x,y): 92 98
+checking if 420 is part number with values (x,y): 111 98
+checking if 57 is part number with values (x,y): 115 98
+checking if 617 is part number with values (x,y): 15 99
+checking if 645 is part number with values (x,y): 19 99
+checking if 700 is part number with values (x,y): 42 99
+checking if 886 is part number with values (x,y): 47 99
+checking if 806 is part number with values (x,y): 53 99
+checking if 581 is part number with values (x,y): 57 99
+checking if 610 is part number with values (x,y): 61 99
+checking if 132 is part number with values (x,y): 69 99
+checking if 379 is part number with values (x,y): 73 99
+checking if 941 is part number with values (x,y): 98 99
+checking if 504 is part number with values (x,y): 123 99
+checking if 589 is part number with values (x,y): 130 99
+checking if 528 is part number with values (x,y): 141 99
+checking if 377 is part number with values (x,y): 10 100
+checking if 290 is part number with values (x,y): 26 100
+checking if 221 is part number with values (x,y): 32 100
+checking if 768 is part number with values (x,y): 37 100
+checking if 556 is part number with values (x,y): 90 100
+checking if 132 is part number with values (x,y): 107 100
+checking if 152 is part number with values (x,y): 41 101
+checking if 448 is part number with values (x,y): 45 101
+checking if 903 is part number with values (x,y): 60 101
+checking if 339 is part number with values (x,y): 68 101
+checking if 709 is part number with values (x,y): 84 101
+checking if 991 is part number with values (x,y): 99 101
+checking if 865 is part number with values (x,y): 123 101
+checking if 717 is part number with values (x,y): 15 102
+checking if 552 is part number with values (x,y): 31 102
+checking if 40 is part number with values (x,y): 49 102
+checking if 458 is part number with values (x,y): 54 102
+checking if 365 is part number with values (x,y): 74 102
+checking if 762 is part number with values (x,y): 91 102
+checking if 732 is part number with values (x,y): 95 102
+checking if 690 is part number with values (x,y): 107 102
+checking if 266 is part number with values (x,y): 111 102
+checking if 222 is part number with values (x,y): 119 102
+checking if 122 is part number with values (x,y): 134 102
+checking if 414 is part number with values (x,y): 5 103
+checking if 496 is part number with values (x,y): 19 103
+checking if 712 is part number with values (x,y): 27 103
+checking if 785 is part number with values (x,y): 41 103
+checking if 79 is part number with values (x,y): 60 103
+checking if 884 is part number with values (x,y): 66 103
+checking if 991 is part number with values (x,y): 70 103
+checking if 844 is part number with values (x,y): 100 103
+checking if 782 is part number with values (x,y): 123 103
+checking if 627 is part number with values (x,y): 138 103
+checking if 560 is part number with values (x,y): 23 104
+checking if 873 is part number with values (x,y): 32 104
+checking if 739 is part number with values (x,y): 37 104
+checking if 368 is part number with values (x,y): 51 104
+checking if 991 is part number with values (x,y): 55 104
+checking if 27 is part number with values (x,y): 75 104
+checking if 951 is part number with values (x,y): 88 104
+checking if 864 is part number with values (x,y): 105 104
+checking if 206 is part number with values (x,y): 117 104
+checking if 878 is part number with values (x,y): 127 104
+checking if 231 is part number with values (x,y): 9 105
+checking if 995 is part number with values (x,y): 14 105
+checking if 865 is part number with values (x,y): 28 105
+checking if 602 is part number with values (x,y): 47 105
+checking if 379 is part number with values (x,y): 61 105
+checking if 609 is part number with values (x,y): 65 105
+checking if 935 is part number with values (x,y): 69 105
+checking if 643 is part number with values (x,y): 82 105
+checking if 952 is part number with values (x,y): 101 105
+checking if 884 is part number with values (x,y): 121 105
+checking if 726 is part number with values (x,y): 22 106
+checking if 360 is part number with values (x,y): 33 106
+checking if 990 is part number with values (x,y): 97 106
+checking if 959 is part number with values (x,y): 110 106
+checking if 932 is part number with values (x,y): 125 106
+checking if 508 is part number with values (x,y): 27 107
+checking if 194 is part number with values (x,y): 39 107
+checking if 30 is part number with values (x,y): 49 107
+checking if 487 is part number with values (x,y): 73 107
+checking if 171 is part number with values (x,y): 82 107
+checking if 243 is part number with values (x,y): 88 107
+checking if 709 is part number with values (x,y): 93 107
+checking if 495 is part number with values (x,y): 104 107
+checking if 995 is part number with values (x,y): 116 107
+checking if 464 is part number with values (x,y): 120 107
+checking if 997 is part number with values (x,y): 130 107
+checking if 292 is part number with values (x,y): 10 108
+checking if 253 is part number with values (x,y): 46 108
+checking if 554 is part number with values (x,y): 60 108
+checking if 582 is part number with values (x,y): 134 108
+checking if 446 is part number with values (x,y): 138 108
+checking if 802 is part number with values (x,y): 15 109
+checking if 237 is part number with values (x,y): 23 109
+checking if 32 is part number with values (x,y): 31 109
+checking if 286 is part number with values (x,y): 37 109
+checking if 259 is part number with values (x,y): 41 109
+checking if 132 is part number with values (x,y): 56 109
+checking if 236 is part number with values (x,y): 64 109
+checking if 683 is part number with values (x,y): 73 109
+checking if 705 is part number with values (x,y): 105 109
+checking if 855 is part number with values (x,y): 112 109
+checking if 37 is part number with values (x,y): 115 109
+checking if 476 is part number with values (x,y): 127 109
+checking if 418 is part number with values (x,y): 9 110
+checking if 664 is part number with values (x,y): 28 110
+checking if 11 is part number with values (x,y): 50 110
+checking if 70 is part number with values (x,y): 76 110
+checking if 380 is part number with values (x,y): 80 110
+checking if 138 is part number with values (x,y): 87 110
+checking if 416 is part number with values (x,y): 95 110
+checking if 609 is part number with values (x,y): 99 110
+checking if 452 is part number with values (x,y): 120 110
+checking if 43 is part number with values (x,y): 130 110
+checking if 156 is part number with values (x,y): 136 110
+checking if 260 is part number with values (x,y): 141 110
+checking if 20 is part number with values (x,y): 23 111
+checking if 512 is part number with values (x,y): 36 111
+checking if 303 is part number with values (x,y): 47 111
+checking if 491 is part number with values (x,y): 72 111
+checking if 962 is part number with values (x,y): 111 111
+checking if 426 is part number with values (x,y): 4 112
+checking if 646 is part number with values (x,y): 8 112
+checking if 833 is part number with values (x,y): 15 112
+checking if 821 is part number with values (x,y): 29 112
+checking if 348 is part number with values (x,y): 52 112
+checking if 537 is part number with values (x,y): 62 112
+checking if 668 is part number with values (x,y): 68 112
+checking if 92 is part number with values (x,y): 78 112
+checking if 295 is part number with values (x,y): 86 112
+checking if 620 is part number with values (x,y): 94 112
+checking if 147 is part number with values (x,y): 116 112
+checking if 753 is part number with values (x,y): 121 112
+checking if 210 is part number with values (x,y): 35 113
+checking if 681 is part number with values (x,y): 39 113
+checking if 937 is part number with values (x,y): 72 113
+checking if 350 is part number with values (x,y): 82 113
+checking if 533 is part number with values (x,y): 107 113
+checking if 65 is part number with values (x,y): 4 114
+checking if 22 is part number with values (x,y): 9 114
+checking if 656 is part number with values (x,y): 14 114
+checking if 44 is part number with values (x,y): 29 114
+checking if 178 is part number with values (x,y): 43 114
+checking if 446 is part number with values (x,y): 56 114
+checking if 655 is part number with values (x,y): 68 114
+checking if 592 is part number with values (x,y): 86 114
+checking if 952 is part number with values (x,y): 94 114
+checking if 680 is part number with values (x,y): 103 114
+checking if 305 is part number with values (x,y): 123 114
+checking if 704 is part number with values (x,y): 139 114
+checking if 422 is part number with values (x,y): 21 115
+checking if 835 is part number with values (x,y): 26 115
+checking if 126 is part number with values (x,y): 35 115
+checking if 552 is part number with values (x,y): 47 115
+checking if 543 is part number with values (x,y): 62 115
+checking if 444 is part number with values (x,y): 80 115
+checking if 995 is part number with values (x,y): 90 115
+checking if 771 is part number with values (x,y): 108 115
+checking if 480 is part number with values (x,y): 119 115
+checking if 782 is part number with values (x,y): 131 115
+checking if 28 is part number with values (x,y): 15 116
+checking if 983 is part number with values (x,y): 30 116
+checking if 5 is part number with values (x,y): 43 116
+checking if 953 is part number with values (x,y): 58 116
+checking if 216 is part number with values (x,y): 70 116
+checking if 749 is part number with values (x,y): 75 116
+checking if 232 is part number with values (x,y): 114 116
+checking if 878 is part number with values (x,y): 25 117
+checking if 426 is part number with values (x,y): 54 117
+checking if 792 is part number with values (x,y): 107 117
+checking if 898 is part number with values (x,y): 118 117
+checking if 264 is part number with values (x,y): 127 117
+checking if 39 is part number with values (x,y): 132 117
+checking if 480 is part number with values (x,y): 7 118
+checking if 674 is part number with values (x,y): 15 118
+checking if 149 is part number with values (x,y): 20 118
+checking if 740 is part number with values (x,y): 43 118
+checking if 251 is part number with values (x,y): 58 118
+checking if 920 is part number with values (x,y): 63 118
+checking if 552 is part number with values (x,y): 73 118
+checking if 713 is part number with values (x,y): 98 118
+checking if 639 is part number with values (x,y): 112 118
+checking if 917 is part number with values (x,y): 122 118
+checking if 951 is part number with values (x,y): 37 119
+checking if 968 is part number with values (x,y): 53 119
+checking if 750 is part number with values (x,y): 108 119
+checking if 479 is part number with values (x,y): 118 119
+checking if 770 is part number with values (x,y): 133 119
+checking if 959 is part number with values (x,y): 137 119
+checking if 424 is part number with values (x,y): 19 120
+checking if 54 is part number with values (x,y): 23 120
+checking if 489 is part number with values (x,y): 27 120
+checking if 14 is part number with values (x,y): 43 120
+checking if 355 is part number with values (x,y): 48 120
+checking if 782 is part number with values (x,y): 62 120
+checking if 50 is part number with values (x,y): 67 120
+checking if 900 is part number with values (x,y): 86 120
+checking if 770 is part number with values (x,y): 90 120
+checking if 639 is part number with values (x,y): 103 120
+checking if 942 is part number with values (x,y): 113 120
+checking if 39 is part number with values (x,y): 121 120
+checking if 477 is part number with values (x,y): 129 120
+checking if 888 is part number with values (x,y): 8 121
+checking if 412 is part number with values (x,y): 32 121
+checking if 123 is part number with values (x,y): 72 121
+checking if 579 is part number with values (x,y): 78 121
+checking if 315 is part number with values (x,y): 97 121
+checking if 66 is part number with values (x,y): 133 121
+checking if 793 is part number with values (x,y): 37 122
+checking if 402 is part number with values (x,y): 42 122
+checking if 807 is part number with values (x,y): 53 122
+checking if 854 is part number with values (x,y): 59 122
+checking if 115 is part number with values (x,y): 66 122
+checking if 204 is part number with values (x,y): 101 122
+checking if 208 is part number with values (x,y): 111 122
+checking if 928 is part number with values (x,y): 116 122
+checking if 121 is part number with values (x,y): 129 122
+checking if 880 is part number with values (x,y): 15 123
+checking if 818 is part number with values (x,y): 20 123
+checking if 982 is part number with values (x,y): 29 123
+checking if 923 is part number with values (x,y): 49 123
+checking if 809 is part number with values (x,y): 91 123
+checking if 962 is part number with values (x,y): 95 123
+checking if 957 is part number with values (x,y): 7 124
+checking if 511 is part number with values (x,y): 11 124
+checking if 436 is part number with values (x,y): 24 124
+checking if 704 is part number with values (x,y): 36 124
+checking if 84 is part number with values (x,y): 75 124
+checking if 369 is part number with values (x,y): 82 124
+checking if 496 is part number with values (x,y): 86 124
+checking if 917 is part number with values (x,y): 99 124
+checking if 464 is part number with values (x,y): 123 124
+checking if 812 is part number with values (x,y): 32 125
+checking if 785 is part number with values (x,y): 44 125
+checking if 848 is part number with values (x,y): 63 125
+checking if 506 is part number with values (x,y): 68 125
+checking if 116 is part number with values (x,y): 90 125
+checking if 694 is part number with values (x,y): 14 126
+checking if 257 is part number with values (x,y): 19 126
+checking if 876 is part number with values (x,y): 24 126
+checking if 15 is part number with values (x,y): 47 126
+checking if 176 is part number with values (x,y): 59 126
+checking if 593 is part number with values (x,y): 107 126
+checking if 168 is part number with values (x,y): 113 126
+checking if 914 is part number with values (x,y): 119 126
+checking if 230 is part number with values (x,y): 123 126
+checking if 200 is part number with values (x,y): 128 126
+checking if 500 is part number with values (x,y): 140 126
+checking if 427 is part number with values (x,y): 7 127
+checking if 233 is part number with values (x,y): 85 127
+checking if 616 is part number with values (x,y): 90 127
+checking if 299 is part number with values (x,y): 98 127
+checking if 598 is part number with values (x,y): 17 128
+checking if 571 is part number with values (x,y): 32 128
+checking if 60 is part number with values (x,y): 39 128
+checking if 897 is part number with values (x,y): 51 128
+checking if 911 is part number with values (x,y): 61 128
+checking if 34 is part number with values (x,y): 67 128
+checking if 106 is part number with values (x,y): 74 128
+checking if 713 is part number with values (x,y): 80 128
+checking if 933 is part number with values (x,y): 114 128
+checking if 288 is part number with values (x,y): 127 128
+checking if 314 is part number with values (x,y): 6 129
+checking if 563 is part number with values (x,y): 24 129
+checking if 198 is part number with values (x,y): 90 129
+checking if 591 is part number with values (x,y): 131 129
+checking if 246 is part number with values (x,y): 138 129
+checking if 274 is part number with values (x,y): 15 130
+checking if 875 is part number with values (x,y): 19 130
+checking if 114 is part number with values (x,y): 29 130
+checking if 105 is part number with values (x,y): 43 130
+checking if 763 is part number with values (x,y): 47 130
+checking if 319 is part number with values (x,y): 52 130
+checking if 730 is part number with values (x,y): 75 130
+checking if 158 is part number with values (x,y): 83 130
+checking if 487 is part number with values (x,y): 107 130
+checking if 505 is part number with values (x,y): 117 130
+checking if 439 is part number with values (x,y): 5 131
+checking if 595 is part number with values (x,y): 58 131
+checking if 190 is part number with values (x,y): 62 131
+checking if 173 is part number with values (x,y): 66 131
+checking if 653 is part number with values (x,y): 71 131
+checking if 882 is part number with values (x,y): 90 131
+checking if 812 is part number with values (x,y): 94 131
+checking if 230 is part number with values (x,y): 103 131
+checking if 522 is part number with values (x,y): 121 131
+checking if 192 is part number with values (x,y): 136 131
+checking if 554 is part number with values (x,y): 20 132
+checking if 825 is part number with values (x,y): 26 132
+checking if 845 is part number with values (x,y): 32 132
+checking if 797 is part number with values (x,y): 38 132
+checking if 572 is part number with values (x,y): 42 132
+checking if 814 is part number with values (x,y): 47 132
+checking if 167 is part number with values (x,y): 83 132
+checking if 581 is part number with values (x,y): 99 132
+checking if 330 is part number with values (x,y): 129 132
+checking if 82 is part number with values (x,y): 10 133
+checking if 318 is part number with values (x,y): 57 133
+checking if 326 is part number with values (x,y): 75 133
+checking if 924 is part number with values (x,y): 79 133
+checking if 880 is part number with values (x,y): 88 133
+checking if 288 is part number with values (x,y): 95 133
+checking if 44 is part number with values (x,y): 113 133
+checking if 526 is part number with values (x,y): 18 134
+checking if 981 is part number with values (x,y): 47 134
+checking if 959 is part number with values (x,y): 61 134
+checking if 915 is part number with values (x,y): 105 134
+checking if 116 is part number with values (x,y): 109 134
+checking if 577 is part number with values (x,y): 137 134
+checking if 130 is part number with values (x,y): 6 135
+checking if 330 is part number with values (x,y): 40 135
+checking if 414 is part number with values (x,y): 57 135
+checking if 679 is part number with values (x,y): 66 135
+checking if 999 is part number with values (x,y): 77 135
+checking if 344 is part number with values (x,y): 81 135
+checking if 611 is part number with values (x,y): 85 135
+checking if 432 is part number with values (x,y): 95 135
+checking if 690 is part number with values (x,y): 116 135
+checking if 502 is part number with values (x,y): 123 135
+checking if 476 is part number with values (x,y): 17 136
+checking if 303 is part number with values (x,y): 91 136
+checking if 731 is part number with values (x,y): 99 136
+checking if 681 is part number with values (x,y): 111 136
+checking if 791 is part number with values (x,y): 9 137
+checking if 152 is part number with values (x,y): 21 137
+checking if 397 is part number with values (x,y): 28 137
+checking if 975 is part number with values (x,y): 41 137
+checking if 904 is part number with values (x,y): 56 137
+checking if 225 is part number with values (x,y): 75 137
+checking if 169 is part number with values (x,y): 116 137
+checking if 207 is part number with values (x,y): 120 137
+checking if 995 is part number with values (x,y): 14 138
+checking if 558 is part number with values (x,y): 32 138
+checking if 857 is part number with values (x,y): 36 138
+checking if 141 is part number with values (x,y): 46 138
+checking if 803 is part number with values (x,y): 51 138
+checking if 199 is part number with values (x,y): 69 138
+checking if 573 is part number with values (x,y): 84 138
+checking if 63 is part number with values (x,y): 88 138
+checking if 315 is part number with values (x,y): 93 138
+checking if 519 is part number with values (x,y): 124 138
+checking if 158 is part number with values (x,y): 42 139
+checking if 737 is part number with values (x,y): 59 139
+checking if 399 is part number with values (x,y): 76 139
+checking if 47 is part number with values (x,y): 102 139
+checking if 100 is part number with values (x,y): 109 139
+checking if 574 is part number with values (x,y): 128 139
+checking if 333 is part number with values (x,y): 135 139
+checking if 56 is part number with values (x,y): 13 140
+checking if 822 is part number with values (x,y): 28 140
+checking if 665 is part number with values (x,y): 49 140
+checking if 563 is part number with values (x,y): 80 140
+checking if 383 is part number with values (x,y): 85 140
 ( Part 1 ) Correct result: True
-Day 5, part 1: 240320250 (0.094 secs)
-3429320627 235304036
-1147330745 114559245
-1684000747 468955901
-677937579 96599505
-1436970021 26560102
-3886049334 159534901
-936845926 25265009
-3247146679 95841652
-3696363517 45808572
-2319065313 125950148
-testing 3429320627 , 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 1147330745 , 1261889990
-disjoint by 3429320627 3664624663
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 1684000747 , 2152956648
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 677937579 , 774537084
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 1436970021 , 1463530123
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 3886049334 , 4045584235
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 936845926 , 962110935
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 3247146679 , 3342988331
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3696363517 3742172089
-disjoint by 2319065313 2445015461
-testing 3696363517 , 3742172089
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 2319065313 2445015461
-testing 2319065313 , 2445015461
-disjoint by 3429320627 3664624663
-disjoint by 1147330745 1261889990
-disjoint by 1684000747 2152956648
-disjoint by 677937579 774537084
-disjoint by 1436970021 1463530123
-disjoint by 3886049334 4045584235
-disjoint by 936845926 962110935
-disjoint by 3247146679 3342988331
-disjoint by 3696363517 3742172089
+Day 3, part 1: 532445 (0.039 secs)
+{(8, 2): [], (20, 2): [], (26, 2): [], (38, 2): [], (64, 2): [], (93, 2): [], (115, 2): [], (136, 2): [], (57, 3): [], (110, 3): [], (9, 4): [], (59, 4): [], (103, 4): [], (126, 4): [], (79, 5): [], (96, 5): [], (135, 5): [], (76, 6): [], (98, 6): [], (21, 7): [], (41, 7): [], (58, 7): [], (19, 9): [], (33, 9): [], (63, 9): [], (91, 9): [], (126, 9): [], (12, 10): [], (70, 10): [], (76, 10): [], (18, 13): [], (58, 13): [], (23, 14): [], (41, 14): [], (68, 14): [], (54, 15): [], (93, 15): [], (118, 15): [], (81, 16): [], (86, 16): [], (114, 16): [], (36, 17): [], (56, 17): [], (66, 17): [], (123, 17): [], (128, 17): [], (24, 18): [], (41, 18): [], (108, 18): [], (63, 19): [], (77, 19): [], (116, 20): [], (125, 20): [], (133, 20): [], (8, 21): [], (27, 21): [], (51, 21): [], (82, 21): [], (19, 22): [], (110, 22): [], (24, 23): [], (114, 23): [], (131, 23): [], (63, 24): [], (74, 24): [], (91, 24): [], (20, 26): [], (30, 26): [], (114, 26): [], (137, 26): [], (94, 27): [], (120, 27): [], (85, 28): [], (90, 28): [], (103, 29): [], (20, 30): [], (35, 30): [], (64, 30): [], (79, 30): [], (86, 31): [], (106, 31): [], (65, 32): [], (100, 32): [], (129, 33): [], (70, 34): [], (89, 35): [], (109, 35): [], (6, 37): [], (12, 37): [], (76, 37): [], (82, 37): [], (99, 37): [], (103, 37): [], (28, 39): [], (40, 39): [], (55, 39): [], (66, 39): [], (108, 39): [], (130, 39): [], (34, 41): [], (74, 41): [], (98, 41): [], (120, 41): [], (46, 42): [], (18, 43): [], (28, 43): [], (88, 43): [], (113, 43): [], (5, 44): [], (35, 44): [], (40, 44): [], (70, 44): [], (78, 45): [], (117, 45): [], (126, 45): [], (25, 46): [], (28, 46): [], (57, 46): [], (10, 47): [], (37, 47): [], (66, 47): [], (95, 47): [], (114, 47): [], (74, 48): [], (56, 49): [], (4, 50): [], (24, 50): [], (38, 51): [], (67, 51): [], (93, 51): [], (116, 51): [], (128, 51): [], (35, 52): [], (26, 53): [], (50, 53): [], (78, 53): [], (97, 53): [], (18, 54): [], (63, 54): [], (86, 54): [], (105, 54): [], (5, 55): [], (107, 56): [], (66, 57): [], (95, 57): [], (115, 57): [], (124, 57): [], (112, 58): [], (80, 59): [], (136, 59): [], (40, 60): [], (66, 60): [], (72, 60): [], (100, 60): [], (122, 60): [], (48, 61): [], (83, 61): [], (30, 62): [], (91, 62): [], (9, 63): [], (18, 63): [], (76, 63): [], (100, 63): [], (51, 64): [], (82, 64): [], (124, 64): [], (32, 65): [], (67, 65): [], (62, 66): [], (101, 66): [], (13, 67): [], (93, 67): [], (133, 67): [], (21, 68): [], (81, 68): [], (128, 68): [], (32, 69): [], (54, 69): [], (96, 70): [], (20, 72): [], (39, 72): [], (108, 72): [], (50, 73): [], (59, 73): [], (66, 73): [], (84, 73): [], (29, 74): [], (76, 74): [], (135, 74): [], (8, 75): [], (109, 75): [], (19, 76): [], (32, 76): [], (44, 76): [], (54, 76): [], (82, 76): [], (100, 76): [], (13, 77): [], (37, 77): [], (76, 77): [], (115, 77): [], (130, 78): [], (5, 79): [], (32, 79): [], (70, 79): [], (15, 80): [], (22, 80): [], (84, 80): [], (100, 80): [], (110, 80): [], (133, 80): [], (43, 81): [], (61, 81): [], (92, 81): [], (120, 81): [], (19, 82): [], (28, 82): [], (36, 82): [], (89, 83): [], (83, 84): [], (99, 84): [], (126, 84): [], (15, 85): [], (118, 85): [], (136, 85): [], (20, 86): [], (57, 86): [], (96, 86): [], (105, 86): [], (46, 87): [], (73, 87): [], (124, 87): [], (127, 87): [], (112, 88): [], (118, 88): [], (49, 89): [], (7, 90): [], (24, 90): [], (28, 90): [], (65, 90): [], (93, 90): [], (12, 91): [], (30, 91): [], (36, 91): [], (58, 91): [], (86, 91): [], (117, 92): [], (49, 93): [], (86, 93): [], (105, 93): [], (121, 93): [], (54, 94): [], (132, 94): [], (7, 95): [], (23, 95): [], (70, 95): [], (111, 95): [], (19, 96): [], (29, 96): [], (38, 96): [], (66, 96): [], (96, 96): [], (102, 96): [], (134, 96): [], (5, 97): [], (50, 97): [], (55, 97): [], (57, 98): [], (130, 98): [], (30, 99): [], (42, 100): [], (69, 100): [], (120, 100): [], (37, 101): [], (106, 101): [], (58, 102): [], (64, 102): [], (98, 102): [], (29, 103): [], (50, 103): [], (91, 103): [], (116, 103): [], (134, 103): [], (25, 104): [], (61, 104): [], (67, 104): [], (120, 104): [], (53, 105): [], (124, 105): [], (93, 106): [], (46, 107): [], (38, 108): [], (55, 108): [], (71, 108): [], (103, 108): [], (113, 108): [], (125, 108): [], (130, 108): [], (28, 109): [], (136, 109): [], (23, 110): [], (36, 110): [], (47, 110): [], (75, 111): [], (83, 111): [], (93, 111): [], (121, 111): [], (7, 113): [], (13, 113): [], (26, 114): [], (32, 114): [], (43, 114): [], (82, 114): [], (105, 114): [], (4, 115): [], (54, 115): [], (41, 117): [], (69, 117): [], (110, 117): [], (54, 118): [], (131, 118): [], (47, 119): [], (60, 119): [], (23, 120): [], (118, 120): [], (64, 121): [], (113, 121): [], (128, 121): [], (7, 122): [], (49, 122): [], (94, 122): [], (35, 123): [], (42, 123): [], (98, 123): [], (7, 124): [], (20, 124): [], (44, 125): [], (86, 125): [], (16, 127): [], (59, 127): [], (98, 127): [], (39, 129): [], (51, 129): [], (64, 129): [], (114, 129): [], (127, 129): [], (5, 130): [], (71, 130): [], (15, 131): [], (38, 131): [], (47, 131): [], (83, 131): [], (99, 131): [], (54, 132): [], (62, 132): [], (75, 132): [], (90, 132): [], (16, 133): [], (105, 133): [], (81, 134): [], (95, 134): [], (110, 134): [], (58, 135): [], (13, 137): [], (32, 137): [], (90, 137): [], (74, 138): [], (109, 138): [], (42, 139): [], (47, 139): [], (80, 139): []}
+
+( 1 1 ): 311
+( 2 1 ): 311
+( 3 1 ): 311
+( 7 1 ): 672
+( 8 1 ): 672
+( 9 1 ): 672
+( 13 1 ): 34
+( 14 1 ): 34
+( 18 1 ): 391
+( 19 1 ): 391
+( 20 1 ): 391
+( 26 1 ): 591
+( 27 1 ): 591
+( 28 1 ): 591
+( 35 1 ): 828
+( 36 1 ): 828
+( 37 1 ): 828
+( 61 1 ): 738
+( 62 1 ): 738
+( 63 1 ): 738
+( 84 1 ): 223
+( 85 1 ): 223
+( 86 1 ): 223
+( 91 1 ): 803
+( 92 1 ): 803
+( 93 1 ): 803
+( 96 1 ): 472
+( 97 1 ): 472
+( 98 1 ): 472
+( 133 1 ): 714
+( 134 1 ): 714
+( 135 1 ): 714
+( 137 1 ): 840
+( 138 1 ): 840
+( 139 1 ): 840
+
+( 47 2 ): 631
+( 48 2 ): 631
+( 49 2 ): 631
+( 54 2 ): 703
+( 55 2 ): 703
+( 56 2 ): 703
+( 67 2 ): 12
+( 68 2 ): 12
+( 73 2 ): 652
+( 74 2 ): 652
+( 75 2 ): 652
+( 108 2 ): 368
+( 109 2 ): 368
+( 110 2 ): 368
+( 112 2 ): 769
+( 113 2 ): 769
+( 114 2 ): 769
+( 116 2 ): 148
+( 117 2 ): 148
+( 118 2 ): 148
+
+( 5 3 ): 411
+( 6 3 ): 411
+( 7 3 ): 411
+( 19 3 ): 2
+( 24 3 ): 837
+( 25 3 ): 837
+( 26 3 ): 837
+( 28 3 ): 121
+( 29 3 ): 121
+( 30 3 ): 121
+( 39 3 ): 511
+( 40 3 ): 511
+( 41 3 ): 511
+( 43 3 ): 745
+( 44 3 ): 745
+( 45 3 ): 745
+( 59 3 ): 48
+( 60 3 ): 48
+( 62 3 ): 422
+( 63 3 ): 422
+( 64 3 ): 422
+( 90 3 ): 311
+( 91 3 ): 311
+( 92 3 ): 311
+( 101 3 ): 887
+( 102 3 ): 887
+( 103 3 ): 887
+( 127 3 ): 457
+( 128 3 ): 457
+( 129 3 ): 457
+( 138 3 ): 595
+( 139 3 ): 595
+( 140 3 ): 595
+
+( 10 4 ): 328
+( 11 4 ): 328
+( 12 4 ): 328
+( 55 4 ): 144
+( 56 4 ): 144
+( 57 4 ): 144
+( 79 4 ): 138
+( 80 4 ): 138
+( 81 4 ): 138
+( 94 4 ): 48
+( 95 4 ): 48
+( 110 4 ): 682
+( 111 4 ): 682
+( 112 4 ): 682
+( 134 4 ): 777
+( 135 4 ): 777
+( 136 4 ): 777
+
+( 6 5 ): 144
+( 7 5 ): 144
+( 8 5 ): 144
+( 23 5 ): 170
+( 24 5 ): 170
+( 25 5 ): 170
+( 45 5 ): 207
+( 46 5 ): 207
+( 47 5 ): 207
+( 60 5 ): 813
+( 61 5 ): 813
+( 62 5 ): 813
+( 74 5 ): 139
+( 75 5 ): 139
+( 76 5 ): 139
+( 85 5 ): 346
+( 86 5 ): 346
+( 87 5 ): 346
+( 99 5 ): 147
+( 100 5 ): 147
+( 101 5 ): 147
+( 104 5 ): 143
+( 105 5 ): 143
+( 106 5 ): 143
+( 114 5 ): 78
+( 115 5 ): 78
+( 120 5 ): 536
+( 121 5 ): 536
+( 122 5 ): 536
+( 125 5 ): 79
+( 126 5 ): 79
+
+( 12 6 ): 828
+( 13 6 ): 828
+( 14 6 ): 828
+( 18 6 ): 559
+( 19 6 ): 559
+( 20 6 ): 559
+( 38 6 ): 181
+( 39 6 ): 181
+( 40 6 ): 181
+( 55 6 ): 613
+( 56 6 ): 613
+( 57 6 ): 613
+( 65 6 ): 10
+( 66 6 ): 10
+( 70 6 ): 928
+( 71 6 ): 928
+( 72 6 ): 928
+( 80 6 ): 993
+( 81 6 ): 993
+( 82 6 ): 993
+( 94 6 ): 758
+( 95 6 ): 758
+( 96 6 ): 758
+( 108 6 ): 471
+( 109 6 ): 471
+( 110 6 ): 471
+( 133 6 ): 573
+( 134 6 ): 573
+( 135 6 ): 573
+
+( 22 7 ): 164
+( 23 7 ): 164
+( 24 7 ): 164
+( 28 7 ): 132
+( 29 7 ): 132
+( 30 7 ): 132
+( 76 7 ): 47
+( 77 7 ): 47
+( 87 7 ): 186
+( 88 7 ): 186
+( 89 7 ): 186
+( 99 7 ): 313
+( 100 7 ): 313
+( 101 7 ): 313
+( 116 7 ): 411
+( 117 7 ): 411
+( 118 7 ): 411
+
+( 16 8 ): 342
+( 17 8 ): 342
+( 18 8 ): 342
+( 34 8 ): 823
+( 35 8 ): 823
+( 36 8 ): 823
+( 42 8 ): 533
+( 43 8 ): 533
+( 44 8 ): 533
+( 49 8 ): 519
+( 50 8 ): 519
+( 51 8 ): 519
+( 57 8 ): 899
+( 58 8 ): 899
+( 59 8 ): 899
+( 63 8 ): 310
+( 64 8 ): 310
+( 65 8 ): 310
+( 91 8 ): 325
+( 92 8 ): 325
+( 93 8 ): 325
+( 105 8 ): 15
+( 106 8 ): 15
+( 127 8 ): 407
+( 128 8 ): 407
+( 129 8 ): 407
+
+( 1 9 ): 515
+( 2 9 ): 515
+( 3 9 ): 515
+( 10 9 ): 916
+( 11 9 ): 916
+( 12 9 ): 916
+( 70 9 ): 961
+( 71 9 ): 961
+( 72 9 ): 961
+( 82 9 ): 827
+( 83 9 ): 827
+( 84 9 ): 827
+( 109 9 ): 567
+( 110 9 ): 567
+( 111 9 ): 567
+( 117 9 ): 238
+( 118 9 ): 238
+( 119 9 ): 238
+( 123 9 ): 874
+( 124 9 ): 874
+( 125 9 ): 874
+( 134 9 ): 420
+( 135 9 ): 420
+( 136 9 ): 420
+
+( 16 10 ): 207
+( 17 10 ): 207
+( 18 10 ): 207
+( 22 10 ): 882
+( 23 10 ): 882
+( 24 10 ): 882
+( 31 10 ): 719
+( 32 10 ): 719
+( 33 10 ): 719
+( 38 10 ): 455
+( 39 10 ): 455
+( 40 10 ): 455
+( 42 10 ): 973
+( 43 10 ): 973
+( 44 10 ): 973
+( 64 10 ): 369
+( 65 10 ): 369
+( 66 10 ): 369
+( 77 10 ): 913
+( 78 10 ): 913
+( 79 10 ): 913
+( 88 10 ): 978
+( 89 10 ): 978
+( 90 10 ): 978
+( 97 10 ): 720
+( 98 10 ): 720
+( 99 10 ): 720
+
+( 9 11 ): 306
+( 10 11 ): 306
+( 11 11 ): 306
+( 60 11 ): 182
+( 61 11 ): 182
+( 62 11 ): 182
+( 68 11 ): 534
+( 69 11 ): 534
+( 70 11 ): 534
+( 93 11 ): 229
+( 94 11 ): 229
+( 95 11 ): 229
+( 104 11 ): 744
+( 105 11 ): 744
+( 106 11 ): 744
+( 133 11 ): 918
+( 134 11 ): 918
+( 135 11 ): 918
+
+( 1 12 ): 303
+( 2 12 ): 303
+( 3 12 ): 303
+( 15 12 ): 745
+( 16 12 ): 745
+( 17 12 ): 745
+( 29 12 ): 361
+( 30 12 ): 361
+( 31 12 ): 361
+( 46 12 ): 223
+( 47 12 ): 223
+( 48 12 ): 223
+( 51 12 ): 243
+( 52 12 ): 243
+( 53 12 ): 243
+( 55 12 ): 129
+( 56 12 ): 129
+( 57 12 ): 129
+( 81 12 ): 830
+( 82 12 ): 830
+( 83 12 ): 830
+( 114 12 ): 493
+( 115 12 ): 493
+( 116 12 ): 493
+( 121 12 ): 106
+( 122 12 ): 106
+( 123 12 ): 106
+
+( 19 13 ): 209
+( 20 13 ): 209
+( 21 13 ): 209
+( 24 13 ): 17
+( 25 13 ): 17
+( 35 13 ): 494
+( 36 13 ): 494
+( 37 13 ): 494
+( 39 13 ): 910
+( 40 13 ): 910
+( 41 13 ): 910
+( 59 13 ): 90
+( 60 13 ): 90
+( 65 13 ): 496
+( 66 13 ): 496
+( 67 13 ): 496
+( 73 13 ): 709
+( 74 13 ): 709
+( 75 13 ): 709
+( 87 13 ): 896
+( 88 13 ): 896
+( 89 13 ): 896
+
+( 8 14 ): 562
+( 9 14 ): 562
+( 10 14 ): 562
+( 44 14 ): 528
+( 45 14 ): 528
+( 46 14 ): 528
+( 54 14 ): 321
+( 55 14 ): 321
+( 56 14 ): 321
+( 69 14 ): 673
+( 70 14 ): 673
+( 71 14 ): 673
+( 94 14 ): 887
+( 95 14 ): 887
+( 96 14 ): 887
+( 100 14 ): 231
+( 101 14 ): 231
+( 102 14 ): 231
+( 118 14 ): 700
+( 119 14 ): 700
+( 120 14 ): 700
+( 135 14 ): 116
+( 136 14 ): 116
+( 137 14 ): 116
+
+( 2 15 ): 988
+( 3 15 ): 988
+( 4 15 ): 988
+( 12 15 ): 944
+( 13 15 ): 944
+( 14 15 ): 944
+( 18 15 ): 596
+( 19 15 ): 596
+( 20 15 ): 596
+( 29 15 ): 806
+( 30 15 ): 806
+( 31 15 ): 806
+( 35 15 ): 24
+( 36 15 ): 24
+( 39 15 ): 519
+( 40 15 ): 519
+( 41 15 ): 519
+( 79 15 ): 146
+( 80 15 ): 146
+( 81 15 ): 146
+( 113 15 ): 554
+( 114 15 ): 554
+( 115 15 ): 554
+
+( 51 16 ): 822
+( 52 16 ): 822
+( 53 16 ): 822
+( 57 16 ): 621
+( 58 16 ): 621
+( 59 16 ): 621
+( 62 16 ): 771
+( 63 16 ): 771
+( 64 16 ): 771
+( 67 16 ): 151
+( 68 16 ): 151
+( 69 16 ): 151
+( 71 16 ): 504
+( 72 16 ): 504
+( 73 16 ): 504
+( 83 16 ): 628
+( 84 16 ): 628
+( 85 16 ): 628
+( 87 16 ): 343
+( 88 16 ): 343
+( 89 16 ): 343
+( 92 16 ): 34
+( 93 16 ): 34
+( 117 16 ): 329
+( 118 16 ): 329
+( 119 16 ): 329
+( 121 16 ): 303
+( 122 16 ): 303
+( 123 16 ): 303
+( 126 16 ): 641
+( 127 16 ): 641
+( 128 16 ): 641
+( 131 16 ): 678
+( 132 16 ): 678
+( 133 16 ): 678
+
+( 25 17 ): 361
+( 26 17 ): 361
+( 27 17 ): 361
+( 33 17 ): 347
+( 34 17 ): 347
+( 35 17 ): 347
+( 37 17 ): 524
+( 38 17 ): 524
+( 39 17 ): 524
+( 42 17 ): 538
+( 43 17 ): 538
+( 44 17 ): 538
+( 79 17 ): 790
+( 80 17 ): 790
+( 81 17 ): 790
+( 95 17 ): 933
+( 96 17 ): 933
+( 97 17 ): 933
+( 100 17 ): 724
+( 101 17 ): 724
+( 102 17 ): 724
+( 109 17 ): 699
+( 110 17 ): 699
+( 111 17 ): 699
+( 137 17 ): 262
+( 138 17 ): 262
+( 139 17 ): 262
+
+( 2 18 ): 716
+( 3 18 ): 716
+( 4 18 ): 716
+( 7 18 ): 517
+( 8 18 ): 517
+( 9 18 ): 517
+( 48 18 ): 955
+( 49 18 ): 955
+( 50 18 ): 955
+( 54 18 ): 544
+( 55 18 ): 544
+( 56 18 ): 544
+( 62 18 ): 238
+( 63 18 ): 238
+( 64 18 ): 238
+( 67 18 ): 593
+( 68 18 ): 593
+( 69 18 ): 593
+( 75 18 ): 399
+( 76 18 ): 399
+( 77 18 ): 399
+( 120 18 ): 241
+( 121 18 ): 241
+( 122 18 ): 241
+( 128 18 ): 930
+( 129 18 ): 930
+( 130 18 ): 930
+
+( 14 19 ): 744
+( 15 19 ): 744
+( 16 19 ): 744
+( 21 19 ): 550
+( 22 19 ): 550
+( 23 19 ): 550
+( 35 19 ): 131
+( 36 19 ): 131
+( 37 19 ): 131
+( 42 19 ): 964
+( 43 19 ): 964
+( 44 19 ): 964
+( 58 19 ): 234
+( 59 19 ): 234
+( 60 19 ): 234
+( 83 19 ): 856
+( 84 19 ): 856
+( 85 19 ): 856
+( 88 19 ): 809
+( 89 19 ): 809
+( 90 19 ): 809
+( 93 19 ): 450
+( 94 19 ): 450
+( 95 19 ): 450
+( 105 19 ): 332
+( 106 19 ): 332
+( 107 19 ): 332
+( 113 19 ): 419
+( 114 19 ): 419
+( 115 19 ): 419
+( 134 19 ): 389
+( 135 19 ): 389
+( 136 19 ): 389
+
+( 9 20 ): 264
+( 10 20 ): 264
+( 11 20 ): 264
+( 27 20 ): 798
+( 28 20 ): 798
+( 29 20 ): 798
+( 52 20 ): 816
+( 53 20 ): 816
+( 54 20 ): 816
+( 64 20 ): 228
+( 65 20 ): 228
+( 66 20 ): 228
+( 74 20 ): 501
+( 75 20 ): 501
+( 76 20 ): 501
+( 79 20 ): 224
+( 80 20 ): 224
+( 81 20 ): 224
+( 100 20 ): 645
+( 101 20 ): 645
+( 102 20 ): 645
+( 117 20 ): 499
+( 118 20 ): 499
+( 119 20 ): 499
+
+( 16 21 ): 939
+( 17 21 ): 939
+( 18 21 ): 939
+( 48 21 ): 795
+( 49 21 ): 795
+( 50 21 ): 795
+( 107 21 ): 789
+( 108 21 ): 789
+( 109 21 ): 789
+( 126 21 ): 907
+( 127 21 ): 907
+( 128 21 ): 907
+( 134 21 ): 647
+( 135 21 ): 647
+( 136 21 ): 647
+
+( 6 22 ): 612
+( 7 22 ): 612
+( 8 22 ): 612
+( 21 22 ): 612
+( 22 22 ): 612
+( 23 22 ): 612
+( 26 22 ): 291
+( 27 22 ): 291
+( 28 22 ): 291
+( 31 22 ): 592
+( 32 22 ): 592
+( 33 22 ): 592
+( 60 22 ): 567
+( 61 22 ): 567
+( 62 22 ): 567
+( 82 22 ): 391
+( 83 22 ): 391
+( 84 22 ): 391
+( 115 22 ): 387
+( 116 22 ): 387
+( 117 22 ): 387
+( 130 22 ): 64
+( 131 22 ): 64
+
+( 17 23 ): 24
+( 18 23 ): 24
+( 42 23 ): 814
+( 43 23 ): 814
+( 44 23 ): 814
+( 73 23 ): 346
+( 74 23 ): 346
+( 75 23 ): 346
+( 92 23 ): 444
+( 93 23 ): 444
+( 94 23 ): 444
+( 107 23 ): 833
+( 108 23 ): 833
+( 109 23 ): 833
+( 125 23 ): 845
+( 126 23 ): 845
+( 127 23 ): 845
+
+( 12 24 ): 303
+( 13 24 ): 303
+( 14 24 ): 303
+( 24 24 ): 605
+( 25 24 ): 605
+( 26 24 ): 605
+( 29 24 ): 326
+( 30 24 ): 326
+( 31 24 ): 326
+( 37 24 ): 108
+( 38 24 ): 108
+( 39 24 ): 108
+( 50 24 ): 56
+( 51 24 ): 56
+( 54 24 ): 842
+( 55 24 ): 842
+( 56 24 ): 842
+( 68 24 ): 387
+( 69 24 ): 387
+( 70 24 ): 387
+( 77 24 ): 478
+( 78 24 ): 478
+( 79 24 ): 478
+( 83 24 ): 272
+( 84 24 ): 272
+( 85 24 ): 272
+( 111 24 ): 778
+( 112 24 ): 778
+( 113 24 ): 778
+( 119 24 ): 299
+( 120 24 ): 299
+( 121 24 ): 299
+( 129 24 ): 722
+( 130 24 ): 722
+( 131 24 ): 722
+
+( 7 25 ): 484
+( 8 25 ): 484
+( 9 25 ): 484
+( 19 25 ): 753
+( 20 25 ): 753
+( 21 25 ): 753
+( 45 25 ): 449
+( 46 25 ): 449
+( 47 25 ): 449
+( 63 25 ): 559
+( 64 25 ): 559
+( 65 25 ): 559
+( 73 25 ): 144
+( 74 25 ): 144
+( 75 25 ): 144
+( 89 25 ): 695
+( 90 25 ): 695
+( 91 25 ): 695
+( 101 25 ): 675
+( 102 25 ): 675
+( 103 25 ): 675
+( 138 25 ): 253
+( 139 25 ): 253
+( 140 25 ): 253
+
+( 95 26 ): 987
+( 96 26 ): 987
+( 97 26 ): 987
+( 105 26 ): 200
+( 106 26 ): 200
+( 107 26 ): 200
+( 121 26 ): 445
+( 122 26 ): 445
+( 123 26 ): 445
+( 131 26 ): 124
+( 132 26 ): 124
+( 133 26 ): 124
+
+( 5 27 ): 825
+( 6 27 ): 825
+( 7 27 ): 825
+( 20 27 ): 603
+( 21 27 ): 603
+( 22 27 ): 603
+( 27 27 ): 544
+( 28 27 ): 544
+( 29 27 ): 544
+( 31 27 ): 634
+( 32 27 ): 634
+( 33 27 ): 634
+( 58 27 ): 432
+( 59 27 ): 432
+( 60 27 ): 432
+( 65 27 ): 875
+( 66 27 ): 875
+( 67 27 ): 875
+( 71 27 ): 738
+( 72 27 ): 738
+( 73 27 ): 738
+( 89 27 ): 731
+( 90 27 ): 731
+( 91 27 ): 731
+( 111 27 ): 488
+( 112 27 ): 488
+( 113 27 ): 488
+( 115 27 ): 363
+( 116 27 ): 363
+( 117 27 ): 363
+( 126 27 ): 663
+( 127 27 ): 663
+( 128 27 ): 663
+( 138 27 ): 876
+( 139 27 ): 876
+( 140 27 ): 876
+
+( 9 28 ): 755
+( 10 28 ): 755
+( 11 28 ): 755
+( 95 28 ): 470
+( 96 28 ): 470
+( 97 28 ): 470
+( 100 28 ): 314
+( 101 28 ): 314
+( 102 28 ): 314
+( 104 28 ): 145
+( 105 28 ): 145
+( 106 28 ): 145
+( 121 28 ): 277
+( 122 28 ): 277
+( 123 28 ): 277
+( 133 28 ): 234
+( 134 28 ): 234
+( 135 28 ): 234
+
+( 5 29 ): 323
+( 6 29 ): 323
+( 7 29 ): 323
+( 17 29 ): 221
+( 18 29 ): 221
+( 19 29 ): 221
+( 34 29 ): 892
+( 35 29 ): 892
+( 36 29 ): 892
+( 40 29 ): 284
+( 41 29 ): 284
+( 42 29 ): 284
+( 45 29 ): 473
+( 46 29 ): 473
+( 47 29 ): 473
+( 53 29 ): 44
+( 54 29 ): 44
+( 61 29 ): 342
+( 62 29 ): 342
+( 63 29 ): 342
+( 65 29 ): 622
+( 66 29 ): 622
+( 67 29 ): 622
+( 77 29 ): 707
+( 78 29 ): 707
+( 79 29 ): 707
+( 84 29 ): 413
+( 85 29 ): 413
+( 86 29 ): 413
+( 90 29 ): 984
+( 91 29 ): 984
+( 92 29 ): 984
+
+( 72 30 ): 351
+( 73 30 ): 351
+( 74 30 ): 351
+( 109 30 ): 226
+( 110 30 ): 226
+( 111 30 ): 226
+( 122 30 ): 155
+( 123 30 ): 155
+( 124 30 ): 155
+( 129 30 ): 973
+( 130 30 ): 973
+( 131 30 ): 973
+
+( 16 31 ): 177
+( 17 31 ): 177
+( 18 31 ): 177
+( 20 31 ): 991
+( 21 31 ): 991
+( 22 31 ): 991
+( 33 31 ): 268
+( 34 31 ): 268
+( 35 31 ): 268
+( 49 31 ): 532
+( 50 31 ): 532
+( 51 31 ): 532
+( 66 31 ): 277
+( 67 31 ): 277
+( 68 31 ): 277
+( 77 31 ): 183
+( 78 31 ): 183
+( 79 31 ): 183
+( 87 31 ): 935
+( 88 31 ): 935
+( 89 31 ): 935
+( 99 31 ): 917
+( 100 31 ): 917
+( 101 31 ): 917
+( 115 31 ): 825
+( 116 31 ): 825
+( 117 31 ): 825
+
+( 29 32 ): 413
+( 30 32 ): 413
+( 31 32 ): 413
+( 40 32 ): 304
+( 41 32 ): 304
+( 42 32 ): 304
+( 58 32 ): 384
+( 59 32 ): 384
+( 60 32 ): 384
+( 83 32 ): 748
+( 84 32 ): 748
+( 85 32 ): 748
+( 104 32 ): 955
+( 105 32 ): 955
+( 106 32 ): 955
+( 126 32 ): 885
+( 127 32 ): 885
+( 128 32 ): 885
+( 130 32 ): 970
+( 131 32 ): 970
+( 132 32 ): 970
+
+( 4 33 ): 44
+( 5 33 ): 44
+( 9 33 ): 627
+( 10 33 ): 627
+( 11 33 ): 627
+( 22 33 ): 368
+( 23 33 ): 368
+( 24 33 ): 368
+( 66 33 ): 314
+( 67 33 ): 314
+( 68 33 ): 314
+( 71 33 ): 293
+( 72 33 ): 293
+( 73 33 ): 293
+( 93 33 ): 102
+( 94 33 ): 102
+( 95 33 ): 102
+( 98 33 ): 108
+( 99 33 ): 108
+( 100 33 ): 108
+
+( 42 34 ): 733
+( 43 34 ): 733
+( 44 34 ): 733
+( 47 34 ): 433
+( 48 34 ): 433
+( 49 34 ): 433
+( 53 34 ): 128
+( 54 34 ): 128
+( 55 34 ): 128
+( 78 34 ): 889
+( 79 34 ): 889
+( 80 34 ): 889
+( 108 34 ): 661
+( 109 34 ): 661
+( 110 34 ): 661
+( 121 34 ): 358
+( 122 34 ): 358
+( 123 34 ): 358
+( 132 34 ): 281
+( 133 34 ): 281
+( 134 34 ): 281
+
+( 6 35 ): 35
+( 7 35 ): 35
+( 30 35 ): 834
+( 31 35 ): 834
+( 32 35 ): 834
+( 37 35 ): 699
+( 38 35 ): 699
+( 39 35 ): 699
+( 70 35 ): 461
+( 71 35 ): 461
+( 72 35 ): 461
+( 128 35 ): 374
+( 129 35 ): 374
+( 130 35 ): 374
+( 138 35 ): 412
+( 139 35 ): 412
+( 140 35 ): 412
+
+( 13 36 ): 763
+( 14 36 ): 763
+( 15 36 ): 763
+( 18 36 ): 201
+( 19 36 ): 201
+( 20 36 ): 201
+( 52 36 ): 392
+( 53 36 ): 392
+( 54 36 ): 392
+( 63 36 ): 341
+( 64 36 ): 341
+( 65 36 ): 341
+( 74 36 ): 96
+( 75 36 ): 96
+( 82 36 ): 723
+( 83 36 ): 723
+( 84 36 ): 723
+( 86 36 ): 340
+( 87 36 ): 340
+( 88 36 ): 340
+( 98 36 ): 327
+( 99 36 ): 327
+( 100 36 ): 327
+( 102 36 ): 736
+( 103 36 ): 736
+( 104 36 ): 736
+( 108 36 ): 1
+( 112 36 ): 897
+( 113 36 ): 897
+( 114 36 ): 897
+( 120 36 ): 471
+( 121 36 ): 471
+( 122 36 ): 471
+
+( 7 37 ): 512
+( 8 37 ): 512
+( 9 37 ): 512
+( 22 37 ): 221
+( 23 37 ): 221
+( 24 37 ): 221
+( 38 37 ): 125
+( 39 37 ): 125
+( 40 37 ): 125
+( 46 37 ): 257
+( 47 37 ): 257
+( 48 37 ): 257
+( 78 37 ): 277
+( 79 37 ): 277
+( 80 37 ): 277
+
+( 3 38 ): 301
+( 4 38 ): 301
+( 5 38 ): 301
+( 12 38 ): 694
+( 13 38 ): 694
+( 14 38 ): 694
+( 29 38 ): 54
+( 30 38 ): 54
+( 56 38 ): 611
+( 57 38 ): 611
+( 58 38 ): 611
+( 74 38 ): 596
+( 75 38 ): 596
+( 76 38 ): 596
+( 83 38 ): 100
+( 84 38 ): 100
+( 85 38 ): 100
+( 93 38 ): 164
+( 94 38 ): 164
+( 95 38 ): 164
+( 97 38 ): 801
+( 98 38 ): 801
+( 99 38 ): 801
+( 104 38 ): 596
+( 105 38 ): 596
+( 106 38 ): 596
+( 109 38 ): 490
+( 110 38 ): 490
+( 111 38 ): 490
+( 117 38 ): 361
+( 118 38 ): 361
+( 119 38 ): 361
+( 129 38 ): 415
+( 130 38 ): 415
+( 131 38 ): 415
+( 136 38 ): 412
+( 137 38 ): 412
+( 138 38 ): 412
+
+( 19 39 ): 243
+( 20 39 ): 243
+( 21 39 ): 243
+( 25 39 ): 927
+( 26 39 ): 927
+( 27 39 ): 927
+( 38 39 ): 29
+( 39 39 ): 29
+( 41 39 ): 293
+( 42 39 ): 293
+( 43 39 ): 293
+( 52 39 ): 645
+( 53 39 ): 645
+( 54 39 ): 645
+( 63 39 ): 862
+( 64 39 ): 862
+( 65 39 ): 862
+( 67 39 ): 2
+
+( 30 40 ): 655
+( 31 40 ): 655
+( 32 40 ): 655
+( 34 40 ): 906
+( 35 40 ): 906
+( 36 40 ): 906
+( 48 40 ): 500
+( 49 40 ): 500
+( 50 40 ): 500
+( 71 40 ): 125
+( 72 40 ): 125
+( 73 40 ): 125
+( 75 40 ): 613
+( 76 40 ): 613
+( 77 40 ): 613
+( 80 40 ): 844
+( 81 40 ): 844
+( 82 40 ): 844
+( 99 40 ): 435
+( 100 40 ): 435
+( 101 40 ): 435
+( 108 40 ): 984
+( 109 40 ): 984
+( 110 40 ): 984
+( 115 40 ): 725
+( 116 40 ): 725
+( 117 40 ): 725
+( 121 40 ): 531
+( 122 40 ): 531
+( 123 40 ): 531
+( 129 40 ): 711
+( 130 40 ): 711
+( 131 40 ): 711
+( 134 40 ): 79
+( 135 40 ): 79
+
+( 4 41 ): 817
+( 5 41 ): 817
+( 6 41 ): 817
+( 10 41 ): 450
+( 11 41 ): 450
+( 12 41 ): 450
+( 43 41 ): 431
+( 44 41 ): 431
+( 45 41 ): 431
+( 85 41 ): 957
+( 86 41 ): 957
+( 87 41 ): 957
+( 93 41 ): 739
+( 94 41 ): 739
+( 95 41 ): 739
+
+( 15 42 ): 237
+( 16 42 ): 237
+( 17 42 ): 237
+( 24 42 ): 122
+( 25 42 ): 122
+( 26 42 ): 122
+( 28 42 ): 66
+( 29 42 ): 66
+( 31 42 ): 942
+( 32 42 ): 942
+( 33 42 ): 942
+( 56 42 ): 548
+( 57 42 ): 548
+( 58 42 ): 548
+( 77 42 ): 506
+( 78 42 ): 506
+( 79 42 ): 506
+( 81 42 ): 435
+( 82 42 ): 435
+( 83 42 ): 435
+( 99 42 ): 73
+( 100 42 ): 73
+( 102 42 ): 883
+( 103 42 ): 883
+( 104 42 ): 883
+( 117 42 ): 644
+( 118 42 ): 644
+( 119 42 ): 644
+( 123 42 ): 101
+( 124 42 ): 101
+( 125 42 ): 101
+
+( 2 43 ): 863
+( 3 43 ): 863
+( 4 43 ): 863
+( 47 43 ): 98
+( 48 43 ): 98
+( 51 43 ): 283
+( 52 43 ): 283
+( 53 43 ): 283
+( 62 43 ): 532
+( 63 43 ): 532
+( 64 43 ): 532
+( 71 43 ): 750
+( 72 43 ): 750
+( 73 43 ): 750
+( 110 43 ): 594
+( 111 43 ): 594
+( 112 43 ): 594
+
+( 15 44 ): 451
+( 16 44 ): 451
+( 17 44 ): 451
+( 27 44 ): 623
+( 28 44 ): 623
+( 29 44 ): 623
+( 68 44 ): 50
+( 69 44 ): 50
+( 78 44 ): 44
+( 79 44 ): 44
+( 85 44 ): 123
+( 86 44 ): 123
+( 87 44 ): 123
+( 94 44 ): 951
+( 95 44 ): 951
+( 96 44 ): 951
+( 114 44 ): 62
+( 115 44 ): 62
+( 117 44 ): 943
+( 118 44 ): 943
+( 119 44 ): 943
+( 126 44 ): 365
+( 127 44 ): 365
+( 128 44 ): 365
+( 132 44 ): 995
+( 133 44 ): 995
+( 134 44 ): 995
+
+( 2 45 ): 639
+( 3 45 ): 639
+( 4 45 ): 639
+( 19 45 ): 827
+( 20 45 ): 827
+( 21 45 ): 827
+( 23 45 ): 265
+( 24 45 ): 265
+( 25 45 ): 265
+( 32 45 ): 132
+( 33 45 ): 132
+( 34 45 ): 132
+( 37 45 ): 354
+( 38 45 ): 354
+( 39 45 ): 354
+( 41 45 ): 127
+( 42 45 ): 127
+( 43 45 ): 127
+( 55 45 ): 350
+( 56 45 ): 350
+( 57 45 ): 350
+( 105 45 ): 11
+( 106 45 ): 11
+
+( 9 46 ): 41
+( 10 46 ): 41
+( 14 46 ): 175
+( 15 46 ): 175
+( 16 46 ): 175
+( 60 46 ): 247
+( 61 46 ): 247
+( 62 46 ): 247
+( 64 46 ): 353
+( 65 46 ): 353
+( 66 46 ): 353
+( 76 46 ): 44
+( 77 46 ): 44
+( 83 46 ): 912
+( 84 46 ): 912
+( 85 46 ): 912
+( 93 46 ): 757
+( 94 46 ): 757
+( 95 46 ): 757
+( 111 46 ): 144
+( 112 46 ): 144
+( 113 46 ): 144
+( 116 46 ): 481
+( 117 46 ): 481
+( 118 46 ): 481
+( 120 46 ): 693
+( 121 46 ): 693
+( 122 46 ): 693
+( 124 46 ): 271
+( 125 46 ): 271
+( 126 46 ): 271
+( 136 46 ): 993
+( 137 46 ): 993
+( 138 46 ): 993
+
+( 24 47 ): 993
+( 25 47 ): 993
+( 26 47 ): 993
+( 28 47 ): 707
+( 29 47 ): 707
+( 30 47 ): 707
+( 34 47 ): 857
+( 35 47 ): 857
+( 36 47 ): 857
+( 49 47 ): 375
+( 50 47 ): 375
+( 51 47 ): 375
+( 57 47 ): 90
+( 58 47 ): 90
+( 69 47 ): 386
+( 70 47 ): 386
+( 71 47 ): 386
+( 79 47 ): 403
+( 80 47 ): 403
+( 81 47 ): 403
+( 129 47 ): 208
+( 130 47 ): 208
+( 131 47 ): 208
+
+( 8 48 ): 343
+( 9 48 ): 343
+( 10 48 ): 343
+( 12 48 ): 437
+( 13 48 ): 437
+( 14 48 ): 437
+( 19 48 ): 391
+( 20 48 ): 391
+( 21 48 ): 391
+( 38 48 ): 117
+( 39 48 ): 117
+( 40 48 ): 117
+( 45 48 ): 637
+( 46 48 ): 637
+( 47 48 ): 637
+( 53 48 ): 345
+( 54 48 ): 345
+( 55 48 ): 345
+( 65 48 ): 43
+( 66 48 ): 43
+( 75 48 ): 662
+( 76 48 ): 662
+( 77 48 ): 662
+( 92 48 ): 908
+( 93 48 ): 908
+( 94 48 ): 908
+( 104 48 ): 956
+( 105 48 ): 956
+( 106 48 ): 956
+( 114 48 ): 908
+( 115 48 ): 908
+( 116 48 ): 908
+
+( 1 49 ): 389
+( 2 49 ): 389
+( 3 49 ): 389
+( 29 49 ): 670
+( 30 49 ): 670
+( 31 49 ): 670
+( 49 49 ): 42
+( 50 49 ): 42
+( 71 49 ): 564
+( 72 49 ): 564
+( 73 49 ): 564
+
+( 17 50 ): 435
+( 18 50 ): 435
+( 19 50 ): 435
+( 38 50 ): 913
+( 39 50 ): 913
+( 40 50 ): 913
+( 55 50 ): 574
+( 56 50 ): 574
+( 57 50 ): 574
+( 60 50 ): 149
+( 61 50 ): 149
+( 62 50 ): 149
+( 86 50 ): 962
+( 87 50 ): 962
+( 88 50 ): 962
+( 109 50 ): 953
+( 110 50 ): 953
+( 111 50 ): 953
+( 115 50 ): 77
+( 116 50 ): 77
+( 119 50 ): 641
+( 120 50 ): 641
+( 121 50 ): 641
+( 126 50 ): 514
+( 127 50 ): 514
+( 128 50 ): 514
+
+( 5 51 ): 448
+( 6 51 ): 448
+( 7 51 ): 448
+( 13 51 ): 783
+( 14 51 ): 783
+( 15 51 ): 783
+( 21 51 ): 892
+( 22 51 ): 892
+( 23 51 ): 892
+( 26 51 ): 381
+( 27 51 ): 381
+( 28 51 ): 381
+( 34 51 ): 593
+( 35 51 ): 593
+( 36 51 ): 593
+( 64 51 ): 403
+( 65 51 ): 403
+( 66 51 ): 403
+( 68 51 ): 149
+( 69 51 ): 149
+( 70 51 ): 149
+( 90 51 ): 863
+( 91 51 ): 863
+( 92 51 ): 863
+( 94 51 ): 954
+( 95 51 ): 954
+( 96 51 ): 954
+( 101 51 ): 373
+( 102 51 ): 373
+( 103 51 ): 373
+( 134 51 ): 663
+( 135 51 ): 663
+( 136 51 ): 663
+
+( 1 52 ): 906
+( 2 52 ): 906
+( 3 52 ): 906
+( 39 52 ): 922
+( 40 52 ): 922
+( 41 52 ): 922
+( 51 52 ): 950
+( 52 52 ): 950
+( 53 52 ): 950
+( 76 52 ): 993
+( 77 52 ): 993
+( 78 52 ): 993
+( 82 52 ): 3
+( 108 52 ): 379
+( 109 52 ): 379
+( 110 52 ): 379
+( 115 52 ): 450
+( 116 52 ): 450
+( 117 52 ): 450
+( 125 52 ): 877
+( 126 52 ): 877
+( 127 52 ): 877
+( 130 52 ): 804
+( 131 52 ): 804
+( 132 52 ): 804
+
+( 16 53 ): 768
+( 17 53 ): 768
+( 18 53 ): 768
+( 35 53 ): 198
+( 36 53 ): 198
+( 37 53 ): 198
+( 47 53 ): 160
+( 48 53 ): 160
+( 49 53 ): 160
+( 63 53 ): 820
+( 64 53 ): 820
+( 65 53 ): 820
+( 72 53 ): 382
+( 73 53 ): 382
+( 74 53 ): 382
+( 85 53 ): 169
+( 86 53 ): 169
+( 87 53 ): 169
+( 98 53 ): 555
+( 99 53 ): 555
+( 100 53 ): 555
+( 103 53 ): 257
+( 104 53 ): 257
+( 105 53 ): 257
+
+( 1 54 ): 260
+( 2 54 ): 260
+( 3 54 ): 260
+( 24 54 ): 68
+( 25 54 ): 68
+( 31 54 ): 281
+( 32 54 ): 281
+( 33 54 ): 281
+( 41 54 ): 871
+( 42 54 ): 871
+( 43 54 ): 871
+( 67 54 ): 980
+( 68 54 ): 980
+( 69 54 ): 980
+( 76 54 ): 875
+( 77 54 ): 875
+( 78 54 ): 875
+( 94 54 ): 169
+( 95 54 ): 169
+( 96 54 ): 169
+( 119 54 ): 531
+( 120 54 ): 531
+( 121 54 ): 531
+
+( 18 55 ): 587
+( 19 55 ): 587
+( 20 55 ): 587
+( 47 55 ): 48
+( 48 55 ): 48
+( 51 55 ): 251
+( 52 55 ): 251
+( 53 55 ): 251
+( 56 55 ): 316
+( 57 55 ): 316
+( 58 55 ): 316
+( 63 55 ): 848
+( 64 55 ): 848
+( 65 55 ): 848
+( 84 55 ): 303
+( 85 55 ): 303
+( 86 55 ): 303
+( 103 55 ): 931
+( 104 55 ): 931
+( 105 55 ): 931
+( 108 55 ): 132
+( 109 55 ): 132
+( 110 55 ): 132
+( 125 55 ): 790
+( 126 55 ): 790
+( 127 55 ): 790
+
+( 6 56 ): 205
+( 7 56 ): 205
+( 8 56 ): 205
+( 12 56 ): 572
+( 13 56 ): 572
+( 14 56 ): 572
+( 31 56 ): 696
+( 32 56 ): 696
+( 33 56 ): 696
+( 67 56 ): 709
+( 68 56 ): 709
+( 69 56 ): 709
+( 72 56 ): 611
+( 73 56 ): 611
+( 74 56 ): 611
+( 96 56 ): 270
+( 97 56 ): 270
+( 98 56 ): 270
+( 112 56 ): 165
+( 113 56 ): 165
+( 114 56 ): 165
+( 121 56 ): 783
+( 122 56 ): 783
+( 123 56 ): 783
+( 131 56 ): 790
+( 132 56 ): 790
+( 133 56 ): 790
+
+( 23 57 ): 965
+( 24 57 ): 965
+( 25 57 ): 965
+( 35 57 ): 709
+( 36 57 ): 709
+( 37 57 ): 709
+( 40 57 ): 826
+( 41 57 ): 826
+( 42 57 ): 826
+( 63 57 ): 882
+( 64 57 ): 882
+( 65 57 ): 882
+( 76 57 ): 775
+( 77 57 ): 775
+( 78 57 ): 775
+( 88 57 ): 391
+( 89 57 ): 391
+( 90 57 ): 391
+( 102 57 ): 985
+( 103 57 ): 985
+( 104 57 ): 985
+( 106 57 ): 5
+( 116 57 ): 179
+( 117 57 ): 179
+( 118 57 ): 179
+( 125 57 ): 47
+( 126 57 ): 47
+
+( 6 58 ): 451
+( 7 58 ): 451
+( 8 58 ): 451
+( 57 58 ): 804
+( 58 58 ): 804
+( 59 58 ): 804
+( 81 58 ): 161
+( 82 58 ): 161
+( 83 58 ): 161
+( 95 58 ): 837
+( 96 58 ): 837
+( 97 58 ): 837
+( 130 58 ): 904
+( 131 58 ): 904
+( 132 58 ): 904
+( 137 58 ): 176
+( 138 58 ): 176
+( 139 58 ): 176
+
+( 1 59 ): 720
+( 2 59 ): 720
+( 3 59 ): 720
+( 21 59 ): 70
+( 22 59 ): 70
+( 33 59 ): 899
+( 34 59 ): 899
+( 35 59 ): 899
+( 41 59 ): 868
+( 42 59 ): 868
+( 43 59 ): 868
+( 66 59 ): 357
+( 67 59 ): 357
+( 68 59 ): 357
+( 70 59 ): 252
+( 71 59 ): 252
+( 72 59 ): 252
+( 99 59 ): 707
+( 100 59 ): 707
+( 101 59 ): 707
+( 109 59 ): 898
+( 110 59 ): 898
+( 111 59 ): 898
+( 113 59 ): 139
+( 114 59 ): 139
+( 115 59 ): 139
+( 121 59 ): 704
+( 122 59 ): 704
+( 123 59 ): 704
+
+( 37 60 ): 307
+( 38 60 ): 307
+( 39 60 ): 307
+( 45 60 ): 510
+( 46 60 ): 510
+( 47 60 ): 510
+( 80 60 ): 17
+( 81 60 ): 17
+( 84 60 ): 501
+( 85 60 ): 501
+( 86 60 ): 501
+( 133 60 ): 855
+( 134 60 ): 855
+( 135 60 ): 855
+
+( 14 61 ): 745
+( 15 61 ): 745
+( 16 61 ): 745
+( 29 61 ): 451
+( 30 61 ): 451
+( 31 61 ): 451
+( 51 61 ): 689
+( 52 61 ): 689
+( 53 61 ): 689
+( 56 61 ): 980
+( 57 61 ): 980
+( 58 61 ): 980
+( 62 61 ): 670
+( 63 61 ): 670
+( 64 61 ): 670
+( 66 61 ): 594
+( 67 61 ): 594
+( 68 61 ): 594
+( 70 61 ): 716
+( 71 61 ): 716
+( 72 61 ): 716
+( 101 61 ): 565
+( 102 61 ): 565
+( 103 61 ): 565
+( 110 61 ): 595
+( 111 61 ): 595
+( 112 61 ): 595
+( 115 61 ): 622
+( 116 61 ): 622
+( 117 61 ): 622
+( 123 61 ): 793
+( 124 61 ): 793
+( 125 61 ): 793
+
+( 6 62 ): 890
+( 7 62 ): 890
+( 8 62 ): 890
+( 19 62 ): 73
+( 20 62 ): 73
+( 24 62 ): 422
+( 25 62 ): 422
+( 26 62 ): 422
+( 34 62 ): 977
+( 35 62 ): 977
+( 36 62 ): 977
+( 45 62 ): 324
+( 46 62 ): 324
+( 47 62 ): 324
+( 75 62 ): 29
+( 76 62 ): 29
+( 84 62 ): 945
+( 85 62 ): 945
+( 86 62 ): 945
+( 105 62 ): 298
+( 106 62 ): 298
+( 107 62 ): 298
+( 138 62 ): 642
+( 139 62 ): 642
+( 140 62 ): 642
+
+( 63 63 ): 645
+( 64 63 ): 645
+( 65 63 ): 645
+( 80 63 ): 150
+( 81 63 ): 150
+( 82 63 ): 150
+( 88 63 ): 434
+( 89 63 ): 434
+( 90 63 ): 434
+( 92 63 ): 259
+( 93 63 ): 259
+( 94 63 ): 259
+( 97 63 ): 609
+( 98 63 ): 609
+( 99 63 ): 609
+( 101 63 ): 560
+( 102 63 ): 560
+( 103 63 ): 560
+( 123 63 ): 266
+( 124 63 ): 266
+( 125 63 ): 266
+( 128 63 ): 524
+( 129 63 ): 524
+( 130 63 ): 524
+
+( 6 64 ): 203
+( 7 64 ): 203
+( 8 64 ): 203
+( 19 64 ): 133
+( 20 64 ): 133
+( 21 64 ): 133
+( 27 64 ): 596
+( 28 64 ): 596
+( 29 64 ): 596
+( 31 64 ): 619
+( 32 64 ): 619
+( 33 64 ): 619
+( 67 64 ): 676
+( 68 64 ): 676
+( 69 64 ): 676
+( 71 64 ): 107
+( 72 64 ): 107
+( 73 64 ): 107
+( 76 64 ): 811
+( 77 64 ): 811
+( 78 64 ): 811
+( 110 64 ): 115
+( 111 64 ): 115
+( 112 64 ): 115
+( 134 64 ): 178
+( 135 64 ): 178
+( 136 64 ): 178
+
+( 48 65 ): 157
+( 49 65 ): 157
+( 50 65 ): 157
+( 52 65 ): 682
+( 53 65 ): 682
+( 54 65 ): 682
+( 62 65 ): 262
+( 63 65 ): 262
+( 64 65 ): 262
+( 80 65 ): 196
+( 81 65 ): 196
+( 82 65 ): 196
+( 100 65 ): 707
+( 101 65 ): 707
+( 102 65 ): 707
+( 119 65 ): 14
+( 120 65 ): 14
+( 123 65 ): 386
+( 124 65 ): 386
+( 125 65 ): 386
+
+( 10 66 ): 871
+( 11 66 ): 871
+( 12 66 ): 871
+( 25 66 ): 605
+( 26 66 ): 605
+( 27 66 ): 605
+( 32 66 ): 721
+( 33 66 ): 721
+( 34 66 ): 721
+( 66 66 ): 867
+( 67 66 ): 867
+( 68 66 ): 867
+( 86 66 ): 685
+( 87 66 ): 685
+( 88 66 ): 685
+( 91 66 ): 866
+( 92 66 ): 866
+( 93 66 ): 866
+( 115 66 ): 602
+( 116 66 ): 602
+( 117 66 ): 602
+( 133 66 ): 628
+( 134 66 ): 628
+( 135 66 ): 628
+
+( 18 67 ): 413
+( 19 67 ): 413
+( 20 67 ): 413
+( 36 67 ): 380
+( 37 67 ): 380
+( 38 67 ): 380
+( 43 67 ): 872
+( 44 67 ): 872
+( 45 67 ): 872
+( 62 67 ): 372
+( 63 67 ): 372
+( 64 67 ): 372
+( 72 67 ): 277
+( 73 67 ): 277
+( 74 67 ): 277
+( 81 67 ): 277
+( 82 67 ): 277
+( 83 67 ): 277
+( 101 67 ): 166
+( 102 67 ): 166
+( 103 67 ): 166
+( 126 67 ): 656
+( 127 67 ): 656
+( 128 67 ): 656
+( 138 67 ): 748
+( 139 67 ): 748
+( 140 67 ): 748
+
+( 6 68 ): 841
+( 7 68 ): 841
+( 8 68 ): 841
+( 11 68 ): 664
+( 12 68 ): 664
+( 13 68 ): 664
+( 23 68 ): 422
+( 24 68 ): 422
+( 25 68 ): 422
+( 54 68 ): 945
+( 55 68 ): 945
+( 56 68 ): 945
+( 91 68 ): 959
+( 92 68 ): 959
+( 93 68 ): 959
+( 95 68 ): 863
+( 96 68 ): 863
+( 97 68 ): 863
+( 107 68 ): 187
+( 108 68 ): 187
+( 109 68 ): 187
+( 118 68 ): 299
+( 119 68 ): 299
+( 120 68 ): 299
+( 134 68 ): 887
+( 135 68 ): 887
+( 136 68 ): 887
+
+( 2 69 ): 708
+( 3 69 ): 708
+( 4 69 ): 708
+( 19 69 ): 311
+( 20 69 ): 311
+( 21 69 ): 311
+( 29 69 ): 296
+( 30 69 ): 296
+( 31 69 ): 296
+( 33 69 ): 497
+( 34 69 ): 497
+( 35 69 ): 497
+( 41 69 ): 751
+( 42 69 ): 751
+( 43 69 ): 751
+( 47 69 ): 639
+( 48 69 ): 639
+( 49 69 ): 639
+( 65 69 ): 269
+( 66 69 ): 269
+( 67 69 ): 269
+( 78 69 ): 875
+( 79 69 ): 875
+( 80 69 ): 875
+( 129 69 ): 36
+( 130 69 ): 36
+
+( 10 70 ): 834
+( 11 70 ): 834
+( 12 70 ): 834
+( 55 70 ): 708
+( 56 70 ): 708
+( 57 70 ): 708
+( 85 70 ): 87
+( 86 70 ): 87
+( 91 70 ): 298
+( 92 70 ): 298
+( 93 70 ): 298
+( 97 70 ): 471
+( 98 70 ): 471
+( 99 70 ): 471
+( 111 70 ): 463
+( 112 70 ): 463
+( 113 70 ): 463
+
+( 17 71 ): 739
+( 18 71 ): 739
+( 19 71 ): 739
+( 30 71 ): 701
+( 31 71 ): 701
+( 32 71 ): 701
+( 73 71 ): 779
+( 74 71 ): 779
+( 75 71 ): 779
+( 102 71 ): 265
+( 103 71 ): 265
+( 104 71 ): 265
+( 107 71 ): 642
+( 108 71 ): 642
+( 109 71 ): 642
+
+( 7 72 ): 504
+( 8 72 ): 504
+( 9 72 ): 504
+( 36 72 ): 871
+( 37 72 ): 871
+( 38 72 ): 871
+( 40 72 ): 314
+( 41 72 ): 314
+( 42 72 ): 314
+( 47 72 ): 127
+( 48 72 ): 127
+( 49 72 ): 127
+( 52 72 ): 36
+( 53 72 ): 36
+( 56 72 ): 639
+( 57 72 ): 639
+( 58 72 ): 639
+( 60 72 ): 196
+( 61 72 ): 196
+( 62 72 ): 196
+( 65 72 ): 48
+( 66 72 ): 48
+( 85 72 ): 96
+( 86 72 ): 96
+( 96 72 ): 785
+( 97 72 ): 785
+( 98 72 ): 785
+( 111 72 ): 854
+( 112 72 ): 854
+( 113 72 ): 854
+( 120 72 ): 607
+( 121 72 ): 607
+( 122 72 ): 607
+( 127 72 ): 542
+( 128 72 ): 542
+( 129 72 ): 542
+
+( 4 73 ): 73
+( 5 73 ): 73
+( 18 73 ): 254
+( 19 73 ): 254
+( 20 73 ): 254
+( 22 73 ): 591
+( 23 73 ): 591
+( 24 73 ): 591
+( 76 73 ): 35
+( 77 73 ): 35
+( 105 73 ): 150
+( 106 73 ): 150
+( 107 73 ): 150
+( 136 73 ): 340
+( 137 73 ): 340
+( 138 73 ): 340
+
+( 9 74 ): 224
+( 10 74 ): 224
+( 11 74 ): 224
+( 30 74 ): 214
+( 31 74 ): 214
+( 32 74 ): 214
+( 47 74 ): 949
+( 48 74 ): 949
+( 49 74 ): 949
+( 64 74 ): 455
+( 65 74 ): 455
+( 66 74 ): 455
+( 84 74 ): 377
+( 85 74 ): 377
+( 86 74 ): 377
+( 88 74 ): 88
+( 89 74 ): 88
+( 110 74 ): 823
+( 111 74 ): 823
+( 112 74 ): 823
+( 119 74 ): 582
+( 120 74 ): 582
+( 121 74 ): 582
+
+( 16 75 ): 643
+( 17 75 ): 643
+( 18 75 ): 643
+( 26 75 ): 901
+( 27 75 ): 901
+( 28 75 ): 901
+( 37 75 ): 191
+( 38 75 ): 191
+( 39 75 ): 191
+( 42 75 ): 267
+( 43 75 ): 267
+( 44 75 ): 267
+( 52 75 ): 293
+( 53 75 ): 293
+( 54 75 ): 293
+( 74 75 ): 194
+( 75 75 ): 194
+( 76 75 ): 194
+( 79 75 ): 266
+( 80 75 ): 266
+( 81 75 ): 266
+( 99 75 ): 987
+( 100 75 ): 987
+( 101 75 ): 987
+( 133 75 ): 545
+( 134 75 ): 545
+( 135 75 ): 545
+
+( 5 76 ): 604
+( 6 76 ): 604
+( 7 76 ): 604
+( 11 76 ): 583
+( 12 76 ): 583
+( 13 76 ): 583
+( 33 76 ): 742
+( 34 76 ): 742
+( 35 76 ): 742
+( 85 76 ): 365
+( 86 76 ): 365
+( 87 76 ): 365
+( 109 76 ): 880
+( 110 76 ): 880
+( 111 76 ): 880
+( 113 76 ): 55
+( 114 76 ): 55
+( 121 76 ): 540
+( 122 76 ): 540
+( 123 76 ): 540
+( 125 76 ): 520
+( 126 76 ): 520
+( 127 76 ): 520
+
+( 16 77 ): 272
+( 17 77 ): 272
+( 18 77 ): 272
+( 24 77 ): 843
+( 25 77 ): 843
+( 26 77 ): 843
+( 29 77 ): 201
+( 30 77 ): 201
+( 31 77 ): 201
+( 44 77 ): 128
+( 45 77 ): 128
+( 46 77 ): 128
+( 54 77 ): 433
+( 55 77 ): 433
+( 56 77 ): 433
+( 64 77 ): 563
+( 65 77 ): 563
+( 66 77 ): 563
+( 73 77 ): 281
+( 74 77 ): 281
+( 75 77 ): 281
+( 77 77 ): 77
+( 78 77 ): 77
+( 80 77 ): 540
+( 81 77 ): 540
+( 82 77 ): 540
+( 92 77 ): 979
+( 93 77 ): 979
+( 94 77 ): 979
+( 98 77 ): 134
+( 99 77 ): 134
+( 100 77 ): 134
+( 105 77 ): 514
+( 106 77 ): 514
+( 107 77 ): 514
+( 130 77 ): 46
+( 131 77 ): 46
+
+( 4 78 ): 966
+( 5 78 ): 966
+( 6 78 ): 966
+( 12 78 ): 67
+( 13 78 ): 67
+( 37 78 ): 19
+( 38 78 ): 19
+( 40 78 ): 934
+( 41 78 ): 934
+( 42 78 ): 934
+( 49 78 ): 224
+( 50 78 ): 224
+( 51 78 ): 224
+( 115 78 ): 693
+( 116 78 ): 693
+( 117 78 ): 693
+( 136 78 ): 525
+( 137 78 ): 525
+( 138 78 ): 525
+
+( 15 79 ): 188
+( 16 79 ): 188
+( 17 79 ): 188
+( 23 79 ): 904
+( 24 79 ): 904
+( 25 79 ): 904
+( 63 79 ): 210
+( 64 79 ): 210
+( 65 79 ): 210
+( 71 79 ): 958
+( 72 79 ): 958
+( 73 79 ): 958
+( 83 79 ): 811
+( 84 79 ): 811
+( 85 79 ): 811
+( 101 79 ): 574
+( 102 79 ): 574
+( 103 79 ): 574
+( 108 79 ): 965
+( 109 79 ): 965
+( 110 79 ): 965
+( 127 79 ): 288
+( 128 79 ): 288
+( 129 79 ): 288
+( 132 79 ): 20
+( 133 79 ): 20
+
+( 3 80 ): 213
+( 4 80 ): 213
+( 5 80 ): 213
+( 19 80 ): 137
+( 20 80 ): 137
+( 21 80 ): 137
+( 30 80 ): 325
+( 31 80 ): 325
+( 32 80 ): 325
+( 38 80 ): 628
+( 39 80 ): 628
+( 40 80 ): 628
+( 59 80 ): 406
+( 60 80 ): 406
+( 61 80 ): 406
+( 68 80 ): 34
+( 69 80 ): 34
+( 92 80 ): 406
+( 93 80 ): 406
+( 94 80 ): 406
+( 120 80 ): 867
+( 121 80 ): 867
+( 122 80 ): 867
+
+( 12 81 ): 810
+( 13 81 ): 810
+( 14 81 ): 810
+( 49 81 ): 926
+( 50 81 ): 926
+( 51 81 ): 926
+( 76 81 ): 372
+( 77 81 ): 372
+( 78 81 ): 372
+( 84 81 ): 372
+( 85 81 ): 372
+( 86 81 ): 372
+( 96 81 ): 266
+( 97 81 ): 266
+( 98 81 ): 266
+( 100 81 ): 716
+( 101 81 ): 716
+( 102 81 ): 716
+( 111 81 ): 985
+( 112 81 ): 985
+( 113 81 ): 985
+( 134 81 ): 1
+
+( 16 82 ): 399
+( 17 82 ): 399
+( 18 82 ): 399
+( 20 82 ): 126
+( 21 82 ): 126
+( 22 82 ): 126
+( 40 82 ): 379
+( 41 82 ): 379
+( 42 82 ): 379
+( 45 82 ): 729
+( 46 82 ): 729
+( 47 82 ): 729
+( 58 82 ): 245
+( 59 82 ): 245
+( 60 82 ): 245
+( 70 82 ): 893
+( 71 82 ): 893
+( 72 82 ): 893
+( 80 82 ): 866
+( 81 82 ): 866
+( 82 82 ): 866
+( 88 82 ): 101
+( 89 82 ): 101
+( 90 82 ): 101
+( 92 82 ): 299
+( 93 82 ): 299
+( 94 82 ): 299
+( 105 82 ): 8
+( 107 82 ): 544
+( 108 82 ): 544
+( 109 82 ): 544
+( 118 82 ): 784
+( 119 82 ): 784
+( 120 82 ): 784
+
+( 1 83 ): 954
+( 2 83 ): 954
+( 3 83 ): 954
+( 26 83 ): 63
+( 27 83 ): 63
+( 29 83 ): 501
+( 30 83 ): 501
+( 31 83 ): 501
+( 33 83 ): 529
+( 34 83 ): 529
+( 35 83 ): 529
+( 52 83 ): 695
+( 53 83 ): 695
+( 54 83 ): 695
+( 100 83 ): 320
+( 101 83 ): 320
+( 102 83 ): 320
+( 123 83 ): 211
+( 124 83 ): 211
+( 125 83 ): 211
+( 127 83 ): 55
+( 128 83 ): 55
+( 132 83 ): 533
+( 133 83 ): 533
+( 134 83 ): 533
+
+( 13 84 ): 457
+( 14 84 ): 457
+( 15 84 ): 457
+( 66 84 ): 375
+( 67 84 ): 375
+( 68 84 ): 375
+( 80 84 ): 961
+( 81 84 ): 961
+( 82 84 ): 961
+( 90 84 ): 720
+( 91 84 ): 720
+( 92 84 ): 720
+( 115 84 ): 542
+( 116 84 ): 542
+( 117 84 ): 542
+( 136 84 ): 327
+( 137 84 ): 327
+( 138 84 ): 327
+
+( 9 85 ): 396
+( 10 85 ): 396
+( 11 85 ): 396
+( 17 85 ): 476
+( 18 85 ): 476
+( 19 85 ): 476
+( 21 85 ): 774
+( 22 85 ): 774
+( 23 85 ): 774
+( 25 85 ): 680
+( 26 85 ): 680
+( 27 85 ): 680
+( 29 85 ): 189
+( 30 85 ): 189
+( 31 85 ): 189
+( 34 85 ): 438
+( 35 85 ): 438
+( 36 85 ): 438
+( 43 85 ): 669
+( 44 85 ): 669
+( 45 85 ): 669
+( 58 85 ): 936
+( 59 85 ): 936
+( 60 85 ): 936
+( 84 85 ): 195
+( 85 85 ): 195
+( 86 85 ): 195
+( 94 85 ): 405
+( 95 85 ): 405
+( 96 85 ): 405
+( 98 85 ): 926
+( 99 85 ): 926
+( 100 85 ): 926
+( 102 85 ): 213
+( 103 85 ): 213
+( 104 85 ): 213
+( 110 85 ): 254
+( 111 85 ): 254
+( 112 85 ): 254
+
+( 47 86 ): 22
+( 48 86 ): 22
+( 53 86 ): 732
+( 54 86 ): 732
+( 55 86 ): 732
+( 66 86 ): 121
+( 67 86 ): 121
+( 68 86 ): 121
+( 70 86 ): 200
+( 71 86 ): 200
+( 72 86 ): 200
+( 119 86 ): 522
+( 120 86 ): 522
+( 121 86 ): 522
+( 123 86 ): 825
+( 124 86 ): 825
+( 125 86 ): 825
+( 128 86 ): 77
+( 129 86 ): 77
+
+( 5 87 ): 272
+( 6 87 ): 272
+( 7 87 ): 272
+( 35 87 ): 925
+( 36 87 ): 925
+( 37 87 ): 925
+( 43 87 ): 378
+( 44 87 ): 378
+( 45 87 ): 378
+( 58 87 ): 53
+( 59 87 ): 53
+( 78 87 ): 605
+( 79 87 ): 605
+( 80 87 ): 605
+( 86 87 ): 329
+( 87 87 ): 329
+( 88 87 ): 329
+( 90 87 ): 116
+( 91 87 ): 116
+( 92 87 ): 116
+( 95 87 ): 501
+( 96 87 ): 501
+( 97 87 ): 501
+( 102 87 ): 765
+( 103 87 ): 765
+( 104 87 ): 765
+( 111 87 ): 537
+( 112 87 ): 537
+( 113 87 ): 537
+( 115 87 ): 680
+( 116 87 ): 680
+( 117 87 ): 680
+
+( 1 88 ): 817
+( 2 88 ): 817
+( 3 88 ): 817
+( 12 88 ): 109
+( 13 88 ): 109
+( 14 88 ): 109
+( 19 88 ): 209
+( 20 88 ): 209
+( 21 88 ): 209
+( 49 88 ): 690
+( 50 88 ): 690
+( 51 88 ): 690
+( 71 88 ): 573
+( 72 88 ): 573
+( 73 88 ): 573
+( 99 88 ): 48
+( 100 88 ): 48
+( 121 88 ): 169
+( 122 88 ): 169
+( 123 88 ): 169
+( 127 88 ): 581
+( 128 88 ): 581
+( 129 88 ): 581
+( 137 88 ): 537
+( 138 88 ): 537
+( 139 88 ): 537
+
+( 7 89 ): 747
+( 8 89 ): 747
+( 9 89 ): 747
+( 23 89 ): 171
+( 24 89 ): 171
+( 25 89 ): 171
+( 27 89 ): 70
+( 28 89 ): 70
+( 38 89 ): 990
+( 39 89 ): 990
+( 40 89 ): 990
+( 64 89 ): 529
+( 65 89 ): 529
+( 66 89 ): 529
+( 80 89 ): 482
+( 81 89 ): 482
+( 82 89 ): 482
+( 104 89 ): 383
+( 105 89 ): 383
+( 106 89 ): 383
+( 113 89 ): 531
+( 114 89 ): 531
+( 115 89 ): 531
+( 117 89 ): 53
+( 118 89 ): 53
+( 133 89 ): 211
+( 134 89 ): 211
+( 135 89 ): 211
+
+( 13 90 ): 470
+( 14 90 ): 470
+( 15 90 ): 470
+( 30 90 ): 812
+( 31 90 ): 812
+( 32 90 ): 812
+( 34 90 ): 664
+( 35 90 ): 664
+( 36 90 ): 664
+( 46 90 ): 141
+( 47 90 ): 141
+( 48 90 ): 141
+( 54 90 ): 82
+( 55 90 ): 82
+( 59 90 ): 888
+( 60 90 ): 888
+( 61 90 ): 888
+( 85 90 ): 312
+( 86 90 ): 312
+( 87 90 ): 312
+( 92 90 ): 9
+( 94 90 ): 860
+( 95 90 ): 860
+( 96 90 ): 860
+( 108 90 ): 529
+( 109 90 ): 529
+( 110 90 ): 529
+( 128 90 ): 952
+( 129 90 ): 952
+( 130 90 ): 952
+
+( 6 91 ): 906
+( 7 91 ): 906
+( 8 91 ): 906
+( 17 91 ): 810
+( 18 91 ): 810
+( 19 91 ): 810
+( 23 91 ): 966
+( 24 91 ): 966
+( 25 91 ): 966
+( 66 91 ): 616
+( 67 91 ): 616
+( 68 91 ): 616
+( 77 91 ): 327
+( 78 91 ): 327
+( 79 91 ): 327
+( 118 91 ): 80
+( 119 91 ): 80
+( 121 91 ): 655
+( 122 91 ): 655
+( 123 91 ): 655
+
+( 1 92 ): 323
+( 2 92 ): 323
+( 3 92 ): 323
+( 10 92 ): 459
+( 11 92 ): 459
+( 12 92 ): 459
+( 29 92 ): 185
+( 30 92 ): 185
+( 31 92 ): 185
+( 37 92 ): 894
+( 38 92 ): 894
+( 39 92 ): 894
+( 42 92 ): 891
+( 43 92 ): 891
+( 44 92 ): 891
+( 55 92 ): 254
+( 56 92 ): 254
+( 57 92 ): 254
+( 91 92 ): 938
+( 92 92 ): 938
+( 93 92 ): 938
+( 103 92 ): 262
+( 104 92 ): 262
+( 105 92 ): 262
+( 114 92 ): 602
+( 115 92 ): 602
+( 116 92 ): 602
+
+( 14 93 ): 110
+( 15 93 ): 110
+( 16 93 ): 110
+( 50 93 ): 55
+( 51 93 ): 55
+( 62 93 ): 155
+( 63 93 ): 155
+( 64 93 ): 155
+( 83 93 ): 248
+( 84 93 ): 248
+( 85 93 ): 248
+( 87 93 ): 600
+( 88 93 ): 600
+( 89 93 ): 600
+( 95 93 ): 66
+( 96 93 ): 66
+( 128 93 ): 75
+( 129 93 ): 75
+( 132 93 ): 880
+( 133 93 ): 880
+( 134 93 ): 880
+
+( 6 94 ): 459
+( 7 94 ): 459
+( 8 94 ): 459
+( 20 94 ): 928
+( 21 94 ): 928
+( 22 94 ): 928
+( 55 94 ): 900
+( 56 94 ): 900
+( 57 94 ): 900
+( 69 94 ): 27
+( 70 94 ): 27
+( 99 94 ): 526
+( 100 94 ): 526
+( 101 94 ): 526
+( 106 94 ): 434
+( 107 94 ): 434
+( 108 94 ): 434
+( 110 94 ): 402
+( 111 94 ): 402
+( 112 94 ): 402
+( 118 94 ): 840
+( 119 94 ): 840
+( 120 94 ): 840
+( 122 94 ): 816
+( 123 94 ): 816
+( 124 94 ): 816
+
+( 16 95 ): 241
+( 17 95 ): 241
+( 18 95 ): 241
+( 27 95 ): 70
+( 28 95 ): 70
+( 30 95 ): 465
+( 31 95 ): 465
+( 32 95 ): 465
+( 36 95 ): 668
+( 37 95 ): 668
+( 38 95 ): 668
+( 43 95 ): 110
+( 44 95 ): 110
+( 45 95 ): 110
+( 51 95 ): 905
+( 52 95 ): 905
+( 53 95 ): 905
+( 65 95 ): 252
+( 66 95 ): 252
+( 67 95 ): 252
+( 96 95 ): 74
+( 97 95 ): 74
+( 129 95 ): 817
+( 130 95 ): 817
+( 131 95 ): 817
+( 135 95 ): 290
+( 136 95 ): 290
+( 137 95 ): 290
+
+( 2 96 ): 540
+( 3 96 ): 540
+( 4 96 ): 540
+( 8 96 ): 224
+( 9 96 ): 224
+( 10 96 ): 224
+( 21 96 ): 42
+( 22 96 ): 42
+( 56 96 ): 705
+( 57 96 ): 705
+( 58 96 ): 705
+( 69 96 ): 128
+( 70 96 ): 128
+( 71 96 ): 128
+( 77 96 ): 758
+( 78 96 ): 758
+( 79 96 ): 758
+( 82 96 ): 512
+( 83 96 ): 512
+( 84 96 ): 512
+( 88 96 ): 884
+( 89 96 ): 884
+( 90 96 ): 884
+( 99 96 ): 648
+( 100 96 ): 648
+( 101 96 ): 648
+( 110 96 ): 259
+( 111 96 ): 259
+( 112 96 ): 259
+( 120 96 ): 486
+( 121 96 ): 486
+( 122 96 ): 486
+( 124 96 ): 627
+( 125 96 ): 627
+( 126 96 ): 627
+
+( 16 97 ): 467
+( 17 97 ): 467
+( 18 97 ): 467
+( 35 97 ): 462
+( 36 97 ): 462
+( 37 97 ): 462
+( 40 97 ): 321
+( 41 97 ): 321
+( 42 97 ): 321
+( 47 97 ): 296
+( 48 97 ): 296
+( 49 97 ): 296
+( 51 97 ): 211
+( 52 97 ): 211
+( 53 97 ): 211
+( 64 97 ): 283
+( 65 97 ): 283
+( 66 97 ): 283
+( 73 97 ): 488
+( 74 97 ): 488
+( 75 97 ): 488
+( 94 97 ): 796
+( 95 97 ): 796
+( 96 97 ): 796
+( 103 97 ): 774
+( 104 97 ): 774
+( 105 97 ): 774
+( 129 97 ): 200
+( 130 97 ): 200
+( 131 97 ): 200
+( 133 97 ): 87
+( 134 97 ): 87
+
+( 4 98 ): 663
+( 5 98 ): 663
+( 6 98 ): 663
+( 22 98 ): 961
+( 23 98 ): 961
+( 24 98 ): 961
+( 27 98 ): 579
+( 28 98 ): 579
+( 29 98 ): 579
+( 77 98 ): 189
+( 78 98 ): 189
+( 79 98 ): 189
+( 90 98 ): 71
+( 91 98 ): 71
+( 108 98 ): 420
+( 109 98 ): 420
+( 110 98 ): 420
+( 113 98 ): 57
+( 114 98 ): 57
+
+( 12 99 ): 617
+( 13 99 ): 617
+( 14 99 ): 617
+( 16 99 ): 645
+( 17 99 ): 645
+( 18 99 ): 645
+( 39 99 ): 700
+( 40 99 ): 700
+( 41 99 ): 700
+( 44 99 ): 886
+( 45 99 ): 886
+( 46 99 ): 886
+( 50 99 ): 806
+( 51 99 ): 806
+( 52 99 ): 806
+( 54 99 ): 581
+( 55 99 ): 581
+( 56 99 ): 581
+( 58 99 ): 610
+( 59 99 ): 610
+( 60 99 ): 610
+( 66 99 ): 132
+( 67 99 ): 132
+( 68 99 ): 132
+( 70 99 ): 379
+( 71 99 ): 379
+( 72 99 ): 379
+( 95 99 ): 941
+( 96 99 ): 941
+( 97 99 ): 941
+( 120 99 ): 504
+( 121 99 ): 504
+( 122 99 ): 504
+( 127 99 ): 589
+( 128 99 ): 589
+( 129 99 ): 589
+( 138 99 ): 528
+( 139 99 ): 528
+( 140 99 ): 528
+
+( 7 100 ): 377
+( 8 100 ): 377
+( 9 100 ): 377
+( 23 100 ): 290
+( 24 100 ): 290
+( 25 100 ): 290
+( 29 100 ): 221
+( 30 100 ): 221
+( 31 100 ): 221
+( 34 100 ): 768
+( 35 100 ): 768
+( 36 100 ): 768
+( 87 100 ): 556
+( 88 100 ): 556
+( 89 100 ): 556
+( 104 100 ): 132
+( 105 100 ): 132
+( 106 100 ): 132
+
+( 38 101 ): 152
+( 39 101 ): 152
+( 40 101 ): 152
+( 42 101 ): 448
+( 43 101 ): 448
+( 44 101 ): 448
+( 57 101 ): 903
+( 58 101 ): 903
+( 59 101 ): 903
+( 65 101 ): 339
+( 66 101 ): 339
+( 67 101 ): 339
+( 81 101 ): 709
+( 82 101 ): 709
+( 83 101 ): 709
+( 96 101 ): 991
+( 97 101 ): 991
+( 98 101 ): 991
+( 120 101 ): 865
+( 121 101 ): 865
+( 122 101 ): 865
+
+( 12 102 ): 717
+( 13 102 ): 717
+( 14 102 ): 717
+( 28 102 ): 552
+( 29 102 ): 552
+( 30 102 ): 552
+( 47 102 ): 40
+( 48 102 ): 40
+( 51 102 ): 458
+( 52 102 ): 458
+( 53 102 ): 458
+( 71 102 ): 365
+( 72 102 ): 365
+( 73 102 ): 365
+( 88 102 ): 762
+( 89 102 ): 762
+( 90 102 ): 762
+( 92 102 ): 732
+( 93 102 ): 732
+( 94 102 ): 732
+( 104 102 ): 690
+( 105 102 ): 690
+( 106 102 ): 690
+( 108 102 ): 266
+( 109 102 ): 266
+( 110 102 ): 266
+( 116 102 ): 222
+( 117 102 ): 222
+( 118 102 ): 222
+( 131 102 ): 122
+( 132 102 ): 122
+( 133 102 ): 122
+
+( 2 103 ): 414
+( 3 103 ): 414
+( 4 103 ): 414
+( 16 103 ): 496
+( 17 103 ): 496
+( 18 103 ): 496
+( 24 103 ): 712
+( 25 103 ): 712
+( 26 103 ): 712
+( 38 103 ): 785
+( 39 103 ): 785
+( 40 103 ): 785
+( 58 103 ): 79
+( 59 103 ): 79
+( 63 103 ): 884
+( 64 103 ): 884
+( 65 103 ): 884
+( 67 103 ): 991
+( 68 103 ): 991
+( 69 103 ): 991
+( 97 103 ): 844
+( 98 103 ): 844
+( 99 103 ): 844
+( 120 103 ): 782
+( 121 103 ): 782
+( 122 103 ): 782
+( 135 103 ): 627
+( 136 103 ): 627
+( 137 103 ): 627
+
+( 20 104 ): 560
+( 21 104 ): 560
+( 22 104 ): 560
+( 29 104 ): 873
+( 30 104 ): 873
+( 31 104 ): 873
+( 34 104 ): 739
+( 35 104 ): 739
+( 36 104 ): 739
+( 48 104 ): 368
+( 49 104 ): 368
+( 50 104 ): 368
+( 52 104 ): 991
+( 53 104 ): 991
+( 54 104 ): 991
+( 73 104 ): 27
+( 74 104 ): 27
+( 85 104 ): 951
+( 86 104 ): 951
+( 87 104 ): 951
+( 102 104 ): 864
+( 103 104 ): 864
+( 104 104 ): 864
+( 114 104 ): 206
+( 115 104 ): 206
+( 116 104 ): 206
+( 124 104 ): 878
+( 125 104 ): 878
+( 126 104 ): 878
+
+( 6 105 ): 231
+( 7 105 ): 231
+( 8 105 ): 231
+( 11 105 ): 995
+( 12 105 ): 995
+( 13 105 ): 995
+( 25 105 ): 865
+( 26 105 ): 865
+( 27 105 ): 865
+( 44 105 ): 602
+( 45 105 ): 602
+( 46 105 ): 602
+( 58 105 ): 379
+( 59 105 ): 379
+( 60 105 ): 379
+( 62 105 ): 609
+( 63 105 ): 609
+( 64 105 ): 609
+( 66 105 ): 935
+( 67 105 ): 935
+( 68 105 ): 935
+( 79 105 ): 643
+( 80 105 ): 643
+( 81 105 ): 643
+( 98 105 ): 952
+( 99 105 ): 952
+( 100 105 ): 952
+( 118 105 ): 884
+( 119 105 ): 884
+( 120 105 ): 884
+
+( 19 106 ): 726
+( 20 106 ): 726
+( 21 106 ): 726
+( 30 106 ): 360
+( 31 106 ): 360
+( 32 106 ): 360
+( 94 106 ): 990
+( 95 106 ): 990
+( 96 106 ): 990
+( 107 106 ): 959
+( 108 106 ): 959
+( 109 106 ): 959
+( 122 106 ): 932
+( 123 106 ): 932
+( 124 106 ): 932
+
+( 24 107 ): 508
+( 25 107 ): 508
+( 26 107 ): 508
+( 36 107 ): 194
+( 37 107 ): 194
+( 38 107 ): 194
+( 47 107 ): 30
+( 48 107 ): 30
+( 70 107 ): 487
+( 71 107 ): 487
+( 72 107 ): 487
+( 79 107 ): 171
+( 80 107 ): 171
+( 81 107 ): 171
+( 85 107 ): 243
+( 86 107 ): 243
+( 87 107 ): 243
+( 90 107 ): 709
+( 91 107 ): 709
+( 92 107 ): 709
+( 101 107 ): 495
+( 102 107 ): 495
+( 103 107 ): 495
+( 113 107 ): 995
+( 114 107 ): 995
+( 115 107 ): 995
+( 117 107 ): 464
+( 118 107 ): 464
+( 119 107 ): 464
+( 127 107 ): 997
+( 128 107 ): 997
+( 129 107 ): 997
+
+( 7 108 ): 292
+( 8 108 ): 292
+( 9 108 ): 292
+( 43 108 ): 253
+( 44 108 ): 253
+( 45 108 ): 253
+( 57 108 ): 554
+( 58 108 ): 554
+( 59 108 ): 554
+( 131 108 ): 582
+( 132 108 ): 582
+( 133 108 ): 582
+( 135 108 ): 446
+( 136 108 ): 446
+( 137 108 ): 446
+
+( 12 109 ): 802
+( 13 109 ): 802
+( 14 109 ): 802
+( 20 109 ): 237
+( 21 109 ): 237
+( 22 109 ): 237
+( 29 109 ): 32
+( 30 109 ): 32
+( 34 109 ): 286
+( 35 109 ): 286
+( 36 109 ): 286
+( 38 109 ): 259
+( 39 109 ): 259
+( 40 109 ): 259
+( 53 109 ): 132
+( 54 109 ): 132
+( 55 109 ): 132
+( 61 109 ): 236
+( 62 109 ): 236
+( 63 109 ): 236
+( 70 109 ): 683
+( 71 109 ): 683
+( 72 109 ): 683
+( 102 109 ): 705
+( 103 109 ): 705
+( 104 109 ): 705
+( 109 109 ): 855
+( 110 109 ): 855
+( 111 109 ): 855
+( 113 109 ): 37
+( 114 109 ): 37
+( 124 109 ): 476
+( 125 109 ): 476
+( 126 109 ): 476
+
+( 6 110 ): 418
+( 7 110 ): 418
+( 8 110 ): 418
+( 25 110 ): 664
+( 26 110 ): 664
+( 27 110 ): 664
+( 48 110 ): 11
+( 49 110 ): 11
+( 74 110 ): 70
+( 75 110 ): 70
+( 77 110 ): 380
+( 78 110 ): 380
+( 79 110 ): 380
+( 84 110 ): 138
+( 85 110 ): 138
+( 86 110 ): 138
+( 92 110 ): 416
+( 93 110 ): 416
+( 94 110 ): 416
+( 96 110 ): 609
+( 97 110 ): 609
+( 98 110 ): 609
+( 117 110 ): 452
+( 118 110 ): 452
+( 119 110 ): 452
+( 128 110 ): 43
+( 129 110 ): 43
+( 133 110 ): 156
+( 134 110 ): 156
+( 135 110 ): 156
+( 138 110 ): 260
+( 139 110 ): 260
+( 140 110 ): 260
+
+( 21 111 ): 20
+( 22 111 ): 20
+( 33 111 ): 512
+( 34 111 ): 512
+( 35 111 ): 512
+( 44 111 ): 303
+( 45 111 ): 303
+( 46 111 ): 303
+( 69 111 ): 491
+( 70 111 ): 491
+( 71 111 ): 491
+( 108 111 ): 962
+( 109 111 ): 962
+( 110 111 ): 962
+
+( 1 112 ): 426
+( 2 112 ): 426
+( 3 112 ): 426
+( 5 112 ): 646
+( 6 112 ): 646
+( 7 112 ): 646
+( 12 112 ): 833
+( 13 112 ): 833
+( 14 112 ): 833
+( 26 112 ): 821
+( 27 112 ): 821
+( 28 112 ): 821
+( 49 112 ): 348
+( 50 112 ): 348
+( 51 112 ): 348
+( 59 112 ): 537
+( 60 112 ): 537
+( 61 112 ): 537
+( 65 112 ): 668
+( 66 112 ): 668
+( 67 112 ): 668
+( 76 112 ): 92
+( 77 112 ): 92
+( 83 112 ): 295
+( 84 112 ): 295
+( 85 112 ): 295
+( 91 112 ): 620
+( 92 112 ): 620
+( 93 112 ): 620
+( 113 112 ): 147
+( 114 112 ): 147
+( 115 112 ): 147
+( 118 112 ): 753
+( 119 112 ): 753
+( 120 112 ): 753
+
+( 32 113 ): 210
+( 33 113 ): 210
+( 34 113 ): 210
+( 36 113 ): 681
+( 37 113 ): 681
+( 38 113 ): 681
+( 69 113 ): 937
+( 70 113 ): 937
+( 71 113 ): 937
+( 79 113 ): 350
+( 80 113 ): 350
+( 81 113 ): 350
+( 104 113 ): 533
+( 105 113 ): 533
+( 106 113 ): 533
+
+( 2 114 ): 65
+( 3 114 ): 65
+( 7 114 ): 22
+( 8 114 ): 22
+( 11 114 ): 656
+( 12 114 ): 656
+( 13 114 ): 656
+( 27 114 ): 44
+( 28 114 ): 44
+( 40 114 ): 178
+( 41 114 ): 178
+( 42 114 ): 178
+( 53 114 ): 446
+( 54 114 ): 446
+( 55 114 ): 446
+( 65 114 ): 655
+( 66 114 ): 655
+( 67 114 ): 655
+( 83 114 ): 592
+( 84 114 ): 592
+( 85 114 ): 592
+( 91 114 ): 952
+( 92 114 ): 952
+( 93 114 ): 952
+( 100 114 ): 680
+( 101 114 ): 680
+( 102 114 ): 680
+( 120 114 ): 305
+( 121 114 ): 305
+( 122 114 ): 305
+( 136 114 ): 704
+( 137 114 ): 704
+( 138 114 ): 704
+
+( 18 115 ): 422
+( 19 115 ): 422
+( 20 115 ): 422
+( 23 115 ): 835
+( 24 115 ): 835
+( 25 115 ): 835
+( 32 115 ): 126
+( 33 115 ): 126
+( 34 115 ): 126
+( 44 115 ): 552
+( 45 115 ): 552
+( 46 115 ): 552
+( 59 115 ): 543
+( 60 115 ): 543
+( 61 115 ): 543
+( 77 115 ): 444
+( 78 115 ): 444
+( 79 115 ): 444
+( 87 115 ): 995
+( 88 115 ): 995
+( 89 115 ): 995
+( 105 115 ): 771
+( 106 115 ): 771
+( 107 115 ): 771
+( 116 115 ): 480
+( 117 115 ): 480
+( 118 115 ): 480
+( 128 115 ): 782
+( 129 115 ): 782
+( 130 115 ): 782
+
+( 13 116 ): 28
+( 14 116 ): 28
+( 27 116 ): 983
+( 28 116 ): 983
+( 29 116 ): 983
+( 42 116 ): 5
+( 55 116 ): 953
+( 56 116 ): 953
+( 57 116 ): 953
+( 67 116 ): 216
+( 68 116 ): 216
+( 69 116 ): 216
+( 72 116 ): 749
+( 73 116 ): 749
+( 74 116 ): 749
+( 111 116 ): 232
+( 112 116 ): 232
+( 113 116 ): 232
+
+( 22 117 ): 878
+( 23 117 ): 878
+( 24 117 ): 878
+( 51 117 ): 426
+( 52 117 ): 426
+( 53 117 ): 426
+( 104 117 ): 792
+( 105 117 ): 792
+( 106 117 ): 792
+( 115 117 ): 898
+( 116 117 ): 898
+( 117 117 ): 898
+( 124 117 ): 264
+( 125 117 ): 264
+( 126 117 ): 264
+( 130 117 ): 39
+( 131 117 ): 39
+
+( 4 118 ): 480
+( 5 118 ): 480
+( 6 118 ): 480
+( 12 118 ): 674
+( 13 118 ): 674
+( 14 118 ): 674
+( 17 118 ): 149
+( 18 118 ): 149
+( 19 118 ): 149
+( 40 118 ): 740
+( 41 118 ): 740
+( 42 118 ): 740
+( 55 118 ): 251
+( 56 118 ): 251
+( 57 118 ): 251
+( 60 118 ): 920
+( 61 118 ): 920
+( 62 118 ): 920
+( 70 118 ): 552
+( 71 118 ): 552
+( 72 118 ): 552
+( 95 118 ): 713
+( 96 118 ): 713
+( 97 118 ): 713
+( 109 118 ): 639
+( 110 118 ): 639
+( 111 118 ): 639
+( 119 118 ): 917
+( 120 118 ): 917
+( 121 118 ): 917
+
+( 34 119 ): 951
+( 35 119 ): 951
+( 36 119 ): 951
+( 50 119 ): 968
+( 51 119 ): 968
+( 52 119 ): 968
+( 105 119 ): 750
+( 106 119 ): 750
+( 107 119 ): 750
+( 115 119 ): 479
+( 116 119 ): 479
+( 117 119 ): 479
+( 130 119 ): 770
+( 131 119 ): 770
+( 132 119 ): 770
+( 134 119 ): 959
+( 135 119 ): 959
+( 136 119 ): 959
+
+( 16 120 ): 424
+( 17 120 ): 424
+( 18 120 ): 424
+( 21 120 ): 54
+( 22 120 ): 54
+( 24 120 ): 489
+( 25 120 ): 489
+( 26 120 ): 489
+( 41 120 ): 14
+( 42 120 ): 14
+( 45 120 ): 355
+( 46 120 ): 355
+( 47 120 ): 355
+( 59 120 ): 782
+( 60 120 ): 782
+( 61 120 ): 782
+( 65 120 ): 50
+( 66 120 ): 50
+( 83 120 ): 900
+( 84 120 ): 900
+( 85 120 ): 900
+( 87 120 ): 770
+( 88 120 ): 770
+( 89 120 ): 770
+( 100 120 ): 639
+( 101 120 ): 639
+( 102 120 ): 639
+( 110 120 ): 942
+( 111 120 ): 942
+( 112 120 ): 942
+( 119 120 ): 39
+( 120 120 ): 39
+( 126 120 ): 477
+( 127 120 ): 477
+( 128 120 ): 477
+
+( 5 121 ): 888
+( 6 121 ): 888
+( 7 121 ): 888
+( 29 121 ): 412
+( 30 121 ): 412
+( 31 121 ): 412
+( 69 121 ): 123
+( 70 121 ): 123
+( 71 121 ): 123
+( 75 121 ): 579
+( 76 121 ): 579
+( 77 121 ): 579
+( 94 121 ): 315
+( 95 121 ): 315
+( 96 121 ): 315
+( 131 121 ): 66
+( 132 121 ): 66
+
+( 34 122 ): 793
+( 35 122 ): 793
+( 36 122 ): 793
+( 39 122 ): 402
+( 40 122 ): 402
+( 41 122 ): 402
+( 50 122 ): 807
+( 51 122 ): 807
+( 52 122 ): 807
+( 56 122 ): 854
+( 57 122 ): 854
+( 58 122 ): 854
+( 63 122 ): 115
+( 64 122 ): 115
+( 65 122 ): 115
+( 98 122 ): 204
+( 99 122 ): 204
+( 100 122 ): 204
+( 108 122 ): 208
+( 109 122 ): 208
+( 110 122 ): 208
+( 113 122 ): 928
+( 114 122 ): 928
+( 115 122 ): 928
+( 126 122 ): 121
+( 127 122 ): 121
+( 128 122 ): 121
+
+( 12 123 ): 880
+( 13 123 ): 880
+( 14 123 ): 880
+( 17 123 ): 818
+( 18 123 ): 818
+( 19 123 ): 818
+( 26 123 ): 982
+( 27 123 ): 982
+( 28 123 ): 982
+( 46 123 ): 923
+( 47 123 ): 923
+( 48 123 ): 923
+( 88 123 ): 809
+( 89 123 ): 809
+( 90 123 ): 809
+( 92 123 ): 962
+( 93 123 ): 962
+( 94 123 ): 962
+
+( 4 124 ): 957
+( 5 124 ): 957
+( 6 124 ): 957
+( 8 124 ): 511
+( 9 124 ): 511
+( 10 124 ): 511
+( 21 124 ): 436
+( 22 124 ): 436
+( 23 124 ): 436
+( 33 124 ): 704
+( 34 124 ): 704
+( 35 124 ): 704
+( 73 124 ): 84
+( 74 124 ): 84
+( 79 124 ): 369
+( 80 124 ): 369
+( 81 124 ): 369
+( 83 124 ): 496
+( 84 124 ): 496
+( 85 124 ): 496
+( 96 124 ): 917
+( 97 124 ): 917
+( 98 124 ): 917
+( 120 124 ): 464
+( 121 124 ): 464
+( 122 124 ): 464
+
+( 29 125 ): 812
+( 30 125 ): 812
+( 31 125 ): 812
+( 41 125 ): 785
+( 42 125 ): 785
+( 43 125 ): 785
+( 60 125 ): 848
+( 61 125 ): 848
+( 62 125 ): 848
+( 65 125 ): 506
+( 66 125 ): 506
+( 67 125 ): 506
+( 87 125 ): 116
+( 88 125 ): 116
+( 89 125 ): 116
+
+( 11 126 ): 694
+( 12 126 ): 694
+( 13 126 ): 694
+( 16 126 ): 257
+( 17 126 ): 257
+( 18 126 ): 257
+( 21 126 ): 876
+( 22 126 ): 876
+( 23 126 ): 876
+( 45 126 ): 15
+( 46 126 ): 15
+( 56 126 ): 176
+( 57 126 ): 176
+( 58 126 ): 176
+( 104 126 ): 593
+( 105 126 ): 593
+( 106 126 ): 593
+( 110 126 ): 168
+( 111 126 ): 168
+( 112 126 ): 168
+( 116 126 ): 914
+( 117 126 ): 914
+( 118 126 ): 914
+( 120 126 ): 230
+( 121 126 ): 230
+( 122 126 ): 230
+( 125 126 ): 200
+( 126 126 ): 200
+( 127 126 ): 200
+( 137 126 ): 500
+( 138 126 ): 500
+( 139 126 ): 500
+
+( 4 127 ): 427
+( 5 127 ): 427
+( 6 127 ): 427
+( 82 127 ): 233
+( 83 127 ): 233
+( 84 127 ): 233
+( 87 127 ): 616
+( 88 127 ): 616
+( 89 127 ): 616
+( 95 127 ): 299
+( 96 127 ): 299
+( 97 127 ): 299
+
+( 14 128 ): 598
+( 15 128 ): 598
+( 16 128 ): 598
+( 29 128 ): 571
+( 30 128 ): 571
+( 31 128 ): 571
+( 37 128 ): 60
+( 38 128 ): 60
+( 48 128 ): 897
+( 49 128 ): 897
+( 50 128 ): 897
+( 58 128 ): 911
+( 59 128 ): 911
+( 60 128 ): 911
+( 65 128 ): 34
+( 66 128 ): 34
+( 71 128 ): 106
+( 72 128 ): 106
+( 73 128 ): 106
+( 77 128 ): 713
+( 78 128 ): 713
+( 79 128 ): 713
+( 111 128 ): 933
+( 112 128 ): 933
+( 113 128 ): 933
+( 124 128 ): 288
+( 125 128 ): 288
+( 126 128 ): 288
+
+( 3 129 ): 314
+( 4 129 ): 314
+( 5 129 ): 314
+( 21 129 ): 563
+( 22 129 ): 563
+( 23 129 ): 563
+( 87 129 ): 198
+( 88 129 ): 198
+( 89 129 ): 198
+( 128 129 ): 591
+( 129 129 ): 591
+( 130 129 ): 591
+( 135 129 ): 246
+( 136 129 ): 246
+( 137 129 ): 246
+
+( 12 130 ): 274
+( 13 130 ): 274
+( 14 130 ): 274
+( 16 130 ): 875
+( 17 130 ): 875
+( 18 130 ): 875
+( 26 130 ): 114
+( 27 130 ): 114
+( 28 130 ): 114
+( 40 130 ): 105
+( 41 130 ): 105
+( 42 130 ): 105
+( 44 130 ): 763
+( 45 130 ): 763
+( 46 130 ): 763
+( 49 130 ): 319
+( 50 130 ): 319
+( 51 130 ): 319
+( 72 130 ): 730
+( 73 130 ): 730
+( 74 130 ): 730
+( 80 130 ): 158
+( 81 130 ): 158
+( 82 130 ): 158
+( 104 130 ): 487
+( 105 130 ): 487
+( 106 130 ): 487
+( 114 130 ): 505
+( 115 130 ): 505
+( 116 130 ): 505
+
+( 2 131 ): 439
+( 3 131 ): 439
+( 4 131 ): 439
+( 55 131 ): 595
+( 56 131 ): 595
+( 57 131 ): 595
+( 59 131 ): 190
+( 60 131 ): 190
+( 61 131 ): 190
+( 63 131 ): 173
+( 64 131 ): 173
+( 65 131 ): 173
+( 68 131 ): 653
+( 69 131 ): 653
+( 70 131 ): 653
+( 87 131 ): 882
+( 88 131 ): 882
+( 89 131 ): 882
+( 91 131 ): 812
+( 92 131 ): 812
+( 93 131 ): 812
+( 100 131 ): 230
+( 101 131 ): 230
+( 102 131 ): 230
+( 118 131 ): 522
+( 119 131 ): 522
+( 120 131 ): 522
+( 133 131 ): 192
+( 134 131 ): 192
+( 135 131 ): 192
+
+( 17 132 ): 554
+( 18 132 ): 554
+( 19 132 ): 554
+( 23 132 ): 825
+( 24 132 ): 825
+( 25 132 ): 825
+( 29 132 ): 845
+( 30 132 ): 845
+( 31 132 ): 845
+( 35 132 ): 797
+( 36 132 ): 797
+( 37 132 ): 797
+( 39 132 ): 572
+( 40 132 ): 572
+( 41 132 ): 572
+( 44 132 ): 814
+( 45 132 ): 814
+( 46 132 ): 814
+( 80 132 ): 167
+( 81 132 ): 167
+( 82 132 ): 167
+( 96 132 ): 581
+( 97 132 ): 581
+( 98 132 ): 581
+( 126 132 ): 330
+( 127 132 ): 330
+( 128 132 ): 330
+
+( 8 133 ): 82
+( 9 133 ): 82
+( 54 133 ): 318
+( 55 133 ): 318
+( 56 133 ): 318
+( 72 133 ): 326
+( 73 133 ): 326
+( 74 133 ): 326
+( 76 133 ): 924
+( 77 133 ): 924
+( 78 133 ): 924
+( 85 133 ): 880
+( 86 133 ): 880
+( 87 133 ): 880
+( 92 133 ): 288
+( 93 133 ): 288
+( 94 133 ): 288
+( 111 133 ): 44
+( 112 133 ): 44
+
+( 15 134 ): 526
+( 16 134 ): 526
+( 17 134 ): 526
+( 44 134 ): 981
+( 45 134 ): 981
+( 46 134 ): 981
+( 58 134 ): 959
+( 59 134 ): 959
+( 60 134 ): 959
+( 102 134 ): 915
+( 103 134 ): 915
+( 104 134 ): 915
+( 106 134 ): 116
+( 107 134 ): 116
+( 108 134 ): 116
+( 134 134 ): 577
+( 135 134 ): 577
+( 136 134 ): 577
+
+( 3 135 ): 130
+( 4 135 ): 130
+( 5 135 ): 130
+( 37 135 ): 330
+( 38 135 ): 330
+( 39 135 ): 330
+( 54 135 ): 414
+( 55 135 ): 414
+( 56 135 ): 414
+( 63 135 ): 679
+( 64 135 ): 679
+( 65 135 ): 679
+( 74 135 ): 999
+( 75 135 ): 999
+( 76 135 ): 999
+( 78 135 ): 344
+( 79 135 ): 344
+( 80 135 ): 344
+( 82 135 ): 611
+( 83 135 ): 611
+( 84 135 ): 611
+( 92 135 ): 432
+( 93 135 ): 432
+( 94 135 ): 432
+( 113 135 ): 690
+( 114 135 ): 690
+( 115 135 ): 690
+( 120 135 ): 502
+( 121 135 ): 502
+( 122 135 ): 502
+
+( 14 136 ): 476
+( 15 136 ): 476
+( 16 136 ): 476
+( 88 136 ): 303
+( 89 136 ): 303
+( 90 136 ): 303
+( 96 136 ): 731
+( 97 136 ): 731
+( 98 136 ): 731
+( 108 136 ): 681
+( 109 136 ): 681
+( 110 136 ): 681
+
+( 6 137 ): 791
+( 7 137 ): 791
+( 8 137 ): 791
+( 18 137 ): 152
+( 19 137 ): 152
+( 20 137 ): 152
+( 25 137 ): 397
+( 26 137 ): 397
+( 27 137 ): 397
+( 38 137 ): 975
+( 39 137 ): 975
+( 40 137 ): 975
+( 53 137 ): 904
+( 54 137 ): 904
+( 55 137 ): 904
+( 72 137 ): 225
+( 73 137 ): 225
+( 74 137 ): 225
+( 113 137 ): 169
+( 114 137 ): 169
+( 115 137 ): 169
+( 117 137 ): 207
+( 118 137 ): 207
+( 119 137 ): 207
+
+( 11 138 ): 995
+( 12 138 ): 995
+( 13 138 ): 995
+( 29 138 ): 558
+( 30 138 ): 558
+( 31 138 ): 558
+( 33 138 ): 857
+( 34 138 ): 857
+( 35 138 ): 857
+( 43 138 ): 141
+( 44 138 ): 141
+( 45 138 ): 141
+( 48 138 ): 803
+( 49 138 ): 803
+( 50 138 ): 803
+( 66 138 ): 199
+( 67 138 ): 199
+( 68 138 ): 199
+( 81 138 ): 573
+( 82 138 ): 573
+( 83 138 ): 573
+( 86 138 ): 63
+( 87 138 ): 63
+( 90 138 ): 315
+( 91 138 ): 315
+( 92 138 ): 315
+( 121 138 ): 519
+( 122 138 ): 519
+( 123 138 ): 519
+
+( 39 139 ): 158
+( 40 139 ): 158
+( 41 139 ): 158
+( 56 139 ): 737
+( 57 139 ): 737
+( 58 139 ): 737
+( 73 139 ): 399
+( 74 139 ): 399
+( 75 139 ): 399
+( 100 139 ): 47
+( 101 139 ): 47
+( 106 139 ): 100
+( 107 139 ): 100
+( 108 139 ): 100
+( 125 139 ): 574
+( 126 139 ): 574
+( 127 139 ): 574
+( 132 139 ): 333
+( 133 139 ): 333
+( 134 139 ): 333
+
+( 11 140 ): 56
+( 12 140 ): 56
+( 25 140 ): 822
+( 26 140 ): 822
+( 27 140 ): 822
+( 46 140 ): 665
+( 47 140 ): 665
+( 48 140 ): 665
+( 77 140 ): 563
+( 78 140 ): 563
+( 79 140 ): 563
+( 82 140 ): 383
+( 83 140 ): 383
+( 84 140 ): 383
+
+
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+1
+79841031
 ( Part 2 ) Correct result: False
-Day 5, part 2: 9223372036854775807 (0.002 secs)
+Day 3, part 2: 79841031 (0.009 secs)
