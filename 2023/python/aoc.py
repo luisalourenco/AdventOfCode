@@ -403,6 +403,7 @@ def get_numbers_positions(engine_map):
     part_number = ''
     numbers = {(-1,-1): []}
 
+    uuid = 0
     for y in range(rows):   
         if part_number != '':
             number = int(part_number)
@@ -418,8 +419,9 @@ def get_numbers_positions(engine_map):
                 number = int(part_number)
                 #numbers[(x,y)] = number
                 for (xx,yy) in numbers[(-1,-1)]:
-                    numbers[(xx,yy)] = number
+                    numbers[(xx,yy)] = (number, uuid)
                 numbers[(-1,-1)] = []
+                uuid += 1
                 part_number = '' 
                                
     if part_number != '':
@@ -493,51 +495,76 @@ def get_gears_ratios_v2(engine_map, gears, numbers_positions):
     for gear in gears:
         gears_numbers[gear] = []
 
-    res = set()
+    res = []
+    uuids = set()
     ratio = 0
     for (x,y) in gears:
 
-        n = numbers_positions.get((x-1,y))
+        val = numbers_positions.get((x-1,y))
             
-        if n is not None:
-            res.add(n)
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
         
-        n = numbers_positions.get((x,y-1))
-        if n is not None:
-            res.add(n)
+        val  = numbers_positions.get((x,y-1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
         
-        n = numbers_positions.get((x+1,y))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x+1,y))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
         
-        n = numbers_positions.get((x,y+1))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x,y+1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
 
-        n = numbers_positions.get((x-1,y-1))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x-1,y-1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
         
-        n = numbers_positions.get((x+1,y+1))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x+1,y+1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
 
-        n = numbers_positions.get((x+1,y-1))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x+1,y-1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
 
-        n = numbers_positions.get((x-1,y+1))
-        if n is not None:
-            res.add(n)
+        val = numbers_positions.get((x-1,y+1))
+        if val is not None:
+            (n, uuid) = val
+            if uuid not in uuids:
+                res.append(n)
+                uuids.add(uuid)
 
         gears_numbers[(x,y)] = res
         if len(res) == 2:
             res = list(res)
             ratio += res[0]*res[1]
-            print("numbers for gear",x,y,"are",res)
+            #print("numbers for gear",x,y,"are",res)
        
        
-        res = set()
+        res = []
     return ratio
 
 
@@ -562,15 +589,18 @@ def day3_2(data):
     numbers_positions = get_numbers_positions(engine_map)
     
     #print numbers positions
+    '''
     rows = len(engine_map)
     columns = len(engine_map[0]) 
     for y in range(rows): 
         for x in range(columns):
-            n = numbers_positions.get((x,y))
-            if n is not None:
-                print("(",x,y,"):",n)
+            val = numbers_positions.get((x,y))
+            if val is not None:
+                (n, uuid) = val
+                print("(",x,y,"):",n,"with uuid",uuid)
         print()
     #####    
+    '''
 
 
     gears_ratio = get_gears_ratios_v2(engine_map, gears, numbers_positions) 
