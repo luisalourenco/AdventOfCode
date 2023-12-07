@@ -896,12 +896,13 @@ def day6_2(data):
 
 #region ##### Day 7 #####
 
-# ranges from 0 to 13
+# ranges from 0 to 12
 def get_label_strenght(label):
     labels = ['A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2']
     labels.reverse()
     return labels.index(label)
 
+# ranges from 0 to 13
 def get_label_strenght_v2(label):
     labels = ['A', 'K', 'Q', 'T', '9', '8', '7', '6', '5', '4', '3', '2', 'J']
     labels.reverse()
@@ -910,16 +911,13 @@ def get_label_strenght_v2(label):
 # all labels are equal
 def is_five_of_a_kind(hand):
     cards = set(hand)
-    return (len(cards) == 2 and 'J' in cards) or len(cards) == 1
-    #return len(set(hand)) == 1
+    return len(cards) == 1
 
 def is_four_of_a_kind(hand):
     jokers = list(hand).count('J')
     cards = list(set(hand))
     if len(cards) == 2:
-        return list(hand).count(cards[0]) == 4 or list(hand).count(cards[1]) == 4    
-    elif len(cards) == 3:
-        return list(hand).count(cards[0]) == 4-jokers or list(hand).count(cards[1]) == 4-jokers    
+        return list(hand).count(cards[0]) == 4 or list(hand).count(cards[1]) == 4       
     else:
         return False
 
@@ -928,8 +926,6 @@ def is_full_house(hand):
     cards = list(set(hand))
     if len(cards) == 2:
         return (list(hand).count(cards[0]) == 3 and list(hand).count(cards[1]) == 2) or (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 3) 
-    elif len(cards) == 3:
-        return (list(hand).count(cards[0]) == 3-jokers and list(hand).count(cards[1]) == 2) or (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 3-jokers) or (list(hand).count(cards[0]) == 3 and list(hand).count(cards[1]) == 2-jokers) or (list(hand).count(cards[0]) == 2-jokers and list(hand).count(cards[1]) == 3) 
     else:
         return False
 
@@ -938,8 +934,6 @@ def is_three_of_a_kind(hand):
     cards = list(set(hand))
     if len(cards) == 3:
         return list(hand).count(cards[0]) == 3 or list(hand).count(cards[1]) == 3 or list(hand).count(cards[2]) == 3
-    elif len(cards) == 4:
-        return list(hand).count(cards[0]) == 3-jokers or list(hand).count(cards[1]) == 3-jokers or list(hand).count(cards[2]) == 3-jokers
     else:
         return False
 
@@ -948,8 +942,6 @@ def is_two_pair(hand):
     cards = list(set(hand))
     if len(cards) == 3:
         return (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 2 and list(hand).count(cards[2]) == 1) or (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 2) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 2 and list(hand).count(cards[2]) == 2)
-    elif len(cards) == 4:
-        return (list(hand).count(cards[0]) == 2-jokers and list(hand).count(cards[1]) == 2 and list(hand).count(cards[2]) == 1) or (list(hand).count(cards[0]) == 2-jokers and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 2) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 2 and list(hand).count(cards[2]) == 2-jokers) or (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 2-jokers and list(hand).count(cards[2]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 2-jokers and list(hand).count(cards[2]) == 2)
     else:
         return False
 
@@ -958,13 +950,112 @@ def is_pair(hand):
     jokers = list(hand).count('J')
     if len(cards) == 4:
         return (list(hand).count(cards[0]) == 2 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 2 and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 2 and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 2)
-    elif len(cards) == 5:
-        return (list(hand).count(cards[0]) == 2-jokers and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 2-jokers and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 2-jokers and list(hand).count(cards[3]) == 1) or (list(hand).count(cards[0]) == 1 and list(hand).count(cards[1]) == 1 and list(hand).count(cards[2]) == 1 and list(hand).count(cards[3]) == 2-jokers)
     else:
         return False
 
 def is_high_card(hand):
     return len(set(hand)) == 5
+
+#### With jokers for part 2
+
+# all labels are equal
+def is_five_of_a_kind_v2(hand):
+    jokers = list(hand).count('J')
+    cards = set(hand)
+    return len(cards) == 1 or (len(cards) == 2 and jokers > 0)
+
+def is_four_of_a_kind_v2(hand):
+    jokers = list(hand).count('J')
+    cards = list(set(hand))
+    hand = list(hand)
+    #print(cards)
+    cards.sort(key=functools.cmp_to_key(compare_cards_in_hands_v2))
+    cards.reverse()
+    
+    if len(cards) == 2:
+        return hand.count(cards[0]) == 4 or hand.count(cards[1]) == 4    
+    elif len(cards) == 3 and jokers > 0:
+        hand1 = [cards[0] if card == 'J' and cards[0] != 'J' else card for card in hand]
+        hand2 = [cards[1] if card == 'J' and cards[1] != 'J' else card for card in hand]
+        return hand1.count(cards[0]) == 4 or hand2.count(cards[1]) == 4    
+    else:
+        return False
+
+def is_full_house_v2(hand):
+    jokers = list(hand).count('J')
+    cards = list(set(hand))
+    hand = list(hand)
+    cards.sort(key=functools.cmp_to_key(compare_cards_in_hands_v2))
+    cards.reverse()
+    
+    if len(cards) == 2:
+        return (hand.count(cards[0]) == 3 and hand.count(cards[1]) == 2) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 3) 
+    elif len(cards) == 3 and jokers > 0:
+        hand1 = [cards[0] if card == 'J' and cards[0] != 'J' else card for card in hand]
+        hand2 = [cards[1] if card == 'J' and cards[1] != 'J' else card for card in hand]
+
+        return (hand1.count(cards[0]) == 3 and hand.count(cards[1]) == 2) or (hand1.count(cards[0]) == 2 and hand.count(cards[1]) == 3) or (hand.count(cards[0]) == 3 and hand2.count(cards[1]) == 2) or (hand.count(cards[0]) == 2 and hand2.count(cards[1]) == 3) 
+    else:
+        return False
+
+def is_three_of_a_kind_v2(hand):
+    jokers = list(hand).count('J')
+    cards = list(set(hand))
+    hand = list(hand)
+    cards.sort(key=functools.cmp_to_key(compare_cards_in_hands_v2))
+    cards.reverse()
+    
+    if len(cards) == 3:
+        return hand.count(cards[0]) == 3 or hand.count(cards[1]) == 3 or hand.count(cards[2]) == 3
+    elif len(cards) == 4 and jokers > 0:
+        hand1 = [cards[0] if card == 'J' and cards[0] != 'J' else card for card in hand]
+        hand2 = [cards[1] if card == 'J' and cards[1] != 'J' else card for card in hand]
+        hand3 = [cards[2] if card == 'J' and cards[2] != 'J' else card for card in hand]
+        return hand1.count(cards[0]) == 3 or hand2.count(cards[1]) == 3 or hand3.count(cards[2]) == 3
+    else:
+        return False
+
+def is_two_pair_v2(hand):
+    jokers = list(hand).count('J')
+    cards = list(set(hand))
+    hand = list(hand)
+    cards.sort(key=functools.cmp_to_key(compare_cards_in_hands_v2))
+    cards.reverse()
+    
+    if len(cards) == 3:
+        return (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 1) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 2) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 2)
+    elif len(cards) == 4 and jokers > 0:
+        hand1 = [cards[0] if card == 'J' and cards[0] != 'J' else card for card in hand]
+        hand2 = [cards[1] if card == 'J' and cards[1] != 'J' else card for card in hand]
+        hand3 = [cards[2] if card == 'J' and cards[2] != 'J' else card for card in hand]
+        
+        return (hand1.count(cards[0]) == 2 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 1) or (hand1.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 2) or (hand1.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 2) or (hand.count(cards[0]) == 2 and hand2.count(cards[1]) == 2 and hand.count(cards[2]) == 1) or (hand.count(cards[0]) == 2 and hand2.count(cards[1]) == 1 and hand.count(cards[2]) == 2) or (hand.count(cards[0]) == 1 and hand2.count(cards[1]) == 2 and hand.count(cards[2]) == 2) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 2 and hand3.count(cards[2]) == 1) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand3.count(cards[2]) == 2) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand3.count(cards[2]) == 2)
+    else:
+        return False
+
+def is_pair_v2(hand):
+    cards = list(set(hand))
+    jokers = list(hand).count('J')
+    hand = list(hand)
+    cards.sort(key=functools.cmp_to_key(compare_cards_in_hands_v2))
+    cards.reverse()
+    
+    if len(cards) == 4:
+        return (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 2 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 2)
+    elif len(cards) == 5 and jokers > 0:
+        hand1 = [cards[0] if card == 'J' and cards[0] != 'J' else card for card in hand]
+        hand2 = [cards[1] if card == 'J' and cards[1] != 'J' else card for card in hand]
+        hand3 = [cards[2] if card == 'J' and cards[2] != 'J' else card for card in hand]
+        hand4 = [cards[3] if card == 'J' and cards[3] != 'J' else card for card in hand]
+        
+        return (hand1.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand1.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand1.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 2 and hand.count(cards[3]) == 1) or (hand1.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 2) or (hand.count(cards[0]) == 2 and hand2.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand2.count(cards[1]) == 2 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand2.count(cards[1]) == 1 and hand.count(cards[2]) == 2 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand2.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand.count(cards[3]) == 2) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand3.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand3.count(cards[2]) == 1 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand3.count(cards[2]) == 2 and hand.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand3.count(cards[2]) == 1 and hand.count(cards[3]) == 2) or (hand.count(cards[0]) == 2 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand4.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 2 and hand.count(cards[2]) == 1 and hand4.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 2 and hand4.count(cards[3]) == 1) or (hand.count(cards[0]) == 1 and hand.count(cards[1]) == 1 and hand.count(cards[2]) == 1 and hand4.count(cards[3]) == 2)
+    
+    
+    else:
+        return False
+
+
+
 
 # ranges from 1 to 7
 def get_type_strenght(hand):
@@ -979,6 +1070,22 @@ def get_type_strenght(hand):
     elif is_two_pair(hand):
         return 3
     elif is_pair(hand):
+        return 2
+    else:
+        return 1
+
+def get_type_strenght_v2(hand):
+    if is_five_of_a_kind_v2(hand):
+        return 7
+    elif is_four_of_a_kind_v2(hand):
+        return  6
+    elif is_full_house_v2(hand):
+        return 5
+    elif is_three_of_a_kind_v2(hand):
+        return 4
+    elif is_two_pair_v2(hand):
+        return 3
+    elif is_pair_v2(hand):
         return 2
     else:
         return 1
@@ -1008,9 +1115,9 @@ def compare_cards_in_hands_v2(hand1, hand2):
                 return -1
         
 def compare_hands_v2(hand1, hand2):
-    if get_type_strenght(hand1) < get_type_strenght(hand2):
+    if get_type_strenght_v2(hand1) < get_type_strenght_v2(hand2):
         return -1
-    elif get_type_strenght(hand1) > get_type_strenght(hand2):
+    elif get_type_strenght_v2(hand1) > get_type_strenght_v2(hand2):
         return 1
     else: # same type strength
         return compare_cards_in_hands_v2(hand1, hand2)
@@ -1046,9 +1153,46 @@ def day7_1(data):
     AssertExpectedResult(251136060, result)
     return result
 
+
+def test_cases_part2_day7():
+    five_kind = ['JJJJJ','AAAAA','JAAAA','AJAAA','AAJAA','AAAJA','AAAAJ']
+    four_kind = ['AA8AA','TTTT8','JTTT8','TJTT8','TTJT8','TTTJ8','TTT8J','T55J5','KTJJT','QQQJA','QJJQ2','JJQJ4','JJ2J9','JTJ55']
+    full_house = ['23332','J2233','2J233','22J33','223J3','2233J','22333','25J52']
+    three_kind = ['AJKJ4','TTT98','JTT98','TJT98','TTJ98','TT9J8','TT98J','T9T8J','T98TJ','T98JT','TQJQ8']
+    two_pair = ['23432','KK677','KK677']
+    pair = ['32T3K','A23A4','32T3K','J2345','2J345','23J45','234J5','2345J','5TK4J']
+    high_card = ['23456']
+    
+    for c in five_kind:
+        if not is_five_of_a_kind_v2(c):
+            print(c,"should be five of a kind")
+
+    for c in four_kind:
+        if not is_four_of_a_kind_v2(c):
+            print(c,"should be four of a kind")
+
+  
+    for c in full_house:
+        if not is_full_house_v2(c):
+            print(c,"should be full house")
+            
+    for c in three_kind:
+        if not is_three_of_a_kind_v2(c):
+            print(c,"should be three of a kind")
+    
+    for c in two_pair:
+        if not is_two_pair_v2(c):
+            print(c,"should be two pair")
+            
+    for c in pair:
+        if not is_pair_v2(c):
+            print(c,"should be pair")
+
+
 #249605933 too high
 #249682966 --
 #250771385
+#249899797
 #248913887 too low
 def day7_2(data):
     #data = read_input(2023, "07_teste")
@@ -1061,12 +1205,16 @@ def day7_2(data):
         bets[input[0]] = int(input[1])    
 
     hands.sort(key=functools.cmp_to_key(compare_hands_v2))
+    
+    
     #print(hands)
     result = 0
     for i in range(len(hands)):
         k = hands[i]
         result += (i+1)*bets[k]  
         
+        
+    test_cases_part2_day7()    
     #print(get_type_strenght('QQQJA'))  
     #print(get_type_strenght('T55J5'))
     #print(get_label_strenght_v2('Q'))  
