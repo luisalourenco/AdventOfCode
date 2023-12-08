@@ -5,6 +5,19 @@ import sys
 import os
 from functools import lru_cache
 
+# taken from Wikipedia's Euclidean algorithm pseudocode
+def gcd(a,b):
+    while a != b:
+        if a > b:
+            a = a - b
+        else:
+            b = b - a
+    return a
+
+def lcm(a,b):
+    return int(a*b/gcd(a,b))
+
+
 def get_euclidian_distance(p, q):
     """ 
     Return euclidean distance between points p and q

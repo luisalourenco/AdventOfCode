@@ -1255,6 +1255,94 @@ def day7_2(data):
 
 #endregion
 
+
+#region ##### Day 8 #####
+
+def how_many_steps_until_destination(instructions, desert_map):
+    position = 'AAA'
+    end = 'ZZZ'
+    steps = 0
+    size = len(instructions)
+
+    while position != end:
+        next_instruction = instructions[steps%size]
+
+        (left, right) = desert_map.get(position)
+
+        if next_instruction == 'L':
+            position = left
+        elif next_instruction == 'R':
+            position = right
+        steps += 1
+    
+    return steps
+
+#Day 8, part 1: 16043 (0.042 secs)
+#Day 8, part 2: 15726453850399 (0.584 secs)
+def day8_1(data):
+    #data = read_input(2023, "04_teste")    
+    result = 0    
+    instructions = list(data[0])
+    desert_map = dict()
+
+    for line in data[2:]:
+        nodes = line.split('=')
+        destinations = parse("({}, {})", nodes[1].strip())
+        desert_map[nodes[0].strip()] = (destinations[0], destinations[1])
+
+    result = how_many_steps_until_destination(instructions, desert_map)
+
+    AssertExpectedResult(16043, result)
+    return result
+
+def how_many_steps_until_destination_v2(instructions, desert_map, node):
+    position = node
+    steps = 0
+    size = len(instructions)
+
+    while position[2] != 'Z':
+        next_instruction = instructions[steps%size]
+        (left, right) = desert_map.get(position)
+
+        if next_instruction == 'L':
+            position = left
+        elif next_instruction == 'R':
+            position = right
+
+        steps += 1
+    
+    return steps
+
+#19788348363346328285369657 too high
+def day8_2(data):
+    #data = read_input(2023, "08_teste")    
+    result = 0    
+
+    instructions = list(data[0])
+    desert_map = dict()
+    starting_nodes = []
+    for line in data[2:]:
+        destinations = parse("{} = ({}, {})", line)
+        desert_map[destinations[0]] = (destinations[1], destinations[2])
+
+    for k in desert_map.keys():
+        if k[2] == 'A':
+            starting_nodes.append(k)
+    
+    all_steps = []
+    for node in starting_nodes:
+        steps =  how_many_steps_until_destination_v2(instructions, desert_map, node)
+        all_steps.append(steps)
+
+    result = 1
+    for steps in all_steps:
+        result = lcm(result, steps)
+
+    AssertExpectedResult(15726453850399, result)
+    return result
+
+#endregion
+
 if __name__ == "__main__":
     # override timeout
     main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
