@@ -26,6 +26,10 @@ target/*
 output/*
 2023/output/*
 2023/input/*
+2022/input/*
+2021/input/*
+2020/input/*
+2015/input/*
 .bsp
 .idea
 scala_aoc_old
