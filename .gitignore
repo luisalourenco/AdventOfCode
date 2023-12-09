@@ -25,3 +25,9 @@ target/*
 .metals/*
 output/*
 2023/output/*
+2023/input/*
+.bsp
+.idea
+scala_aoc_old
+.metals
+2023/scala
