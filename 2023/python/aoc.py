@@ -1343,6 +1343,78 @@ def day8_2(data):
 
 #endregion
 
+def get_differences(history):
+    rows = [copy.deepcopy(history)]
+
+    i = 1
+    
+    while sum([1 for n in rows[i-1] if n != 0]) != 0:
+        row = rows[i-1]
+        
+        next_numbers = []
+        for n,m in zip(row, row[1:]):
+            next_numbers.append(m-n) 
+       
+        rows.append(next_numbers)
+        i += 1
+
+    return rows
+
+def extrapolate_next_number(history, part2 = False):    
+    rows = get_differences(history)
+    size = len(rows)-1
+    
+    i = size
+    while i != 0:
+        previous_row = rows[i-1]
+        pos = 0 if part2 else len(previous_row)-1 
+        previous_row_number = previous_row[pos]
+
+        if size == i:
+            current_row_number = 0
+        else: 
+            current_row_number = extrapolated_number
+        extrapolated_number = previous_row_number - current_row_number if part2 else current_row_number + previous_row_number
+
+        i-= 1
+
+    return extrapolated_number
+
+#region ##### Day 9 #####
+
+#Day 9, part 1: 1681758908 (0.037 secs)
+#Day 9, part 2: 803 (0.005 secs)
+def day9_1(data):
+    #data = read_input(2023, "09_teste")    
+    result = 0
+    histories = []
+
+    for line in data:
+        histories.append(ints(line.split()))
+
+    for history in histories:
+        result += extrapolate_next_number(history)
+
+    AssertExpectedResult(1681758908, result)
+    return result
+
+def day9_2(data):
+    #data = read_input(2023, "09_teste")    
+    result = 0     
+    histories = []
+
+    for line in data:
+        histories.append(ints(line.split()))
+
+    for history in histories:
+        result += extrapolate_next_number(history, True)   
+
+    AssertExpectedResult(803, result)
+    return result
+
+#endregion
+
+
 if __name__ == "__main__":
     # override timeout
     main(sys.argv, globals(), AOC_EDITION_YEAR, 900)

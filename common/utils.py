@@ -118,7 +118,7 @@ def write_output(year, day, result):
     filename = filename = f"day{day}"
     if year >= 2023:
         if len(str(day)) == 1:
-            filename = f"day_0{day}"
+            filename = f"day_0{day}.txt"
         else:
             filename = f"day_{day}"
 
