@@ -36,4 +36,4 @@ scala_aoc_old
 .metals
 2023/scala
 *.txt
-2023/python/*.txt
+2023/python/debug2.txt
