@@ -35,3 +35,4 @@ output/*
 scala_aoc_old
 .metals
 2023/scala
+*.txt
