@@ -1,6 +1,6 @@
 from threading import Thread
 import functools
-from collections import defaultdict
+from collections import defaultdict, deque
 from timeit import default_timer as timer
 import sys
 import os
@@ -150,16 +150,24 @@ def find_shortest_pathOptimal(graph, start, end):
     return dist.get(end)
 
 
-def bfs(graph, root):
+def bfs(graph, root, compute_distances = False):
     path=[]
-    visited, queue = set(), deque([root])
+    if compute_distances:
+        visited, queue = set(), deque([(root, 0)])
+    else:
+        visited, queue = set(), deque([root])
     visited.add(root)
 
+    steps = 0
     while queue:
 
         # Dequeue a vertex from queue
-        vertex = queue.popleft()
-        path.append(vertex)
+        if compute_distances:
+            (vertex, steps) = queue.popleft()
+        else:
+            vertex = queue.popleft() 
+
+        path.append((vertex, steps)) if compute_distances else path.append(vertex)
         #print(str(vertex) + ' ', end='')
 
         # If not visited, mark it as visited, and
@@ -167,7 +175,11 @@ def bfs(graph, root):
         for neighbour in graph[vertex]:
             if neighbour not in visited:
                 visited.add(neighbour)
-                queue.append(neighbour)
+                if compute_distances:
+                    queue.append((neighbour, steps + 1))
+                else:
+                    queue.append(neighbour)
+
     return path
 
 # DFS algorithm
@@ -178,7 +190,7 @@ def dfs(graph, start, visited=None):
 
     #print(start)
 
-    for next in graph[start] - visited:
+    for next in set(graph[start]) - visited:
         dfs(graph, next, visited)
     return visited
 

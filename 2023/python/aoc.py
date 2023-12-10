@@ -52,7 +52,7 @@ DEBUG_MODE = False
 
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
-from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap
+from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point
 from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
@@ -1343,6 +1343,8 @@ def day8_2(data):
 
 #endregion
 
+#region ##### Day 9 #####
+
 def get_differences(history):
     rows = [copy.deepcopy(history)]
 
@@ -1380,7 +1382,6 @@ def extrapolate_next_number(history, part2 = False):
 
     return extrapolated_number
 
-#region ##### Day 9 #####
 
 #Day 9, part 1: 1681758908 (0.037 secs)
 #Day 9, part 2: 803 (0.005 secs)
@@ -1410,6 +1411,134 @@ def day9_2(data):
         result += extrapolate_next_number(history, True)   
 
     AssertExpectedResult(803, result)
+    return result
+
+#endregion
+
+#region ##### Day 10 #####
+
+def is_pipe_connected(grid, this_pipe_coords, that_pipe_coords):
+    (x,y) = this_pipe_coords
+    (xx, yy) = that_pipe_coords
+    this_pipe = grid[y][x]
+    that_pipe = grid[yy][xx]
+    is_connected = False
+
+    east = (x+1, y)
+    west = (x-1, y)
+    north = (x, y-1)
+    south = (x, y+1)
+
+    north_pipes = ['|','7','F']
+    south_pipes = ['J','|','L']
+    west_pipes = ['-','L','F']
+    east_pipes = ['-','J','7']
+
+    if this_pipe == '|': #connected to north or south
+        if that_pipe_coords == north:
+            #print(this_pipe, "is connected to",that_pipe,"?", that_pipe in north_pipes)
+            is_connected = that_pipe in north_pipes
+        elif that_pipe_coords == south:
+            #print(this_pipe, "is connected to",that_pipe,"?", that_pipe in south_pipes)
+            is_connected = that_pipe in south_pipes
+    elif this_pipe == '-': #connected to west or east
+        if that_pipe_coords == west:
+            is_connected = that_pipe in west_pipes
+        elif that_pipe_coords == east:
+            is_connected = that_pipe in east_pipes
+    elif this_pipe == 'L': #connected to north or east
+        if that_pipe_coords == north:
+            is_connected = that_pipe in north_pipes
+        elif that_pipe_coords == east:
+            is_connected = that_pipe in east_pipes
+    elif this_pipe == 'J': #connected to north or west
+        if that_pipe_coords == north:
+            is_connected = that_pipe in north_pipes
+        elif that_pipe_coords == west:
+            is_connected = that_pipe in west_pipes
+    elif this_pipe == '7': #connected to west or south        
+        if that_pipe_coords == south:
+            is_connected = that_pipe in south_pipes
+        elif that_pipe_coords == west:
+            is_connected = that_pipe in west_pipes
+    elif this_pipe == 'F': #connected to east or south
+        if that_pipe_coords == south:
+            is_connected = that_pipe in south_pipes
+        elif that_pipe_coords == east:
+            is_connected = that_pipe in east_pipes
+
+    return is_connected
+
+def find_connecting_pipes(grid, s_node, graph):
+    grid_s = copy.deepcopy(grid)
+    (x,y) = s_node
+    east = (x+1, y)
+    west = (x-1, y)
+    north = (x, y-1)
+    south = (x, y+1)
+
+    possible_pipes = ['|', '-','L','J','7','F']
+    
+    possible_connections = {
+        '|': [], 
+        '-': [],
+        'L': [],
+        'J': [],
+        '7': [],
+        'F': []
+    }
+
+    for pipe in possible_pipes:
+        grid_s[y][x] = pipe
+        if is_pipe_connected(grid_s, s_node, north):
+            possible_connections[pipe].append(north)
+        if is_pipe_connected(grid_s, s_node, south):
+            possible_connections[pipe].append(south)
+        if is_pipe_connected(grid_s, s_node, east):
+            possible_connections[pipe].append(east)
+        if is_pipe_connected(grid_s, s_node, west):
+            possible_connections[pipe].append(west)
+        
+        if len(possible_connections[pipe]) == 2:
+            graph[(x,y)] = possible_connections[pipe]
+
+    return graph
+    
+
+def day10_1(data):
+    #data = read_input(2023, "10_teste")    
+    result = 0
+    grid = []
+
+    grid = buildMapGrid(data, initValue='.')  
+    graph = buildGraphFromMap_v2(grid, '.', is_pipe_connected)
+
+    s_node = find_starting_point(grid, 'S')
+    print("starting point at", s_node)
+    graph = find_connecting_pipes(grid, s_node, graph)
+
+    g = bfs(graph, s_node, compute_distances=True)
+
+    max_steps = -1
+    for (_, steps) in g:
+        if steps > max_steps:
+            max_steps = steps
+    result = max_steps
+
+    '''
+    for k in graph.keys():
+        if len(graph[k]) > 0:
+            print(k,"->",graph[k],grid[k[1]][k[0]])
+    '''
+    
+    AssertExpectedResult(6979, result)
+    return result
+
+def day10_2(data):
+    data = read_input(2023, "10_teste")    
+    result = 0     
+    
+    AssertExpectedResult(0, result)
     return result
 
 #endregion
