@@ -85,7 +85,7 @@ def printMap(map, fileMode = True):
         file1.close() 
 
 
-def buildMapGrid(data, initValue='', withPadding = True):
+def buildMapGrid(data, initValue='', withPadding = True, symbolMap = {}):
     data = copy.deepcopy(data)
     '''
     file_dir = os.path.dirname(os.path.realpath(__file__))
@@ -99,7 +99,11 @@ def buildMapGrid(data, initValue='', withPadding = True):
     
     for y in range(1,rows-1) if withPadding else range(rows):
         for x in range(1,columns-1) if withPadding else range(columns):
-            map[y][x] = data[y-1][x-1] if withPadding else data[y][x]
+            tile = data[y-1][x-1] if withPadding else data[y][x]
+            if symbolMap:
+                new_tile = symbolMap.get(tile)
+                tile = new_tile if new_tile else tile
+            map[y][x] = tile
 
     #printMap(map)
     return map

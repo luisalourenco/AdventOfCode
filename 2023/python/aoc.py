@@ -38,6 +38,7 @@ from parse import parse
 from parse import search
 from aocd import get_data
 from aocd import submit
+from shapely import Polygon, Point
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2023
@@ -1501,8 +1502,9 @@ def find_connecting_pipes(grid, s_node, graph):
         
         if len(possible_connections[pipe]) == 2:
             graph[(x,y)] = possible_connections[pipe]
-
-    return graph
+            return (graph, pipe)
+        
+    return graph,pipe
     
 
 def day10_1(data):
@@ -1515,12 +1517,13 @@ def day10_1(data):
 
     s_node = find_starting_point(grid, 'S')
     print("starting point at", s_node)
-    graph = find_connecting_pipes(grid, s_node, graph)
+    graph, _ = find_connecting_pipes(grid, s_node, graph)
 
-    g = bfs(graph, s_node, compute_distances=True)
-
+    loop = bfs(graph, s_node, compute_distances=True)
+    #print(loop)
+    
     max_steps = -1
-    for (_, steps) in g:
+    for (_, steps) in loop:
         if steps > max_steps:
             max_steps = steps
     result = max_steps
@@ -1534,10 +1537,126 @@ def day10_1(data):
     AssertExpectedResult(6979, result)
     return result
 
+
 def day10_2(data):
     data = read_input(2023, "10_teste")    
-    result = 0     
+    result = 0    
+    grid = []
+
+    symbols_map = {
+        "F": "\u250F",
+        "J": "\u251B",
+        "L": "\u2517",
+        "7": "\u2513",
+        "|": "\u2503",
+        "-": "\u2501"
+    }
+
+    grid = buildMapGrid(data, initValue='.') 
+    graph = buildGraphFromMap_v2(grid, '.', is_pipe_connected)
+
+    s_node = find_starting_point(grid, 'S')
+    print("starting point at", s_node)
+    graph, pipe = find_connecting_pipes(grid, s_node, graph)
+    grid[s_node[1]][s_node[0]] = symbols_map[pipe] # replace S with correct pipe
+
+    #printMap(grid)
+
+    loop = bfs(graph, s_node)
+    #print("loop:",loop)
     
+    rows = len(grid)
+    columns = len(grid[0])    
+
+    # fist attempt, buggy
+    inside_points = 0
+    for y in range(rows):           
+        boundaries = 0
+        for x in range(columns):
+            point = (x,y)
+            tile = grid[y][x]
+            if point in loop:
+                boundaries += 1
+            if tile == '.':
+                if boundaries % 2 != 0: # inside point
+                    inside_points += 1  
+
+    # second attempt
+    polygon = Polygon(loop)
+    print(polygon)
+
+    for y in range(rows):           
+        for x in range(columns):
+            print(polygon.contains(Point(x,y)))
+            
+            if polygon.contains(Point(x,y)):
+                result +=1
+           
+
+    print(result)
+    
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 11 #####
+
+
+def expand_univere(universe):
+    rows = len(universe)
+    columns = len(universe[0])    
+    expanded_universe = copy.deepcopy(universe)
+
+    galaxies_col = 0
+    galaxies_row = 0
+    for y in range(rows):
+        galaxies_row = sum([1 for atom in universe[y] if atom == "#"])
+        if galaxies_row == 0:
+            print("expanding universe", y, universe[y], universe[:y])
+            expanded_universe[:y].append(universe[y])
+            print("expanded universe", expanded_universe)
+
+        #for x in range(columns):
+    return expanded_universe
+
+def day11_1(data):
+    data = read_input(2023, "11_teste")    
+    result = 0  
+
+    universe = buildMapGrid(data, initValue='.', withPadding=False)
+    universe = expand_univere(universe)
+    printMap(universe)
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day11_2(data):
+    #data = read_input(2023, "11_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 12 #####
+
+
+def day12_1(data):
+    data = read_input(2023, "12_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day12_2(data):
+    #data = read_input(2023, "12_teste")    
+    result = 0    
+             
     AssertExpectedResult(0, result)
     return result
 
