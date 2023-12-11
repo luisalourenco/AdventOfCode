@@ -39,6 +39,8 @@ from parse import search
 from aocd import get_data
 from aocd import submit
 from shapely import Polygon, Point
+from itertools import combinations
+import networkx as nx
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2023
@@ -54,7 +56,7 @@ DEBUG_MODE = False
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -1604,32 +1606,71 @@ def day10_2(data):
 #region ##### Day 11 #####
 
 
-def expand_univere(universe):
+def expand_univere(universe, delta = 2):
     rows = len(universe)
     columns = len(universe[0])    
-    expanded_universe = copy.deepcopy(universe)
-
-    galaxies_col = 0
+    
+    expand_ys = []
+    expand_xs = []
+    
     galaxies_row = 0
     for y in range(rows):
         galaxies_row = sum([1 for atom in universe[y] if atom == "#"])
         if galaxies_row == 0:
-            print("expanding universe", y, universe[y], universe[:y])
-            expanded_universe[:y].append(universe[y])
-            print("expanded universe", expanded_universe)
+            expand_ys.append(y)
+       
+    for x in range(columns):
+        galaxies_col = 0 
+        #search by column              
+        for y in range(rows):
+            if universe[y][x] == "#":
+                galaxies_col += 1
+                
+        if galaxies_col == 0:
+            expand_xs.append(x)
+       
+    #print(expand_xs) 
+    #print(expand_ys) 
+    galaxies = set() 
+    delta=delta-1
+    
+    for y in range(rows):
+        for x in range(columns):
+            if universe[y][x] == "#":
+                xx = x
+                for l in expand_xs:
+                    if x > l:
+                        xx+= delta         
+                yy = y
+                for l in expand_ys:               
+                    if y > l:
+                        yy+= delta
 
-        #for x in range(columns):
-    return expanded_universe
+                galaxies.add((xx,yy))
+                
+    return galaxies
 
+#Day 11, part 1: 9724940 (0.135 secs)
+#Day 11, part 2: 569052586852 (0.030 secs)
 def day11_1(data):
-    data = read_input(2023, "11_teste")    
+    #data = read_input(2023, "11_teste")    
     result = 0  
 
     universe = buildMapGrid(data, initValue='.', withPadding=False)
-    universe = expand_univere(universe)
-    printMap(universe)
-
-    AssertExpectedResult(0, result)
+    galaxies = expand_univere(universe)
+    
+    galaxies_combinations = combinations(galaxies, 2)
+    for (galaxy_a, galaxy_b) in list(galaxies_combinations):
+        #print("finding shortest path from a:", galaxy_a,"to b:", galaxy_b)
+        min_path = sys.maxsize
+     
+        if galaxy_a != galaxy_b:
+            dist = abs(galaxy_a[0] - galaxy_b[0]) + abs(galaxy_a[1] - galaxy_b[1])
+            if dist < min_path:
+                    min_path = dist
+        result += min_path
+        
+    AssertExpectedResult(9724940, result)
     return result
 
 
@@ -1637,7 +1678,25 @@ def day11_2(data):
     #data = read_input(2023, "11_teste")    
     result = 0    
              
-    AssertExpectedResult(0, result)
+    universe = buildMapGrid(data, initValue='.', withPadding=False)
+    galaxies = expand_univere(universe, delta = 1000000)
+  
+    galaxies_combinations = combinations(galaxies, 2)
+    
+    for (galaxy_a, galaxy_b) in list(galaxies_combinations):
+        #print("finding shortest path from a:", galaxy_a,"to b:", galaxy_b)
+        min_path = sys.maxsize
+     
+        if galaxy_a != galaxy_b:
+            (x,y) = galaxy_a
+            (xx,yy) = galaxy_b
+            
+            dist = abs(x - xx) + abs(y - yy) 
+            if dist < min_path:
+                    min_path = dist
+        result += min_path
+        
+    AssertExpectedResult(569052586852, result)
     return result
 
 #endregion
@@ -1665,5 +1724,5 @@ def day12_2(data):
 
 if __name__ == "__main__":
     # override timeout
-    main(sys.argv, globals(), AOC_EDITION_YEAR, 900)
+    main(sys.argv, globals(), AOC_EDITION_YEAR, 5400)
 

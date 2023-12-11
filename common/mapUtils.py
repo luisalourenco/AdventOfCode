@@ -11,8 +11,8 @@ def buildGraphFromMap_v2(map, emptyCell, is_connected):
     sizeX = len(map[0])
     sizeY = len(map)
 
-    for y in range(1,sizeY-1):
-        for x in range(1,sizeX-1):
+    for y in range(sizeY):
+        for x in range(sizeX):
 
             east = (x+1, y)
             west = (x-1, y)
@@ -21,14 +21,21 @@ def buildGraphFromMap_v2(map, emptyCell, is_connected):
             
             neighbours = []
             if map[y][x] != emptyCell:
-                if map[east[1]][east[0]] != emptyCell and is_connected(map, (x,y), east):
-                    neighbours.append(east)
-                if map[west[1]][west[0]] != emptyCell and is_connected(map, (x,y), west):
-                    neighbours.append(west)
-                if map[north[1]][north[0]] != emptyCell and is_connected(map, (x,y), north):
-                    neighbours.append(north)
-                if map[south[1]][south[0]] != emptyCell and is_connected(map, (x,y), south):
-                    neighbours.append(south)
+                if 0 <= east[0] < sizeX and 0 <= east[1] < sizeY:
+                    if map[east[1]][east[0]] != emptyCell and is_connected(map, (x,y), east):
+                        neighbours.append(east)
+                
+                if 0 <= west[0] < sizeX and 0 <= west[1] < sizeY:                        
+                    if map[west[1]][west[0]] != emptyCell and is_connected(map, (x,y), west):
+                        neighbours.append(west)
+                
+                if 0 <= north[0] < sizeX and 0 <= north[1] < sizeY: 
+                    if map[north[1]][north[0]] != emptyCell and is_connected(map, (x,y), north):
+                        neighbours.append(north)
+                
+                if 0 <= south[0] < sizeX and 0 <= south[1] < sizeY: 
+                    if map[south[1]][south[0]] != emptyCell and is_connected(map, (x,y), south):
+                        neighbours.append(south)
             
             graph[(x,y)] = neighbours
     return graph

@@ -137,10 +137,60 @@ def find_shortest_path(graph, start, end, path=[]):
                         shortest = newpath
         return shortest
 
+
+# Function to find the shortest path between two nodes of a graph
+# Taken from https://www.geeksforgeeks.org/building-an-undirected-graph-and-finding-shortest-path-using-dictionaries-in-python/
+def BFS_SP(graph, start, goal):
+	explored = []
+	
+	# Queue for traversing the 
+	# graph in the BFS
+	queue = [[start]]
+	
+	# If the desired node is 
+	# reached
+	if start == goal:
+		print("Same Node")
+		return
+	
+	# Loop to traverse the graph 
+	# with the help of the queue
+	while queue:
+		path = queue.pop(0)
+		node = path[-1]
+		
+		# Condition to check if the
+		# current node is not visited
+		if node not in explored:
+			neighbours = graph[node]
+			
+			# Loop to iterate over the 
+			# neighbours of the node
+			for neighbour in neighbours:
+				new_path = list(path)
+				new_path.append(neighbour)
+				queue.append(new_path)
+				
+				# Condition to check if the 
+				# neighbour node is the goal
+				if neighbour == goal:
+					#print("Shortest path = ", *new_path)
+					return new_path
+			explored.append(node)
+
+	# Condition when the nodes 
+	# are not connected
+	print("So sorry, but a connecting"\
+				"path doesn't exist :(")
+	return None
+
+
 # Code by Eryk Kopczynski
 def find_shortest_pathOptimal(graph, start, end):
     dist = {start: [start]}
+    
     q = deque(start)
+    
     while len(q):
         at = q.popleft()
         for next in graph[at]:
@@ -193,6 +243,9 @@ def dfs(graph, start, visited=None):
     for next in set(graph[start]) - visited:
         dfs(graph, next, visited)
     return visited
+
+
+
 
 
 # Bellman Ford Algorithm in Python
