@@ -1565,7 +1565,7 @@ def day10_2(data):
     #printMap(grid)
 
     loop = bfs(graph, s_node)
-    #print("loop:",loop)
+    print("loop:",loop)
     
     rows = len(grid)
     columns = len(grid[0])    
@@ -1583,12 +1583,14 @@ def day10_2(data):
                 if boundaries % 2 != 0: # inside point
                     inside_points += 1  
 
+    print("inside points:", inside_points)
     # second attempt
     polygon = Polygon(loop)
     print(polygon)
 
     for y in range(rows):           
         for x in range(columns):
+            print(Point(x,y))
             print(polygon.contains(Point(x,y)))
             
             if polygon.contains(Point(x,y)):
