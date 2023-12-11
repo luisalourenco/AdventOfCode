@@ -38,7 +38,7 @@ from parse import parse
 from parse import search
 from aocd import get_data
 from aocd import submit
-from shapely import Polygon, Point
+from shapely import Polygon, Point, contains_xy
 from itertools import combinations
 import networkx as nx
 
@@ -1508,7 +1508,8 @@ def find_connecting_pipes(grid, s_node, graph):
         
     return graph,pipe
     
-
+#Day 10, part 1: 6979 (0.104 secs)
+#Day 10, part 2: 443 (55.916 secs)
 def day10_1(data):
     #data = read_input(2023, "10_teste")    
     result = 0
@@ -1539,9 +1540,9 @@ def day10_1(data):
     AssertExpectedResult(6979, result)
     return result
 
-
+# 40 wrong
 def day10_2(data):
-    data = read_input(2023, "10_teste")    
+    #data = read_input(2023, "10_teste")    
     result = 0    
     grid = []
 
@@ -1554,7 +1555,7 @@ def day10_2(data):
         "-": "\u2501"
     }
 
-    grid = buildMapGrid(data, initValue='.') 
+    grid = buildMapGrid(data, initValue='.', withPadding=False) 
     graph = buildGraphFromMap_v2(grid, '.', is_pipe_connected)
 
     s_node = find_starting_point(grid, 'S')
@@ -1565,41 +1566,65 @@ def day10_2(data):
     #printMap(grid)
 
     loop = bfs(graph, s_node)
-    print("loop:",loop)
+    #print("loop:",loop)
     
     rows = len(grid)
     columns = len(grid[0])    
-
-    # fist attempt, buggy
-    inside_points = 0
+    #hack to account for squeezes
     for y in range(rows):           
-        boundaries = 0
         for x in range(columns):
-            point = (x,y)
             tile = grid[y][x]
-            if point in loop:
-                boundaries += 1
+            if tile != '.' and (x,y) not in loop:
+                grid[y][x] = '.'
+
+    inside_points = 0
+    # going from left to right, then change row
+    for yy in range(rows):           
+        boundaries = 0
+        for xx in range(columns):
+            tile = grid[yy][xx]
+
+            # for each empty space, "draw" a ray forward and count boundaries of the loop other than -
             if tile == '.':
+                
+                boundaries = 0
+                expect_seven = False
+                expect_j = False
+                for x in range(xx,columns):
+                    point = (x,yy)
+                    ttile = grid[yy][x]
+                    
+                    # "FJ", and "L7" are corners that should count as 1
+                    if point in loop and ttile != '-':
+                        
+                        if ttile =='L':
+                            expect_seven = True
+                        elif expect_seven:
+                            if ttile == '7':
+                                boundaries += 1
+                            expect_seven = False
+
+                        elif ttile =='F':
+                            expect_j = True
+                        elif expect_j:
+                            if ttile == 'J':
+                                boundaries += 1
+                            expect_j = False
+                        else:
+                            boundaries +=1
+
+                # point is inside if the number of boundaries crossed is odd (impar)       
                 if boundaries % 2 != 0: # inside point
                     inside_points += 1  
+                    grid[yy][xx] = "I"
+
 
     print("inside points:", inside_points)
-    # second attempt
-    polygon = Polygon(loop)
-    print(polygon)
+    #printMap(grid, symbolsMap=symbols_map)
+    #printMap(grid) 
 
-    for y in range(rows):           
-        for x in range(columns):
-            print(Point(x,y))
-            print(polygon.contains(Point(x,y)))
-            
-            if polygon.contains(Point(x,y)):
-                result +=1
-           
-
-    print(result)
-    
-    AssertExpectedResult(0, result)
+    result = inside_points    
+    AssertExpectedResult(443, result)
     return result
 
 #endregion
@@ -1715,7 +1740,7 @@ def day12_1(data):
 
 
 def day12_2(data):
-    #data = read_input(2023, "12_teste")    
+    data = read_input(2023, "12_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
@@ -1723,6 +1748,26 @@ def day12_2(data):
 
 #endregion
 
+
+#region ##### Day 13 #####
+
+
+def day13_1(data):
+    data = read_input(2023, "13_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day13_2(data):
+    data = read_input(2023, "13_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
 
 if __name__ == "__main__":
     # override timeout

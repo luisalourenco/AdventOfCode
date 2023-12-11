@@ -79,7 +79,19 @@ def find_starting_point(map, starting_point):
     return None
 
 # fileMode is an old parameter, idea was to have a print in console version as well
-def printMap(map, fileMode = True):
+def printMap(map, fileMode = True, symbolsMap = {}):
+    map = copy.deepcopy(map)
+    if symbolsMap:
+        rows = len(map)
+        columns = len(map[0])
+        for y in range(rows) :
+            for x in range(columns):
+                tile = map[y][x]                
+                new_tile = symbolsMap.get(tile)
+                tile = new_tile if new_tile else tile
+                map[y][x] = tile
+
+
     if fileMode:
         file1 = open("MyMap.txt","a") 
     
