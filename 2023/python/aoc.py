@@ -1731,13 +1731,114 @@ def day11_2(data):
 #region ##### Day 12 #####
 
 
+''' test cases
+#.#.### 1,1,3
+.#...#....###. 1,1,3
+.#.###.#.###### 1,3,1,6
+####.#...#... 4,1,1
+#....######..#####. 1,6,5
+.###.##....# 3,2,1
+'''
+def check_condition(springs, condition):
+    print("testing if", springs,"meets condition", condition)
+    condition.reverse()
+
+    contiguous = 0
+    start = False
+    for spring in springs:
+        if spring == "#":
+            contiguous+=1
+            if not start:
+                start = True
+        elif start and contiguous > 0:
+            expected = condition.pop()
+            print("checking contiguous", contiguous,"equals expected",expected)
+            if contiguous != expected:
+                return False
+            contiguous = 0
+
+    if len(condition) > 0:
+        expected = condition.pop()
+        print("checking contiguous", contiguous,"equals expected",expected)
+        if contiguous != expected:
+            return False
+        
+    return True 
+
+
+def run_test_cases():
+    ''' test cases
+        #.#.### 1,1,3
+        .#...#....###. 1,1,3
+        .#.###.#.###### 1,3,1,6
+        ####.#...#... 4,1,1
+        #....######..#####. 1,6,5
+        .###.##....# 3,2,1
+    '''
+    print(check_condition(list('#.#.###'), [1,1,3]))
+    print()
+    print(check_condition(list('.#...#....###.'), [1,1,3]))
+    print()
+    print(check_condition(list('.#.###.#.######'), [1,3,1,6]))
+    print()
+    print(check_condition(list('####.#...#...'), [4,1,1]))
+    print()
+    print(check_condition(list('#....######..#####.'), [1,6,5]))
+    print()
+    print(check_condition(list('.###.##....#'), [ 3,2,1]))
+    
+    test_cases = ['.###.##.#...',
+                    '.###.##..#..',
+                    '.###.##...#.',
+                    '.###.##....#',
+                    '.###..##.#..',
+                    '.###..##..#.',
+                    '.###..##...#',
+                    '.###...##.#.',
+                    '.###...##..#',
+                    '.#.#....##.#']
+    for test in test_cases:
+        print(check_condition(list(test),[3,2,1]))
+        print()
+
+
+def combine_springs(springs):
+     size = len(springs)
+     for i in itertools.product(*(['.#'] * size)) :
+         yield i
+
+
+def find_unknown_springs(springs):
+    unkowns = []
+    for i in range(len(springs)):
+        if springs[i] == '?':
+            unkowns.append(i)
+    return unkowns
+
 def day12_1(data):
     data = read_input(2023, "12_teste")    
     result = 0  
+    records = []
 
+    for line in data:
+        data_split = line.split(" ")
+        records.append((list(data_split[0]), ints(data_split[1].split(','))))
+    
+    print(records)
+
+    for (springs, condition) in records:
+        unkowns = find_unknown_springs(springs)
+
+    
+    s = '???.###'
+    print(s.replace('???','.#.'))
+    print(s)
+    for x in combine_springs("???"):
+        print(x)
+        print()
+   
     AssertExpectedResult(0, result)
     return result
-
 
 def day12_2(data):
     data = read_input(2023, "12_teste")    
