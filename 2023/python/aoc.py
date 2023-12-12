@@ -1818,12 +1818,13 @@ def find_unknown_springs(springs):
         if springs[i] == '?':
             unkowns.append(i)
     return unkowns
-    
+
+#@lru_cache(maxsize=128)    
 def check_condition_rec(springs, condition, counter, replaced):    
     #print("call with",springs, condition, counter)
     
     if len(springs) == 0:
-        print("REP:",replaced)
+        #print("REP:",replaced)
         
         for cond in condition:
             
@@ -1833,17 +1834,17 @@ def check_condition_rec(springs, condition, counter, replaced):
                 return 0
             test = replaced[i:i+cond]
             
-            print("testing:",test,(['#']*cond),cond)
+            #print("testing:",test,(['#']*cond),cond)
             if test != (['#']*cond):
                 return 0
             else:        
                 replaced = replaced[i+cond:]
-                print("--",replaced)
+                #print("--",replaced)
                 if len(condition)> 0 and len(replaced) > 0:
                     if replaced[0] == '#':
                         return 0                
         
-        print(replaced,"satisfied all conditions:",condition)
+        #print(replaced,"satisfied all conditions:",condition)
         return 1
         
     elif springs[0] == '#':        
@@ -1853,7 +1854,7 @@ def check_condition_rec(springs, condition, counter, replaced):
         return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]]) 
        
     elif springs[0] == '?':
-        print("Replacing ?")
+        #print("Replacing ?")
         
         return check_condition_rec(springs[1:], condition, counter, replaced + ['#']) + check_condition_rec(springs[1:], condition, counter, replaced + ['.'])
     
@@ -1864,8 +1865,8 @@ def check_condition_v2(s, c):
     #if sum([1 for ss in s if ss == '#']) != sum(c):
     #  
     res = check_condition_rec(s, c, 0, [])
-    print("call check_condition_v2",s, c, res)
-    print()
+    #print("call check_condition_v2",s, c, res)
+    #print()
     return res
 
 def day12_1(data):
