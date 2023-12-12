@@ -1740,8 +1740,12 @@ def day11_2(data):
 .###.##....# 3,2,1
 '''
 def check_condition(springs, condition):
-    print("testing if", springs,"meets condition", condition)
-    condition.reverse()
+    condition_copy = copy.deepcopy(condition)
+    #print("testing if", springs,"meets condition", condition_copy)
+    condition_copy.reverse()
+
+    if sum([1 for s in springs if s == '#']) != sum(condition):
+        return False
 
     contiguous = 0
     start = False
@@ -1750,20 +1754,20 @@ def check_condition(springs, condition):
             contiguous+=1
             if not start:
                 start = True
-        elif start and contiguous > 0:
-            expected = condition.pop()
-            print("checking contiguous", contiguous,"equals expected",expected)
+        elif start and contiguous > 0 and len(condition_copy) > 0:
+            expected = condition_copy.pop()
+            #print("checking contiguous", contiguous,"equals expected",expected,":", contiguous != expected)
             if contiguous != expected:
                 return False
             contiguous = 0
 
-    if len(condition) > 0:
-        expected = condition.pop()
-        print("checking contiguous", contiguous,"equals expected",expected)
+    if len(condition_copy) > 0:
+        expected = condition_copy.pop()
+        #print("checking contiguous", contiguous,"equals expected",expected,":", contiguous != expected)
         if contiguous != expected:
             return False
         
-    return True 
+    return True
 
 
 def run_test_cases():
@@ -1814,6 +1818,55 @@ def find_unknown_springs(springs):
         if springs[i] == '?':
             unkowns.append(i)
     return unkowns
+    
+def check_condition_rec(springs, condition, counter, replaced):    
+    #print("call with",springs, condition, counter)
+    
+    if len(springs) == 0:
+        print("REP:",replaced)
+        
+        for cond in condition:
+            
+            try:
+                i = replaced.index('#')
+            except ValueError:
+                return 0
+            test = replaced[i:i+cond]
+            
+            print("testing:",test,(['#']*cond),cond)
+            if test != (['#']*cond):
+                return 0
+            else:        
+                replaced = replaced[i+cond:]
+                print("--",replaced)
+                if len(condition)> 0 and len(replaced) > 0:
+                    if replaced[0] == '#':
+                        return 0                
+        
+        print(replaced,"satisfied all conditions:",condition)
+        return 1
+        
+    elif springs[0] == '#':        
+        return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]])
+        
+    elif springs[0] == '.':       
+        return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]]) 
+       
+    elif springs[0] == '?':
+        print("Replacing ?")
+        
+        return check_condition_rec(springs[1:], condition, counter, replaced + ['#']) + check_condition_rec(springs[1:], condition, counter, replaced + ['.'])
+    
+
+    
+def check_condition_v2(s, c):
+    
+    #if sum([1 for ss in s if ss == '#']) != sum(c):
+    #  
+    res = check_condition_rec(s, c, 0, [])
+    print("call check_condition_v2",s, c, res)
+    print()
+    return res
 
 def day12_1(data):
     data = read_input(2023, "12_teste")    
@@ -1824,20 +1877,35 @@ def day12_1(data):
         data_split = line.split(" ")
         records.append((list(data_split[0]), ints(data_split[1].split(','))))
     
-    print(records)
-
+    #print(records)
+    size = 0
     for (springs, condition) in records:
+        
+        result += check_condition_v2(springs, condition)
+        
+        '''
         unkowns = find_unknown_springs(springs)
-
-    
-    s = '???.###'
-    print(s.replace('???','.#.'))
-    print(s)
-    for x in combine_springs("???"):
-        print(x)
-        print()
-   
-    AssertExpectedResult(0, result)
+        #print(unkowns)
+        possible_combinatios = combine_springs(unkowns)
+        
+        arrangments = 0
+        
+        for comb in possible_combinatios:
+            size+=1
+            j = 0
+            springs_copy = copy.deepcopy(springs)
+            for i in unkowns:
+                val = comb[j]
+                j +=1
+                springs_copy[i] = val
+            if check_condition(springs_copy, condition):
+                arrangments +=1
+               # print()
+        #print(springs,"has",arrangments,"possible arrangements")
+        result += arrangments
+        '''
+    #print(size)
+    AssertExpectedResult(7251, result)
     return result
 
 def day12_2(data):
