@@ -2090,10 +2090,12 @@ def find_mirror_point(grid):
 
 def swap_tile(gg, i, j):
     g = copy.deepcopy(gg)
-    if g[j][i] == '.':
+    
+    if  g[j][i] == '.':
         g[j][i] = '#'
-    else:
+    elif g[j][i] == '#':
         g[j][i] = '.'
+        
     return g
 
 def summarise_pattern_notes(grids, swap=False):    
@@ -2110,15 +2112,19 @@ def summarise_pattern_notes(grids, swap=False):
 
         print("originals:",vertical,horizontal)
         original_grid = copy.deepcopy(grid)
+        count = 0
+        rows = len(original_grid)
+        columns = len(original_grid[0])
         
-        if swap:
-            rows = len(original_grid)
-            columns = len(original_grid[0])
+        if swap:          
+            
             end = False
             #use_v = False
             #use_h = False
 
+            
             for y in range(rows):
+                
                 for x in range(columns):
                     #end = False
                     use_v = False
@@ -2157,8 +2163,11 @@ def summarise_pattern_notes(grids, swap=False):
             
                 if end:
                     break
+                count+=1
         
-        
+            print("count, rows, coluns, rows*columns,",count, rows, columns, rows*columns)
+            if count == rows * columns:
+                print("BOOM!")
         
         if vertical and not horizontal:            
             v = original_v if len(vertical) == 0 else vertical
@@ -2212,7 +2221,7 @@ def day13_1(data):
 
 # too low 25245 
 def day13_2(data):
-    data = read_input(2023, "13_t")    
+    #data = read_input(2023, "13_t")    
     result = 0  
     grids = []
 
