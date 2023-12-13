@@ -1943,8 +1943,6 @@ def day12_2(data):
 
 def search_vertical_line_all_sizes(max_size, i, l, r, candidates, row):
     
-    #print("begin", candidates)
-    #for size in range(max_size): 
     size = max_size
     if True:
         #rows = set() 
@@ -2050,16 +2048,14 @@ def update_mirror_candidates(mirrors, mirror_point):
         mirrors[k] = (size, rows)
 
 def extract_mirror_point(mirrors, rows):
-    #print(mirrors)
-    #print(rows)
+
     #{2: (1, list(rows)), 3: (3, 6), 4: (1, 6), 7: (2, 6)}
     vertical_line = []
     for k in mirrors.keys():
-        (size, rr) = mirrors.get(k)
+        (_, rr) = mirrors.get(k)
         if len(rr) == rows:
             vertical_line.append(k)
 
-    #print("mirrors:",mirrors)
     return vertical_line
 
 def find_mirror_point(grid):
@@ -2078,14 +2074,11 @@ def find_mirror_point(grid):
     mirrors = dict()
     for r in range(rows):
         mirror_point = search_horizontal_line(grid, r)
-        #update_mirror_candidates(mirrors, mirror_point)
         
         if mirror_point:
             horizontal_mirror.append(mirror_point)
     
-    #print(mirrors)
-    #horizontal_mirror = extract_mirror_point(mirrors, rows)
-
+    
     return vertical_mirror, horizontal_mirror    
 
 def swap_tile(gg, i, j):
@@ -2101,28 +2094,27 @@ def swap_tile(gg, i, j):
 def summarise_pattern_notes(grids, swap=False):    
     result = 0    
 
+    test_case = 0
     for g in grids:
-        verticals = []
-        horizontals = []
         grid = buildMapGrid(g, '.', withPadding=False)
         
-        vertical, horizontal = find_mirror_point(grid)
+        vertical, horizontal = find_mirror_point(grid) 
+        
         original_v = vertical[0] if vertical else vertical
         original_h = horizontal[0] if horizontal else horizontal
 
-        print("originals:",vertical,horizontal)
         original_grid = copy.deepcopy(grid)
         count = 0
         rows = len(original_grid)
         columns = len(original_grid[0])
+
+        test_case += 1
+
+        #print("Test case:", test_case)
         
         if swap:          
             
             end = False
-            #use_v = False
-            #use_h = False
-
-            
             for y in range(rows):
                 
                 for x in range(columns):
@@ -2131,17 +2123,26 @@ def summarise_pattern_notes(grids, swap=False):
                     use_h = False
                     
                     #print("swapping:",x,y)
+                    count+=1
                     grid = swap_tile(original_grid,x,y)
                     vertical, horizontal = find_mirror_point(grid)
                     
                     #printMap(grid)
+
+                    #print("horizontal main",horizontal)
                     
-                    new_v = vertical[0] if vertical else vertical
-                    new_h = horizontal[0] if horizontal else horizontal
+                    new_v = [v for v in vertical if v != original_v] if vertical else vertical
+                    new_h = [h for h in horizontal if h != original_h] if horizontal else horizontal
+
+                    #print("new_h main",new_h)
+
+                    #print("originals main:",original_v,original_h)
+
                     
-                    if new_v != original_v and len(vertical) > 0:
-                        print("vertical:",new_v)
-                        print("orignal_v:",original_v)
+                    #print(new_v, new_h)
+                    if new_v != original_v and len(vertical) > 0 and len(new_v) > 0:
+                        #print("vertical:",new_v)
+                        #print("orignal_v:",original_v)
                         if original_v in vertical:
                             vertical.remove(original_v)
                         end = True
@@ -2149,25 +2150,24 @@ def summarise_pattern_notes(grids, swap=False):
                         break
                     
                     
-                    if new_h != original_h and len(horizontal) > 0:
-                        print("horizontal:",new_h)
-                        print("original_h:",original_h)
+                    if new_h != original_h and len(horizontal) > 0 and len(new_h) > 0:
+                        #print("len(horizontal):",len(horizontal))
+                        #print("horizontal:",horizontal)
+                        #print("new_h:",new_h)
+                        #print("original_h:",original_h)
                         if original_h in horizontal:
                             horizontal.remove(original_h)
                         end = True
                         use_h = True
                         break
                     
-                    
-                    #print(vertical, horizontal)  
-            
                 if end:
                     break
-                count+=1
+               
         
-            print("count, rows, coluns, rows*columns,",count, rows, columns, rows*columns)
-            if count == rows * columns:
-                print("BOOM!")
+            #print("count, rows, coluns, rows*columns,",count, rows, columns, rows*columns)
+            #if count == rows * columns:
+            #    print("BOOM! Test case:", test_case)
         
         if vertical and not horizontal:            
             v = original_v if len(vertical) == 0 else vertical
@@ -2199,8 +2199,10 @@ def summarise_pattern_notes(grids, swap=False):
     return result
 
 # too low 28612, 28729, 28818, 28818
+#Day 13, part 1: 34918 (0.119 secs)
+#Day 13, part 2: 33054 (6.659 secs)
 def day13_1(data):
-    data = read_input(2023, "13_teste")    
+    #data = read_input(2023, "13_t")    
     result = 0  
     grids = []
 
