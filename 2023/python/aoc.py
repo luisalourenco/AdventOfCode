@@ -1941,32 +1941,70 @@ def day12_2(data):
 
 #region ##### Day 13 #####
 
-def search_vertical_line(grid, row):
-    rows = len(grid)
-
-    candidates = []
-    for i in range(rows):
-        left = grid[row][i:]
-        right = grid[row][:i]
+def search_vertical_line_all_sizes(max_size, i, l, r, candidates, row):
+    
+    #print("begin", candidates)
+    #for size in range(max_size): 
+    size = max_size
+    if True:
+        #rows = set() 
+        left = copy.deepcopy(l)
+        right = copy.deepcopy(r)
         
-        #print(i,":")
-        #print("left:",left,)
-        #print("right:",right)
-
-        size = min(len(left), len(right))
-        left = left[len(left)-size:]
-        right = right[len(right)-size:]
+        left = left[len(left)-size :]
+        right = right[:size] #len(left)-size
 
         #print("slice size:", size)
         #print("left:",left,)
         #print("right:",right)
 
         right.reverse()
-        #print(i,":",left,"==",right)
+        #print("col:",i,":",left,"==",right)
         #print()
         
         if left == right and len(left) > 0:
+            if i not in candidates:                
+                candidates[i] = (size, row)
+            else:
+                candidates[i] = (size, row)
+            #candidates.append(i)
+        
+    #print("candidates for row, col",row,i,":", candidates)
+
+    return candidates
+
+def search_vertical_line(grid, row):
+    columns = len(grid[0])
+
+    #print("row:",row)
+    candidates = dict()
+    for i in range(columns):
+        left = grid[row][:i]
+        right = grid[row][i:]
+        
+        #print("col:",i)
+        #print("left:",left,)
+        #print("right:",right)
+
+        size = min(len(left), len(right))
+        
+        candidates = search_vertical_line_all_sizes(size, i, left, right, candidates, row)
+        
+        '''
+        left = left[len(left)-size : ]
+        right = right[:i] #len(left)-size
+
+        print("slice size:", size)
+        print("left:",left,)
+        print("right:",right)
+
+        right.reverse()
+        print(i,":",left,"==",right)
+        print()
+        
+        if left == right and len(left) > 0:
             candidates.append(i)
+        '''
 
     return candidates
 
@@ -1982,8 +2020,12 @@ def search_horizontal_line(grid, row):
 
     size = min(len(down), len(up))
     up = up[len(up)-size:]
-    down = down[len(down)-size:]
+    down = down[:size]
 
+    #print("size:",size)
+    #print("up:",up,)
+    #print()
+    #print("down:",down)
    
     down.reverse()
     #print(row,":",up,"==",down)
@@ -1996,15 +2038,24 @@ def search_horizontal_line(grid, row):
 
 def update_mirror_candidates(mirrors, mirror_point):
 
-    for mirror in mirror_point:
-        if mirrors.get(mirror):
-            mirrors[mirror] = mirrors[mirror] + 1
-        else:
-            mirrors[mirror] = 1
+    #{2: (1, 6), 3: (3, 6), 4: (1, 6), 7: (2, 6)}
+    for k in mirror_point.keys():
+        (size, row) = mirror_point.get(k)
+        
+        if k not in mirrors:
+            mirrors[k] = (size, set())
+        
+        (size, rows) = mirrors[k]
+        rows.add(row)
+        mirrors[k] = (size, rows)
 
 def extract_mirror_point(mirrors, rows):
-    for (k,v) in mirrors.items():
-        if v == rows:
+    #print(mirrors)
+    #print(rows)
+    #{2: (1, list(rows)), 3: (3, 6), 4: (1, 6), 7: (2, 6)}
+    for k in mirrors.keys():
+        (size, rr) = mirrors.get(k)
+        if len(rr) == rows:
             return k
 
     #print("mirrors:",mirrors)
@@ -2050,16 +2101,23 @@ def summarise_pattern_notes(grids):
         if vertical:
             result += vertical
             print("Vertical mirror point found at",vertical)
-        else:
-            print("No vertical mirror point found")
+        #else:
+        #    print("No vertical mirror point found")
         if horizontal:
             result += (horizontal*100)
             print("Horizontal mirror point found at",horizontal)
-        else:
-            print("No horizontal mirror point found")
+        #else:
+        #    print("No horizontal mirror point found")
+        if not horizontal and not vertical:
+            print("No mirror found")
+            print()
+        if horizontal and vertical:
+            print("Two mirrors found!")
+            print()
+            
     return result
 
-# too low 28612
+# too low 28612, 28729, 28818, 28818
 def day13_1(data):
     #data = read_input(2023, "13_teste")    
     result = 0  
