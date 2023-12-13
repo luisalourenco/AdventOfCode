@@ -21,7 +21,7 @@ import re
 import itertools
 from typing import ChainMap, DefaultDict
 import numpy as np
-from functools import lru_cache
+from functools import lru_cache, cache
 import operator
 from itertools import takewhile
 import itertools, collections
@@ -1819,33 +1819,46 @@ def find_unknown_springs(springs):
             unkowns.append(i)
     return unkowns
 
+
+def aux(replaced, condition):
+    
+    for cond in condition:
+            
+        try:
+            i = replaced.index('#')
+        except ValueError:
+            return 0
+        test = replaced[i:i+cond]
+            
+        #print("testing:",test,(['#']*cond),cond)
+        if test != (['#']*cond):
+            #print(cond,"condition not met")
+            #print()
+            return 0
+        else:        
+            #print(cond,"condition met!")
+            replaced = replaced[i+cond:]
+            #print("-->",replaced)
+            if len(condition)> 0 and len(replaced) > 0:
+                if replaced[0] == '#':
+                    #print(cond,"condition not met")
+                    #print()
+                    return 0                
+        
+    if "#" in replaced:
+        return 0
+
+    #print(replaced,"satisfied all conditions:",condition)
+    #print()
+    return 1
+
+
 #@lru_cache(maxsize=128)    
 def check_condition_rec(springs, condition, counter, replaced):    
     #print("call with",springs, condition, counter)
     
     if len(springs) == 0:
-        #print("REP:",replaced)
-        
-        for cond in condition:
-            
-            try:
-                i = replaced.index('#')
-            except ValueError:
-                return 0
-            test = replaced[i:i+cond]
-            
-            #print("testing:",test,(['#']*cond),cond)
-            if test != (['#']*cond):
-                return 0
-            else:        
-                replaced = replaced[i+cond:]
-                #print("--",replaced)
-                if len(condition)> 0 and len(replaced) > 0:
-                    if replaced[0] == '#':
-                        return 0                
-        
-        #print(replaced,"satisfied all conditions:",condition)
-        return 1
+        return aux(replaced, condition)
         
     elif springs[0] == '#':        
         return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]])
@@ -1854,37 +1867,27 @@ def check_condition_rec(springs, condition, counter, replaced):
         return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]]) 
        
     elif springs[0] == '?':
-        #print("Replacing ?")
-        
+        #print("Replacing ?")        
         return check_condition_rec(springs[1:], condition, counter, replaced + ['#']) + check_condition_rec(springs[1:], condition, counter, replaced + ['.'])
     
+def check_condition_v2(line):
 
-    
-def check_condition_v2(s, c):
-    
-    #if sum([1 for ss in s if ss == '#']) != sum(c):
-    #  
+    data_split = line.split(" ")
+    s = list(data_split[0])
+    c = ints(data_split[1].split(','))
+
     res = check_condition_rec(s, c, 0, [])
     #print("call check_condition_v2",s, c, res)
     #print()
     return res
 
-def day12_1(data):
-    data = read_input(2023, "12_teste")    
-    result = 0  
-    records = []
-
-    for line in data:
-        data_split = line.split(" ")
-        records.append((list(data_split[0]), ints(data_split[1].split(','))))
-    
-    #print(records)
+# takes 61s on real input
+def naive_solution(records):
     size = 0
+    result = 0
     for (springs, condition) in records:
         
-        result += check_condition_v2(springs, condition)
-        
-        '''
+        result += check_condition(springs, condition)
         unkowns = find_unknown_springs(springs)
         #print(unkowns)
         possible_combinatios = combine_springs(unkowns)
@@ -1904,7 +1907,24 @@ def day12_1(data):
                # print()
         #print(springs,"has",arrangments,"possible arrangements")
         result += arrangments
-        '''
+    return result
+
+def day12_1(data):
+    #data = read_input(2023, "12_teste")    
+    result = 0  
+    records = []
+
+    for line in data:
+        data_split = line.split(" ")
+        records.append((list(data_split[0]), ints(data_split[1].split(','))))
+    
+    #print(records)
+    #result = naive_solution(records)
+
+    #for (springs, condition) in records:
+    for line in data:        
+        result += check_condition_v2(line)#springs, condition)
+        
     #print(size)
     AssertExpectedResult(7251, result)
     return result
@@ -1921,10 +1941,141 @@ def day12_2(data):
 
 #region ##### Day 13 #####
 
+def search_vertical_line(grid, row):
+    rows = len(grid)
 
+    candidates = []
+    for i in range(rows):
+        left = grid[row][i:]
+        right = grid[row][:i]
+        
+        #print(i,":")
+        #print("left:",left,)
+        #print("right:",right)
+
+        size = min(len(left), len(right))
+        left = left[len(left)-size:]
+        right = right[len(right)-size:]
+
+        #print("slice size:", size)
+        #print("left:",left,)
+        #print("right:",right)
+
+        right.reverse()
+        #print(i,":",left,"==",right)
+        #print()
+        
+        if left == right and len(left) > 0:
+            candidates.append(i)
+
+    return candidates
+
+
+def search_horizontal_line(grid, row):
+    up = grid[:row]
+    down = grid[row:]
+        
+    #print(row,":")
+    #print("up:",up,)
+    #print()
+    #print("down:",down)
+
+    size = min(len(down), len(up))
+    up = up[len(up)-size:]
+    down = down[len(down)-size:]
+
+   
+    down.reverse()
+    #print(row,":",up,"==",down)
+    #print()
+        
+    if down == up and len(down) > 0:
+        return row
+    
+    return None
+
+def update_mirror_candidates(mirrors, mirror_point):
+
+    for mirror in mirror_point:
+        if mirrors.get(mirror):
+            mirrors[mirror] = mirrors[mirror] + 1
+        else:
+            mirrors[mirror] = 1
+
+def extract_mirror_point(mirrors, rows):
+    for (k,v) in mirrors.items():
+        if v == rows:
+            return k
+
+    #print("mirrors:",mirrors)
+    return None
+
+def find_mirror_point(grid):
+    rows = len(grid)
+
+    mirror_point = None
+    mirrors = dict()
+    horizontal_mirror = None
+
+    for r in range(rows):
+        mirror_point = search_vertical_line(grid, r)
+        update_mirror_candidates(mirrors, mirror_point)
+    
+    vertical_mirror = extract_mirror_point(mirrors, rows)
+    
+    mirrors = dict()
+    for r in range(rows):
+        mirror_point = search_horizontal_line(grid, r)
+        #update_mirror_candidates(mirrors, mirror_point)
+        
+        if mirror_point:
+            horizontal_mirror = mirror_point
+    
+    #print(mirrors)
+    #horizontal_mirror = extract_mirror_point(mirrors, rows)
+
+    return vertical_mirror, horizontal_mirror    
+
+
+
+def summarise_pattern_notes(grids):
+    result = 0    
+
+    for g in grids:
+        grid = buildMapGrid(g, '.', withPadding=False)
+        #rows = len(grid)
+        #columns = len(grid[0])
+        vertical, horizontal = find_mirror_point(grid)
+        
+        if vertical:
+            result += vertical
+            print("Vertical mirror point found at",vertical)
+        else:
+            print("No vertical mirror point found")
+        if horizontal:
+            result += (horizontal*100)
+            print("Horizontal mirror point found at",horizontal)
+        else:
+            print("No horizontal mirror point found")
+    return result
+
+# too low 28612
 def day13_1(data):
-    data = read_input(2023, "13_teste")    
+    #data = read_input(2023, "13_teste")    
     result = 0  
+    grids = []
+
+    while(data):
+        try:
+            i = data.index('')
+        except ValueError:
+            grids.append(data)
+            break
+        grid = data[:i]
+        grids.append(grid)
+        data = data[i+1:]
+
+    result = summarise_pattern_notes(grids)
 
     AssertExpectedResult(0, result)
     return result
@@ -1932,6 +2083,26 @@ def day13_1(data):
 
 def day13_2(data):
     data = read_input(2023, "13_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 14 #####
+
+
+def day14_1(data):
+    data = read_input(2023, "14_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day14_2(data):
+    data = read_input(2023, "14_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
