@@ -2053,20 +2053,21 @@ def extract_mirror_point(mirrors, rows):
     #print(mirrors)
     #print(rows)
     #{2: (1, list(rows)), 3: (3, 6), 4: (1, 6), 7: (2, 6)}
+    vertical_line = []
     for k in mirrors.keys():
         (size, rr) = mirrors.get(k)
         if len(rr) == rows:
-            return k
+            vertical_line.append(k)
 
     #print("mirrors:",mirrors)
-    return None
+    return vertical_line
 
 def find_mirror_point(grid):
     rows = len(grid)
 
     mirror_point = None
     mirrors = dict()
-    horizontal_mirror = None
+    horizontal_mirror = []
 
     for r in range(rows):
         mirror_point = search_vertical_line(grid, r)
@@ -2080,46 +2081,117 @@ def find_mirror_point(grid):
         #update_mirror_candidates(mirrors, mirror_point)
         
         if mirror_point:
-            horizontal_mirror = mirror_point
+            horizontal_mirror.append(mirror_point)
     
     #print(mirrors)
     #horizontal_mirror = extract_mirror_point(mirrors, rows)
 
     return vertical_mirror, horizontal_mirror    
 
+def swap_tile(gg, i, j):
+    g = copy.deepcopy(gg)
+    if g[j][i] == '.':
+        g[j][i] = '#'
+    else:
+        g[j][i] = '.'
+    return g
 
-
-def summarise_pattern_notes(grids):
+def summarise_pattern_notes(grids, swap=False):    
     result = 0    
 
     for g in grids:
+        verticals = []
+        horizontals = []
         grid = buildMapGrid(g, '.', withPadding=False)
-        #rows = len(grid)
-        #columns = len(grid[0])
-        vertical, horizontal = find_mirror_point(grid)
         
-        if vertical:
-            result += vertical
+        vertical, horizontal = find_mirror_point(grid)
+        original_v = vertical[0] if vertical else vertical
+        original_h = horizontal[0] if horizontal else horizontal
+
+        print("originals:",vertical,horizontal)
+        original_grid = copy.deepcopy(grid)
+        
+        if swap:
+            rows = len(original_grid)
+            columns = len(original_grid[0])
+            end = False
+            #use_v = False
+            #use_h = False
+
+            for y in range(rows):
+                for x in range(columns):
+                    #end = False
+                    use_v = False
+                    use_h = False
+                    
+                    #print("swapping:",x,y)
+                    grid = swap_tile(original_grid,x,y)
+                    vertical, horizontal = find_mirror_point(grid)
+                    
+                    #printMap(grid)
+                    
+                    new_v = vertical[0] if vertical else vertical
+                    new_h = horizontal[0] if horizontal else horizontal
+                    
+                    if new_v != original_v and len(vertical) > 0:
+                        print("vertical:",new_v)
+                        print("orignal_v:",original_v)
+                        if original_v in vertical:
+                            vertical.remove(original_v)
+                        end = True
+                        use_v = True
+                        break
+                    
+                    
+                    if new_h != original_h and len(horizontal) > 0:
+                        print("horizontal:",new_h)
+                        print("original_h:",original_h)
+                        if original_h in horizontal:
+                            horizontal.remove(original_h)
+                        end = True
+                        use_h = True
+                        break
+                    
+                    
+                    #print(vertical, horizontal)  
+            
+                if end:
+                    break
+        
+        
+        
+        if vertical and not horizontal:            
+            v = original_v if len(vertical) == 0 else vertical
+            result += sum(v)
             print("Vertical mirror point found at",vertical)
-        #else:
-        #    print("No vertical mirror point found")
-        if horizontal:
-            result += (horizontal*100)
+        
+        if horizontal and not vertical:
+            hh = original_h if len(horizontal) == 0 else horizontal
+            
+            result += sum([h*100 for h in hh])
             print("Horizontal mirror point found at",horizontal)
-        #else:
-        #    print("No horizontal mirror point found")
+        
         if not horizontal and not vertical:
             print("No mirror found")
             print()
         if horizontal and vertical:
-            print("Two mirrors found!")
+            if use_h:
+                hh = original_h if len(horizontal) == 0 else horizontal
+                result += sum([h*100 for h in hh])
+                print("Horizontal mirror point found at",hh)
+            elif use_v:
+                v = original_v if len(vertical) == 0 else vertical
+                result += sum(v)
+                print("Vertical mirror point found at",v)
+                
+           # print("Two mirrors found!")
             print()
             
     return result
 
 # too low 28612, 28729, 28818, 28818
 def day13_1(data):
-    #data = read_input(2023, "13_teste")    
+    data = read_input(2023, "13_teste")    
     result = 0  
     grids = []
 
@@ -2135,14 +2207,27 @@ def day13_1(data):
 
     result = summarise_pattern_notes(grids)
 
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(34918, result)
     return result
 
-
+# too low 25245 
 def day13_2(data):
-    data = read_input(2023, "13_teste")    
-    result = 0    
-             
+    data = read_input(2023, "13_t")    
+    result = 0  
+    grids = []
+
+    while(data):
+        try:
+            i = data.index('')
+        except ValueError:
+            grids.append(data)
+            break
+        grid = data[:i]
+        grids.append(grid)
+        data = data[i+1:]
+
+    result = summarise_pattern_notes(grids, swap = True)
+
     AssertExpectedResult(0, result)
     return result
 
