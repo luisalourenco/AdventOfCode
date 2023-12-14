@@ -2299,33 +2299,98 @@ def tilt_platform(platform):
    
     return new_platform
 
-def move_rock(x,y,platform):
+def move_rock_north(x,y,platform):
     new_platform = copy.deepcopy(platform)
 
     new_y = y
-    for i in range(y, 0, -1):
+    for i in range(y-1, -1, -1):
         if platform[i][x] == '.':
             new_y = i
-            print(i)
         elif platform[i][x] == '#':
             break
 
     new_platform[y][x] = '.' #empty current tile
     new_platform[new_y][x] = 'O' #move rock to empty tile
-    print("Moved from",x,y,"->",x,new_y)
+    #print("Moved from",x,y,"->",x,new_y)
     
     return new_platform
 
-def tilt_platformv2(platform):
+def move_rock_south(x,y,platform):
+    new_platform = copy.deepcopy(platform)
+
+    new_y = y
+    for i in range(y,len(platform)):
+        if platform[i][x] == '.':
+            new_y = i
+        elif platform[i][x] == '#':
+            break
+
+    new_platform[y][x] = '.' #empty current tile
+    new_platform[new_y][x] = 'O' #move rock to empty tile
+    #print("Moved from",x,y,"->",x,new_y)
+    
+    return new_platform
+
+def move_rock_west(x,y,platform):
+    new_platform = copy.deepcopy(platform)
+    #print("moving west")
+    
+    new_x = x
+    for i in range(x, -1, -1):
+        #print("testing",x,y,"->",platform[y][x])
+        if platform[y][i] == '.':
+            new_x = i
+        elif platform[y][i] == '#':
+            #print("hit a wall at",x,y)
+            break
+
+    new_platform[y][x] = '.' #empty current tile
+    new_platform[y][new_x] = 'O' #move rock to empty tile
+    #print("Moved from",x,y,"->",new_x, y)
+    
+    return new_platform
+
+def move_rock_east(x,y,platform):
+    new_platform = copy.deepcopy(platform)
+
+    new_x = x
+    for i in range(x, len(platform[0])):
+        if platform[y][i] == '.':
+            new_x = i
+        elif platform[y][i] == '#':
+            break
+
+    new_platform[y][x] = '.' #empty current tile
+    new_platform[y][new_x] = 'O' #move rock to empty tile
+    #print("Moved from",x,y,"->",x,new_y)
+    
+    return new_platform
+
+def tilt_platformv2(platform, cycles=0):
+    #north, then west, then south, then east
+    move_operations = [move_rock_north, move_rock_west, move_rock_south, move_rock_east]
+    
     rows = len(platform)
     columns = len(platform[0])
     new_platform = copy.deepcopy(platform)
 
-    for x in range(columns):
-        for y in range(rows):
-            if platform[y][x] == 'O':
-                new_platform = move_rock(x,y,new_platform)
-   
+    if cycles == 0:
+        move_operations = [move_operations[0]]
+        cycles = 1
+
+    #printMap(platform)
+    
+    for c in range(cycles):
+        for move_rock in move_operations:                
+            for x in range(columns):
+                for y in range(rows):
+                    if platform[y][x] == 'O':
+                        new_platform = move_rock(x,y,new_platform)
+            
+            #printMap(new_platform)
+            platform = new_platform
+        #printMap(new_platform)
+        print("cycle", c, ":",total_load(new_platform))
     return new_platform
 
 
@@ -2334,23 +2399,28 @@ def day14_1(data):
     result = 0  
 
     platform = buildMapGrid(data, '.', withPadding=False)
-    printMap(platform)
-
     platform = tilt_platformv2(platform)
     result = total_load(platform)
 
-    printMap(platform)
-
-
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(110128, result)
     return result
 
 
 def day14_2(data):
-    data = read_input(2023, "14_teste")    
+    #data = read_input(2023, "14_teste")    
     result = 0    
-             
-    AssertExpectedResult(0, result)
+    cycles = 1000 #1000000000
+    
+    platform = buildMapGrid(data, '.', withPadding=False)
+       
+    platform = tilt_platformv2(platform, cycles)
+    result = total_load(platform)
+    #1 - 87
+    #2,3,4 - 69
+    #5 - 65
+    #6 - 64
+    
+    AssertExpectedResult(103861, result)
     return result
 
 #endregion
