@@ -2246,10 +2246,101 @@ def day13_2(data):
 
 #region ##### Day 14 #####
 
+def total_load(platform):
+    rows = len(platform)
+    columns = len(platform[0])
+    load = 0
+
+    line = rows
+    for y in range(rows):
+        for x in range(columns):
+            if platform[y][x] == 'O':
+                load += line
+        line -= 1
+    return load
+
+def tilt_platform(platform):
+    rows = len(platform)
+    columns = len(platform[0])
+    new_platform = copy.deepcopy(platform)
+    # column -> sorted_list(rows)
+    empty_tiles = dict()
+    empty_rows = []
+
+    for x in range(columns):
+        empty_rows = []
+        found_hard_rock = False
+        first_rock = False
+        for y in range(rows-1, 0, -1):
+            if platform[y][x] == '.' and not found_hard_rock:
+                if x not in empty_tiles:
+                    empty_tiles[x] = []
+                empty_rows.append(y)
+            if platform[y][x] == 'O' and not first_rock:
+                first_rock = True
+            if platform[y][x] == '#' and first_rock:
+                found_hard_rock = True
+                break
+        empty_rows.sort()
+        empty_tiles[x] = empty_rows
+    
+    for k in empty_tiles.keys():
+        print("column", k, "has empty rows", empty_tiles[k])
+
+    for x in range(columns):
+        for y in range(rows):
+            if platform[y][x] == 'O':
+                empty_rows = empty_tiles[x]
+                next_row = empty_rows[0]
+                new_platform[y][x] = '.' #empty current tile
+                new_platform[next_row][x] = 'O' #move rock to empty tile
+                empty_tiles[x] = empty_rows[1:] #update empty tiles
+    
+   
+    return new_platform
+
+def move_rock(x,y,platform):
+    new_platform = copy.deepcopy(platform)
+
+    new_y = y
+    for i in range(y, 0, -1):
+        if platform[i][x] == '.':
+            new_y = i
+            print(i)
+        elif platform[i][x] == '#':
+            break
+
+    new_platform[y][x] = '.' #empty current tile
+    new_platform[new_y][x] = 'O' #move rock to empty tile
+    print("Moved from",x,y,"->",x,new_y)
+    
+    return new_platform
+
+def tilt_platformv2(platform):
+    rows = len(platform)
+    columns = len(platform[0])
+    new_platform = copy.deepcopy(platform)
+
+    for x in range(columns):
+        for y in range(rows):
+            if platform[y][x] == 'O':
+                new_platform = move_rock(x,y,new_platform)
+   
+    return new_platform
+
 
 def day14_1(data):
     data = read_input(2023, "14_teste")    
     result = 0  
+
+    platform = buildMapGrid(data, '.', withPadding=False)
+    printMap(platform)
+
+    platform = tilt_platformv2(platform)
+    result = total_load(platform)
+
+    printMap(platform)
+
 
     AssertExpectedResult(0, result)
     return result
@@ -2257,6 +2348,27 @@ def day14_1(data):
 
 def day14_2(data):
     data = read_input(2023, "14_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 15 #####
+
+
+def day15_1(data):
+    data = read_input(2023, "15_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day15_2(data):
+    data = read_input(2023, "15_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
