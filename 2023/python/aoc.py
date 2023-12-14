@@ -2411,6 +2411,31 @@ def day14_2(data):
     result = 0    
     cycles = 1000 #1000000000
     
+    '''
+     Strategy for part 2 was to print the first 1k cycles and check por a pattern, it timed out after 237 iterations that took 90m
+     but was enough to detect a pattern and compute the result:
+     
+        cycle 179 : 103865
+        cycle 180 : 103863
+        cycle 181 : 103876
+        cycle 182 : 103860
+        cycle 183 : 103854
+        cycle 184 : 103845
+        cycle 185 : 103855
+        cycle 186 : 103867
+        cycle 187 : 103861
+        cycle 188 : 103878
+        cycle 189 : 103858
+        cycle 190 : 103856
+        cycle 191 : 103843
+        cycle 192 : 103857
+
+        (1000000000 - 179) % 14     
+        
+        Still unsure about the programmatic approach to this problem.
+        
+        TIP: should study cycle detection algorithms for these problems
+    '''
     platform = buildMapGrid(data, '.', withPadding=False)
        
     platform = tilt_platformv2(platform, cycles)
