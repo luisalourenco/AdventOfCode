@@ -2453,17 +2453,110 @@ def day14_2(data):
 
 #region ##### Day 15 #####
 
+def HASH_algorithm(value):
+    current_value = 0
+    for c in value:
+        current_value += ord(c)
+        current_value *= 17
+        current_value %= 256
+    return current_value
+
+
 
 def day15_1(data):
-    data = read_input(2023, "15_teste")    
+    #data = read_input(2023, "15_teste")    
+    result = 0  
+
+    for value in data[0].split(','):
+        result += HASH_algorithm(value)
+
+    AssertExpectedResult(513214, result)
+    return result
+
+
+def focusing_power(boxes):
+    total_power = 0
+    for box in boxes.keys():        
+        lenses = boxes[box]
+
+        for i in range(len(lenses)):
+            power = 1
+            power *= (1 + box)
+            power *= (i+1)
+            (_, focal_length) = lenses[i]
+            power *= int(focal_length)
+            #print(power)
+            total_power += power
+    return total_power
+
+
+
+def day15_2(data):
+    #data = read_input(2023, "15_teste")    
+    result = 0    
+
+    boxes = dict()
+
+    for step in data[0].split(','):
+        focal_lenght = None
+        add_lens = False
+
+        if '=' in step:
+            value = [parse("{}={}", step)][0]
+            focal_lenght = value[1]
+            add_lens = True
+        else:
+            value = [parse("{}-", step)][0]
+        
+        label = value[0]
+        box = HASH_algorithm(label)
+
+        if box not in boxes:
+            boxes[box] = []
+        
+        lenses = boxes[box]
+        if add_lens:
+            elem = (label, focal_lenght)            
+            lenses_replaced = False
+            #if lens already exists
+            i = 0
+            for (lens, _) in lenses:
+                if label == lens:
+                    #replace lenses                
+                    boxes[box] = lenses[:i] + [elem] + lenses[i+1:]
+                    lenses_replaced = True
+                i +=1
+            if not lenses_replaced:
+                boxes[box].append(elem)
+        else:
+            i = 0
+            for (lens, _) in lenses:
+                if label == lens:
+                    boxes[box] = lenses[:i] + lenses[i+1:]
+                i += 1
+
+
+    #print(boxes)
+    result = focusing_power(boxes)
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 16 #####
+
+
+def day16_1(data):
+    data = read_input(2023, "16_teste")    
     result = 0  
 
     AssertExpectedResult(0, result)
     return result
 
 
-def day15_2(data):
-    data = read_input(2023, "15_teste")    
+def day16_2(data):
+    data = read_input(2023, "16_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
