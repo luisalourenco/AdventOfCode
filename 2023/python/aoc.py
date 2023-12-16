@@ -55,7 +55,7 @@ DEBUG_MODE = False
 
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
-from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point
+from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
 from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
@@ -2547,16 +2547,142 @@ def day15_2(data):
 #region ##### Day 16 #####
 
 
+def update_current_beam_position(beams, rows, columns):
+    new_beams = []
+
+    for ((x,y), direction) in beams:
+
+        if direction == '->':
+            if x + 1 < columns:
+                new_beams.append(((x+1 , y), direction))
+        elif direction == '<-':
+            if x-1 >= 0:
+                new_beams.append(((x-1 , y), direction))
+        elif direction == '^':
+            if y-1 >= 0:
+                new_beams.append(((x, y-1), direction))
+        elif direction == 'v':
+            if y + 1 < rows:
+                new_beams.append(((x, y+1), direction))
+    
+    return new_beams
+
+def update_beam_direction(beams, contraption):
+    new_beams = []    
+
+    while len(beams) > 0:
+        (position, direction) = beams.pop()
+        (x, y) = position
+        tile = contraption[y][x]
+        #print("beam",x,y,"[",direction,"]", "on tile", tile)
+
+        if tile == '/':
+            if direction == '->':
+                new_beams.append((position, '^'))
+            elif direction == '<-':
+                new_beams.append((position, 'v'))
+            elif direction == '^':
+                new_beams.append((position, '->'))
+            elif direction == 'v':
+                new_beams.append((position, '<-'))
+        elif tile == '\\':
+            if direction == '->':
+                new_beams.append((position, 'v'))
+            elif direction == '<-':
+                new_beams.append((position, '^'))
+            elif direction == '^':
+                new_beams.append((position, '<-'))
+            elif direction == 'v':
+                new_beams.append((position, '->'))
+        elif tile == '|':
+            if direction == '->' or direction == '<-':
+                new_beams.append((position, 'v'))
+                new_beams.append((position, '^'))
+            else:
+                new_beams.append((position, direction))
+        elif tile == '-':      
+            if direction == '^' or direction == 'v':
+                new_beams.append((position, '<-'))
+                new_beams.append((position, '->'))
+            else:
+                new_beams.append((position, direction))
+        else:
+            new_beams.append((position, direction))
+    
+    return new_beams
+
+def count_energized_tiles(contraption): 
+    rows = len(contraption)
+    columns = len(contraption[0])
+    beams = [ ((0,0), '->') ]
+    enerized_contraption = build_empty_grid(rows, columns, '.', withPadding=False)
+    energized_tiles = set()
+
+    i = 0
+    while True: #for _ in range(700):
+        before = len(energized_tiles)
+
+        for ((xx, yy), _) in beams:
+            enerized_contraption[yy][xx] = "#"
+            energized_tiles.add((xx,yy))
+                   
+        beams = update_beam_direction(beams, contraption)        
+        beams = update_current_beam_position(beams, rows, columns)   
+        after = len(energized_tiles)
+
+
+        if before == after:
+            i += 1
+            if i == 10:
+                break
+        else:
+            i = 0
+
+    #printMap(enerized_contraption)
+    count = 0
+    for y in range(rows):
+        for x in range(columns): 
+            if enerized_contraption[y][x] == "#":
+                count += 1
+
+    return count
+
+
+
 def day16_1(data):
+    #data = read_input(2023, "16_teste")    
+    result = 0  
+
+    contraption = buildMapGrid(data, '.', withPadding=False)
+    result = count_energized_tiles(contraption)
+
+
+    AssertExpectedResult(8116, result)
+    return result
+
+
+def day16_2(data):
     data = read_input(2023, "16_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 17 #####
+
+
+def day17_1(data):
+    data = read_input(2023, "17_teste")    
     result = 0  
 
     AssertExpectedResult(0, result)
     return result
 
 
-def day16_2(data):
-    data = read_input(2023, "16_teste")    
+def day17_2(data):
+    data = read_input(2023, "17_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)

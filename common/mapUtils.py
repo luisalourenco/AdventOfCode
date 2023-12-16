@@ -104,6 +104,20 @@ def printMap(map, fileMode = True, symbolsMap = {}):
         file1.close() 
 
 
+def build_empty_grid(rows, columns, initValue='', withPadding = True):
+    '''
+    file_dir = os.path.dirname(os.path.realpath(__file__))
+    with open("{0}/../common/teste.txt".format(file_dir, 2020, 7), "r") as fileReader:
+        data = [line.rstrip('\n') for line in fileReader]
+    '''
+    rows = rows + 2 if withPadding else rows
+    columns = columns + 2 if withPadding else columns
+    
+    map = [ [ (initValue) for i in range(columns) ] for j in range(rows) ]    
+    
+    #printMap(map)
+    return map
+
 def buildMapGrid(data, initValue='', withPadding = True, symbolMap = {}):
     data = copy.deepcopy(data)
     '''
