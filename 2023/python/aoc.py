@@ -2611,15 +2611,15 @@ def update_beam_direction(beams, contraption):
     
     return new_beams
 
-def count_energized_tiles(contraption): 
+def count_energized_tiles(beam, contraption): 
     rows = len(contraption)
     columns = len(contraption[0])
-    beams = [ ((0,0), '->') ]
+    beams = [ beam ]
     enerized_contraption = build_empty_grid(rows, columns, '.', withPadding=False)
     energized_tiles = set()
 
     i = 0
-    while True: #for _ in range(700):
+    while True:
         before = len(energized_tiles)
 
         for ((xx, yy), _) in beams:
@@ -2630,7 +2630,6 @@ def count_energized_tiles(contraption):
         beams = update_current_beam_position(beams, rows, columns)   
         after = len(energized_tiles)
 
-
         if before == after:
             i += 1
             if i == 10:
@@ -2638,23 +2637,18 @@ def count_energized_tiles(contraption):
         else:
             i = 0
 
-    #printMap(enerized_contraption)
-    count = 0
-    for y in range(rows):
-        for x in range(columns): 
-            if enerized_contraption[y][x] == "#":
-                count += 1
-
-    return count
+    return after
 
 
 
 def day16_1(data):
     #data = read_input(2023, "16_teste")    
     result = 0  
+    beam = ((0,0), '->')
 
     contraption = buildMapGrid(data, '.', withPadding=False)
-    result = count_energized_tiles(contraption)
+
+    result = count_energized_tiles(beam, contraption)
 
 
     AssertExpectedResult(8116, result)
@@ -2664,8 +2658,41 @@ def day16_1(data):
 def day16_2(data):
     data = read_input(2023, "16_teste")    
     result = 0    
+    contraption = buildMapGrid(data, '.', withPadding=False)
+    rows = len(contraption)
+    columns = len(contraption[0])
+    rows = len(contraption)
+    columns = len(contraption[0])
+
+    
+    for x in range(columns):
+        # top row
+        beam = ((x,0), 'v')
+        res = count_energized_tiles(beam,contraption)
+        if res > result:
+            result = res
+        
+        # bottom row
+        beam = ((x,columns-1), '^')
+        res = count_energized_tiles(beam,contraption)
+        if res > result:
+            result = res
+    
+    for y in range(rows):
+        # first column
+        beam = ((0, y), '->')
+        res = count_energized_tiles(beam,contraption)
+        if res > result:
+            result = res
+        
+        # last column
+        beam = ((rows-1, y), '<-')
+        res = count_energized_tiles(beam,contraption)
+        if res > result:
+            result = res
+    
              
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(8383, result)
     return result
 
 #endregion
@@ -2692,5 +2719,5 @@ def day17_2(data):
 
 if __name__ == "__main__":
     # override timeout
-    main(sys.argv, globals(), AOC_EDITION_YEAR, 5400)
+    main(sys.argv, globals(), AOC_EDITION_YEAR, 28800)
 
