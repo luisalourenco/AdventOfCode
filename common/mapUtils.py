@@ -40,31 +40,42 @@ def buildGraphFromMap_v2(map, emptyCell, is_connected):
             graph[(x,y)] = neighbours
     return graph
 
-def buildGraphFromMap(map):
+def buildGraphFromMap(map, withWeights=False, noPadding=False):
     graph = {}
     sizeX = len(map[0])
     sizeY = len(map)
 
-    for y in range(1,sizeY-1):
-        for x in range(1,sizeX-1):
 
-            east = (x+1, y)
-            west = (x-1, y)
-            north = (x, y-1)
-            south = (x, y+1)
+    for y in range(0, sizeY) if noPadding else range(1,sizeY-1):
+        for x in range(0, sizeX) if noPadding else range(1,sizeX-1):
+
+            east = (x+1, y) if x+1 <= sizeX-1 else None
+            west = (x-1, y) if x-1 >= 0 else None
+            north = (x, y-1) if y-1 >= 0 else None
+            south = (x, y+1) if y+1 <= sizeY-1 else None
             
             neighbours = []
             if map[y][x] != ' ' and map[y][x] != '#':
-                if map[east[1]][east[0]] != ' ' and map[east[1]][east[0]] != '#':
-                    neighbours.append(east)
-                if map[west[1]][west[0]] != ' ' and map[west[1]][west[0]] != '#':
-                    neighbours.append(west)
-                if map[north[1]][north[0]] != ' ' and map[north[1]][north[0]] != '#':
-                    neighbours.append(north)
-                if map[south[1]][south[0]] != ' ' and map[south[1]][south[0]] != '#':
-                    neighbours.append(south)
-            
+                
+                east_map = map[east[1]][east[0]] if east else ' '
+                if east_map != ' ' and east_map != '#' and east:
+                    neighbours.append((east, int(east_map))) if withWeights else neighbours.append(east)
+
+                west_map = map[west[1]][west[0]] if west else ' '
+                if west_map != ' ' and west_map != '#':
+                    neighbours.append((west, int(west_map))) if withWeights else neighbours.append(west)
+
+                north_map = map[north[1]][north[0]] if north else ' '
+                if north_map != ' ' and north_map != '#':
+                    neighbours.append((north, int(north_map))) if withWeights else neighbours.append(north)
+
+                south_map = map[south[1]][south[0]] if south else ' '
+                if south_map != ' ' and south_map != '#':
+                    neighbours.append((south, int(south_map))) if withWeights else neighbours.append(south)
+
+            #if x >= 0 and y >= 0 and x <= sizeX-1 and y <= sizeY-1:
             graph[(x,y)] = neighbours
+
     return graph
 
 def find_starting_point(map, starting_point):

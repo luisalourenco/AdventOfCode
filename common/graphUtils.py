@@ -107,13 +107,14 @@ def find_path(graph, start, end, path=[]):
     return None
 
 #@hashable_cache(lru_cache())
-@hashable_lru
+#@hashable_lru
 def find_all_paths(graph, start, end, path=[]):
         path = path + [start]
         if start == end:
             return [path]
         if graph.get(str(start)) ==  None:
             return []
+        
         paths = []
         for node in graph[str(start)]:
             if node not in path:
@@ -365,12 +366,12 @@ class Graph():
     def add_edge(self, from_node, to_node, weight):
         # connecting nodes from both sides
         self.edges[from_node].append(to_node)
-        #self.edges[to_node].append(from_node)
+        self.edges[to_node].append(from_node)
 
         # catering for the source and destination nodes
         self.weights[(from_node, to_node)] = weight
         self.weights[from_node] = weight
-        #self.weights[(to_node, from_node)] = weight
+        self.weights[(to_node, from_node)] = weight
         # combining the indegree and outdegree weights were possible
 
 
@@ -416,6 +417,8 @@ def dijsktra(graph, initial, end):
         weight_to_current_node = shortest_paths[current_node][1]
 
         for next_node in destinations:
+            
+
             weight = graph.weights[(current_node, next_node)] + weight_to_current_node
             if next_node not in shortest_paths:
                 shortest_paths[next_node] = (current_node, weight)

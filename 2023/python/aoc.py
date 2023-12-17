@@ -2704,12 +2704,189 @@ def day17_1(data):
     data = read_input(2023, "17_teste")    
     result = 0  
 
+    rows = len(data)
+    columns = len(data[0])
+
+    #g = buildGraphFromMap(data, withWeights=True, noPadding=True)
+    start = (0,0)
+    end = (rows-1, columns-1)
+
+    grid = buildMapGrid(data,withPadding=False)
+
+    # (1,0) right
+    # (-1,0) left
+    # (0,-1) up
+    # (0,1) down
+    right_coords = (1,0)
+    left_coords = (-1,0)
+    up_coords = (0,-1)
+    down_coords = (0,1)
+
+    # positions, direction delta, count in direction
+    builder = [( (0,0) , (1, 0), 0 ), ( (0,0) , (0, 1), 0 )]
+    
+    adjacency_list = dict()
+    #for y in range(rows):
+    #    for x in range(columns):
+    visited = set()
+    cc = 0
+    while len(builder) > 0:
+            cc+=1
+
+            coords, dir, length = builder.pop()
+            (x,y) = coords  
+   
+                
+            print(coords, dir)
+            if  cc >1000:
+                break        
+
+            right = (x+1, y) if x+1 <= columns-1 else None
+            left = (x-1, y) if x-1 >= 0 else None
+            up = (x, y-1) if y-1 >= 0 else None
+            down = (x, y+1) if y+1 <= rows-1 else None
+
+
+            if coords not in adjacency_list:
+                adjacency_list[coords] = set()
+
+
+            if dir == right_coords:
+                #within boundaries and hasn't taken 3 steps in same direction
+                if right and length < 3: 
+                    adjacency_list[coords].add(right)
+
+                    # add to queue if new coords haven't been processed yet
+                    if (right, dir) not in visited:
+                        builder.append( (right, dir, length + 1) )
+                
+                if True: # outside boundaries OR has taken more than 3 steps, time to turn 90º
+                    
+                    if up:
+                        if (up, up_coords) not in visited:
+                            builder.append( (up, up_coords, 0) )
+                        adjacency_list[coords].add(up)
+                    
+                    if down:
+                        if (down, down_coords) not in visited:
+                            builder.append( (down, down_coords, 0) )
+                        adjacency_list[coords].add(down)
+            
+            if dir == left_coords:
+
+                if left and length < 3:
+                    adjacency_list[coords].add(left)
+                    if (left, dir) not in visited:
+                        builder.append( (left, dir, length + 1) )
+                if True:
+
+                    if up:
+                        if (up, up_coords) not in visited:
+                            builder.append( (up, up_coords, 0) )
+                        adjacency_list[coords].add(up)
+                    
+                    if down:
+                        if (down, down_coords) not in visited:
+                            builder.append( (down, down_coords, 0) )
+                        adjacency_list[coords].add(down)
+
+            if dir == up_coords:
+
+                if up and length < 3:
+                    adjacency_list[coords].add(up)
+                    if (up, dir) not in visited:
+                        builder.append( (up, dir, length + 1) )
+                
+                if True:
+                    if left:
+                        adjacency_list[coords].add(left)
+                        if (left, left_coords) not in visited:
+                            builder.append( (left, left_coords, 0) )
+
+                    if right:
+                        if (right, right_coords) not in visited:
+                            builder.append( (right, right_coords, 0) )
+                        adjacency_list[coords].add(right)
+
+            if dir == down_coords:
+                if down and length < 3:
+                    adjacency_list[coords].add(down)
+                    if (down, dir) not in visited:
+                        builder.append( (down, dir, length + 1) )
+                
+                if True:
+
+                    if left:
+                        adjacency_list[coords].add(left)
+                        if (left, left_coords) not in visited:
+                            builder.append( (left, left_coords, 0) )
+
+                    if right:
+                        if (right, right_coords) not in visited:
+                            builder.append( (right, right_coords, 0) )
+                        adjacency_list[coords].add(right)
+    
+            visited.add( (coords, dir) )
+
+    print()
+    print("Generated graph:")
+    graph = Graph()
+    for k in adjacency_list.keys():
+        print(k,":", adjacency_list[k])
+        neighbours = adjacency_list[k]
+        for n in neighbours:            
+            graph.add_edge(k, n, int(grid[n[1]][n[0]])  )
+
+
+    path = dijsktra(graph, start, end )
+
+    print()
+    print("Shortest path found:")
+    result = 0
+    for v, w in zip(path[:-1],path[1:]):
+        print(v,"->",w)
+        result += graph.weights[v,w]
+
+    '''
+    graph = Graph()
+    for pos in g.keys():
+        neighbours = g[pos]
+        for n, w in neighbours:
+            graph.add_edge(pos, n, w)
+
+    path = dijsktra(graph, start, end)
+
+    for v, w in zip(path[:-1],path[1:]):
+        print(v,"->",w)
+        result += graph.weights[v,w]
+    '''
+
     AssertExpectedResult(0, result)
     return result
 
 
 def day17_2(data):
     data = read_input(2023, "17_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 18 #####
+
+
+def day18_1(data):
+    data = read_input(2023, "18_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day18_2(data):
+    data = read_input(2023, "18_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
