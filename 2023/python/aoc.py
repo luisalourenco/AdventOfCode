@@ -2700,6 +2700,20 @@ def day16_2(data):
 #region ##### Day 17 #####
 
 
+def get_dir(dir):
+    # (1,0) right
+    # (-1,0) left
+    # (0,-1) up
+    # (0,1) down
+    if dir == (1,0):
+        return "right"
+    elif dir == (-1,0):
+        return "left"
+    elif dir == (0,-1):
+        return "up"
+    elif dir == (0,1):
+        return "down"
+
 def day17_1(data):
     data = read_input(2023, "17_teste")    
     result = 0  
@@ -2737,7 +2751,7 @@ def day17_1(data):
             (x,y) = coords  
    
                 
-            print(coords, dir)
+            #print(coords, dir)
             if  cc >1000:
                 break        
 
@@ -2747,14 +2761,16 @@ def day17_1(data):
             down = (x, y+1) if y+1 <= rows-1 else None
 
 
-            if coords not in adjacency_list:
-                adjacency_list[coords] = set()
+            key = (coords, get_dir(dir))
+
+            if key not in adjacency_list:
+                adjacency_list[key] = set()
 
 
             if dir == right_coords:
                 #within boundaries and hasn't taken 3 steps in same direction
                 if right and length < 3: 
-                    adjacency_list[coords].add(right)
+                    adjacency_list[key].add((right, get_dir(dir)))
 
                     # add to queue if new coords haven't been processed yet
                     if (right, dir) not in visited:
@@ -2765,17 +2781,21 @@ def day17_1(data):
                     if up:
                         if (up, up_coords) not in visited:
                             builder.append( (up, up_coords, 0) )
-                        adjacency_list[coords].add(up)
+
+                        val = (up, get_dir(up_coords))
+                        adjacency_list[key].add(val)
                     
                     if down:
                         if (down, down_coords) not in visited:
                             builder.append( (down, down_coords, 0) )
-                        adjacency_list[coords].add(down)
+
+                        val = (down, get_dir(down_coords))
+                        adjacency_list[key].add(val)
             
             if dir == left_coords:
 
                 if left and length < 3:
-                    adjacency_list[coords].add(left)
+                    adjacency_list[key].add((left, get_dir(dir)))
                     if (left, dir) not in visited:
                         builder.append( (left, dir, length + 1) )
                 if True:
@@ -2783,48 +2803,55 @@ def day17_1(data):
                     if up:
                         if (up, up_coords) not in visited:
                             builder.append( (up, up_coords, 0) )
-                        adjacency_list[coords].add(up)
+
+                        val = (up, get_dir(up_coords))
+                        adjacency_list[key].add(val)
                     
                     if down:
                         if (down, down_coords) not in visited:
                             builder.append( (down, down_coords, 0) )
-                        adjacency_list[coords].add(down)
+
+                        val = (down, get_dir(down_coords))
+                        adjacency_list[key].add(val)
 
             if dir == up_coords:
 
                 if up and length < 3:
-                    adjacency_list[coords].add(up)
+                    adjacency_list[key].add((up, get_dir(dir)))
                     if (up, dir) not in visited:
                         builder.append( (up, dir, length + 1) )
                 
                 if True:
                     if left:
-                        adjacency_list[coords].add(left)
+                        val = (left, get_dir(left_coords))
+                        adjacency_list[key].add(val)
                         if (left, left_coords) not in visited:
                             builder.append( (left, left_coords, 0) )
 
                     if right:
                         if (right, right_coords) not in visited:
                             builder.append( (right, right_coords, 0) )
-                        adjacency_list[coords].add(right)
+                        val = (right, get_dir(right_coords))
+                        adjacency_list[key].add(val)
 
             if dir == down_coords:
                 if down and length < 3:
-                    adjacency_list[coords].add(down)
+                    adjacency_list[key].add((down, get_dir(dir)))
                     if (down, dir) not in visited:
                         builder.append( (down, dir, length + 1) )
                 
                 if True:
-
                     if left:
-                        adjacency_list[coords].add(left)
+                        val = (left, get_dir(left_coords))
+                        adjacency_list[key].add(val)
                         if (left, left_coords) not in visited:
                             builder.append( (left, left_coords, 0) )
 
                     if right:
                         if (right, right_coords) not in visited:
                             builder.append( (right, right_coords, 0) )
-                        adjacency_list[coords].add(right)
+                        val = (right, get_dir(right_coords))
+                        adjacency_list[key].add(val)
     
             visited.add( (coords, dir) )
 
@@ -2834,32 +2861,31 @@ def day17_1(data):
     for k in adjacency_list.keys():
         print(k,":", adjacency_list[k])
         neighbours = adjacency_list[k]
-        for n in neighbours:            
-            graph.add_edge(k, n, int(grid[n[1]][n[0]])  )
+        for (n, d) in neighbours:            
+            graph.add_edge(k, (n, d), int(grid[n[1]][n[0]])  )
 
 
-    path = dijsktra(graph, start, end )
+    start = ((0, 0), 'down') 
+    end1 = ((12, 12), 'down')
+    end2 = ((12, 12), 'right')
+    path1 = dijsktra(graph, start, end1 )
+    path2 = dijsktra(graph, start, end2 )
 
     print()
-    print("Shortest path found:")
+    print("Shortest path1 found:")
     result = 0
-    for v, w in zip(path[:-1],path[1:]):
+    for v, w in zip(path1[:-1],path1[1:]):
         print(v,"->",w)
         result += graph.weights[v,w]
 
-    '''
-    graph = Graph()
-    for pos in g.keys():
-        neighbours = g[pos]
-        for n, w in neighbours:
-            graph.add_edge(pos, n, w)
-
-    path = dijsktra(graph, start, end)
-
-    for v, w in zip(path[:-1],path[1:]):
+    print()
+    print(result)
+    print("Shortest path2 found:")
+    result = 0
+    for v, w in zip(path2[:-1],path2[1:]):
         print(v,"->",w)
         result += graph.weights[v,w]
-    '''
+
 
     AssertExpectedResult(0, result)
     return result
@@ -2877,16 +2903,140 @@ def day17_2(data):
 #region ##### Day 18 #####
 
 
+def follow_dig_plan(dig_plan, dig_plan_instructions):    
+    rows = len(dig_plan)
+    columns = len(dig_plan[0])
+    (x,y) = (columns//3,rows//3)
+    dig_plan[y][x] = '#'
+    points = [(x,y)]
+    
+    for direction, val in dig_plan_instructions:
+        if direction == 'R':
+            for i in range(val):
+                x+=1
+                dig_plan[y][x] = '#'
+                points.append((x,y))
+        elif direction == 'L':
+            for i in range(val):
+                x-=1
+                dig_plan[y][x] = '#'
+                points.append((x,y))
+        elif direction == 'U':
+            for i in range(val):
+                y-=1
+                dig_plan[y][x] = '#'
+                points.append((x,y))
+        elif direction == 'D':
+            for i in range(val):
+                y+=1
+                dig_plan[y][x] = '#'
+                points.append((x,y))
+    return dig_plan, points
+
+def fill_interior(dig_plan):
+    rows = len(dig_plan)
+    columns = len(dig_plan[0])
+    border = 0
+
+    #for y
+
+    return dig_plan
+
+
 def day18_1(data):
+    data = read_input(2023, "18_teste")
+
+    dig_plan_instruction = []
+    rows = 10
+    columns = 10
+
+    for line in data:
+        r = parse("{} {} ({})", line)
+        direction = r[0]
+        val = int(r[1])
+        dig_plan_instruction.append((direction, val))
+        if direction in ['D']:
+            rows+=val
+        elif direction == 'R':
+            columns+=val
+    
+    dig_plan = build_empty_grid(rows, columns, '.')
+    dig_plan, points = follow_dig_plan(dig_plan, dig_plan_instruction)
+    p = Polygon(points)
+    print(p.area)
+    print(p.contains(Point(13,10)))
+    
+    result = 0
+    for y in range(rows):
+        for x in range(columns):
+            point = Point(x,y)
+            if p.contains(point):
+                result += 1
+
+
+    result += p.boundary.length
+
+    #printMap(dig_plan)
+
+    AssertExpectedResult(0, result)
+    return result
+
+def get_dir_hex(hex):
+    if hex == 0:
+        return 'R'
+    elif hex == 1:
+        return 'D'
+    elif hex == 2:
+        return 'L'
+    elif hex == 3:
+        return 'U'
+
+def day18_2(data):
     data = read_input(2023, "18_teste")    
+    result = 0
+
+    dig_plan_instruction = []
+    rows = 1000
+    columns = 1000
+
+    for line in data:
+        r = parse("{} {} ({})", line)
+        hex = r[2]
+        val = int(hex[1:6],16)
+        direction = get_dir_hex(int(hex[6]))
+        
+        dig_plan_instruction.append((direction, val))
+        if direction in ['D']:
+            rows+=val
+        elif direction == 'R':
+            columns+=val
+    
+    print(dig_plan_instruction)
+
+    dig_plan = build_empty_grid(rows*2, columns*2, '.')
+    dig_plan, points = follow_dig_plan(dig_plan, dig_plan_instruction)
+    
+    
+    #printMap(dig_plan)
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 19 #####
+
+def day19_1(data):
+    data = read_input(2023, "19_teste")    
     result = 0  
 
     AssertExpectedResult(0, result)
     return result
 
 
-def day18_2(data):
-    data = read_input(2023, "18_teste")    
+def day19_2(data):
+    data = read_input(2023, "19_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
