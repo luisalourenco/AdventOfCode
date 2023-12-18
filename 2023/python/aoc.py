@@ -2933,15 +2933,6 @@ def follow_dig_plan(dig_plan, dig_plan_instructions):
                 points.append((x,y))
     return dig_plan, points
 
-def fill_interior(dig_plan):
-    rows = len(dig_plan)
-    columns = len(dig_plan[0])
-    border = 0
-
-    #for y
-
-    return dig_plan
-
 
 def day18_1(data):
     data = read_input(2023, "18_teste")
@@ -2960,11 +2951,11 @@ def day18_1(data):
         elif direction == 'R':
             columns+=val
     
+    # original solution, works but is a bit slow
+    '''
     dig_plan = build_empty_grid(rows, columns, '.')
     dig_plan, points = follow_dig_plan(dig_plan, dig_plan_instruction)
     p = Polygon(points)
-    print(p.area)
-    print(p.contains(Point(13,10)))
     
     result = 0
     for y in range(rows):
@@ -2973,10 +2964,30 @@ def day18_1(data):
             if p.contains(point):
                 result += 1
 
-
     result += p.boundary.length
-
-    #printMap(dig_plan)
+    '''
+    
+    # second approach is smarter in building the polygon :sweat
+    (x,y) = (columns//3,rows//3)
+    points = write_down_dig_plan(dig_plan_instruction,x,y)
+    polygon = Polygon(points)
+       
+    # it restricts the generated polygon in a box to reduce the search space to check for interior points, still not optimal
+    '''
+    box = polygon.envelope
+    result = 0
+    minx, miny, maxx, maxy = int(box.bounds[0]), int(box.bounds[1]), int(box.bounds[2]), int(box.bounds[3])
+    for y in range(miny, maxy+1):
+        for x in range(minx, maxx+1):
+            point = Point(x,y)
+            if polygon.contains(point):
+                result += 1
+    result += polygon.boundary.length
+    '''
+    
+    # third approach seems to be the only viable option for part 2 :\ 
+    # which is basically a derivation of shoelace formula
+    result = polygon.area + polygon.length//2+1
 
     AssertExpectedResult(0, result)
     return result
@@ -2991,11 +3002,33 @@ def get_dir_hex(hex):
     elif hex == 3:
         return 'U'
 
+def write_down_dig_plan(dig_plan_instructions,x,y):
+    points = []
+    
+    for direction, val in dig_plan_instructions:
+        if direction == 'R':
+            points.append(Point(x,y))
+            x+=val
+            points.append(Point(x,y))
+        elif direction == 'L':
+            points.append(Point(x,y))
+            x-=val
+            points.append(Point(x,y))
+        elif direction == 'U':
+            points.append(Point(x,y))
+            y-=val
+            points.append(Point(x,y))
+        elif direction == 'D':
+            points.append(Point(x,y))
+            y+=val
+            points.append(Point(x,y))
+    return points
+
 def day18_2(data):
-    data = read_input(2023, "18_teste")    
+    #data = read_input(2023, "18_teste")    
     result = 0
 
-    dig_plan_instruction = []
+    dig_plan_instructions = []
     rows = 1000
     columns = 1000
 
@@ -3005,19 +3038,34 @@ def day18_2(data):
         val = int(hex[1:6],16)
         direction = get_dir_hex(int(hex[6]))
         
-        dig_plan_instruction.append((direction, val))
+        dig_plan_instructions.append((direction, val))
         if direction in ['D']:
             rows+=val
         elif direction == 'R':
             columns+=val
     
-    print(dig_plan_instruction)
-
-    dig_plan = build_empty_grid(rows*2, columns*2, '.')
-    dig_plan, points = follow_dig_plan(dig_plan, dig_plan_instruction)
+ 
+    (x,y) = (columns//3,rows//3)
+    points = write_down_dig_plan(dig_plan_instructions,x,y)
+    polygon = Polygon(points)
+ 
+    # this approach does not work for such a big search space even for the sample data
+    '''
+    box = polygon.envelope    
     
+    result = 0
+    minx, miny, maxx, maxy = int(box.bounds[0]), int(box.bounds[1]), int(box.bounds[2]), int(box.bounds[3])
+    for y in range(miny, maxy+1):
+        for x in range(minx, maxx+1):
+            point = Point(x,y)
+            if polygon.contains(point):
+                result += 1
     
-    #printMap(dig_plan)
+    result += polygon.boundary.length
+    '''
+    
+    result = polygon.area + polygon.length//2+1
+    
              
     AssertExpectedResult(0, result)
     return result
