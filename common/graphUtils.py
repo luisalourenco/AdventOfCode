@@ -9,9 +9,19 @@ from functools import wraps
 from collections import namedtuple
 import json
 import six
+from collections.abc import Iterable
 
 # taken from https://gist.github.com/harel/9ced5ed51b97a084dec71b9595565a71
 Serialized = namedtuple('Serialized', 'json')
+
+class hash_list(list): 
+    def __init__(self, *args): 
+        if len(args) == 1 and isinstance(args[0], Iterable): 
+            args = args[0] 
+        super().__init__(args) 
+         
+    def __hash__(self): 
+        return hash(e for e in self)
 
 def hashable_lru(func):
     cache = lru_cache(maxsize=2048)

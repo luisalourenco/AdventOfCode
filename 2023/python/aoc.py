@@ -56,7 +56,7 @@ DEBUG_MODE = False
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -1852,8 +1852,9 @@ def aux(replaced, condition):
     #print()
     return 1
 
-
+#@hashable_lru
 #@lru_cache(maxsize=128)    
+@hashable_cache
 def check_condition_rec(springs, condition, counter, replaced):    
     #print("call with",springs, condition, counter)
     
@@ -1932,6 +1933,13 @@ def day12_1(data):
 def day12_2(data):
     data = read_input(2023, "12_teste")    
     result = 0    
+    records = []
+    
+    for line in data:
+        data_split = line.split(" ")
+        records.append((list(data_split[0]), ints(data_split[1].split(','))))
+        
+    
              
     AssertExpectedResult(0, result)
     return result
