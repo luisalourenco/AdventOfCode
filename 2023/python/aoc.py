@@ -2986,7 +2986,7 @@ def day18_1(data):
     '''
     
     # third approach seems to be the only viable option for part 2 :\ 
-    # which is basically a derivation of shoelace formula
+    # which is basically a derivation of shoelace formula (Pick's theorem I think)
     result = polygon.area + polygon.length//2+1
 
     AssertExpectedResult(0, result)
