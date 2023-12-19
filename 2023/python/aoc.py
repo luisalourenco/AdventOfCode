@@ -3137,34 +3137,95 @@ def day19_1(data):
     AssertExpectedResult(342650, result)
     return result
 
-from constraint import *
+def print_xmas(r,x,m,a,s):
+    print("rule:", r)
+    print("x:",len(x))
+    print("m:",len(m))
+    print("a:",len(a))
+    print("s:",len(s))
+    print("combinations:",len(x)*len(m)*len(a)*len(s))
+
+
+def start_workflows_v2(workflows, parts, start):
+    accepted = []
+    xx = list(range(1,4001))
+    mm = list(range(1,4001))
+    aa = list(range(1,4001))
+    ss = list(range(1,4001))
+
+    def process_workflows_rec(curr, workflows, xx, mm, aa, ss, result):
+        if curr == 'A':
+            accepted.append(len(xx)*len(mm)*len(aa)*len(ss))
+            #print(accepted)
+            #print_xmas(curr,xx,mm,aa,ss) 
+            #print("acc",sum(accepted))
+            return len(xx)*len(mm)*len(aa)*len(ss)
+        elif curr == 'R':       
+            return 0
+        else:
+            rules = workflows[curr]
+            for rule in rules:
+                r = rule.split(":")
+                if len(r) > 1:
+                    cond = r[0]
+                    xxx = xx
+                    mmm = mm 
+                    aaa = aa 
+                    sss = ss
+                    if 'x' in cond:
+                        xxx = [x for x in xx if eval(cond)]
+                    elif 'm' in cond:
+                        mmm = [m for m in mm if eval(cond)]
+                    elif 'a' in cond:
+                        aaa = [a for a in aa if eval(cond)]
+                    elif 's' in cond:
+                        sss = [s for s in ss if eval(cond)]
+                    
+                    if xxx or mmm or aaa or sss:                
+                        dest = r[1]                        
+                        #print_xmas(dest,xx,mm,aa,ss) 
+                        process_workflows_rec(dest, workflows, xxx, mmm, aaa, sss, result)
+                    else:
+                        return  0                              
+                        
+                else:
+                    dest = r[0]
+                    #print_xmas(dest,xx,mm,aa,ss) 
+                    process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
+
+                #process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
+
+
+           
+    result = process_workflows_rec(start, workflows, xx, mm, aa, ss, 0)
+    print("result",result)
+    
+
+    #return accepted
 
 def day19_2(data):
     data = read_input(2023, "19_teste")    
     result = 0    
              
-    solver = Solver()
-    lower_bound = 0
-    upper_bound = 4000
-    
- 
-    #solver.add( And(x < 1416, And(s < 1351, a < 2006) ))
-    #solver.add(And(s < 1351, m > 2090))
-    #solver.add(And(s < 1351, x <= 2440))
-    #solver.add(And(x > 2662, And(s < 1351, a < 2006) ))
-    #solver.add(And(s < 2770, s > 3448))
-    #solver.add(And(m < 1801, m > 838))
-    
-    
+    Part = namedtuple("Part",['x','m','a','s'])
+    workflows = dict()
+    parts = []
 
-    problem = Problem()
-    problem.addVariables(['x', 's', 'a', 'm'], range(4000))
-    problem.addConstraint(lambda x: x < 1416, ('x'))
-    problem.addConstraint(lambda s: s < 1351, ('s'))
-    problem.addConstraint(lambda a: a < 2006, ('a'))
-    solutions = problem.getSolutions()
+    i = data.index('')
+    workflows_data = data[:i]
+    parts_data = data[i+1:]
+    
+    for line in workflows_data:
+        wk = parse("{name}{{{rules}}}", line)
+        workflows[wk['name']] = wk['rules'].split(",")
+        
+    for line in parts_data:
+        wk = parse("{{x={x:d},m={m:d},a={a:d},s={s:d}}}", line)
+        parts.append(Part(wk['x'], wk['m'], wk['a'], wk['s'] ))
 
-    print(solutions)
+    start = 'in'
+    result = start_workflows_v2(workflows, parts, start)
+    
     
 
     
