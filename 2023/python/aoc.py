@@ -3083,16 +3083,85 @@ def day18_2(data):
 
 #region ##### Day 19 #####
 
+def start_workflows(workflows, parts, start):
+    accepted = []
+    dest = start
+    for part in parts:
+        dest = start
+        while dest != 'A' and dest != 'R':
+            rules = workflows[dest]
+            for rule in rules:
+                #print(part)
+                r = rule.split(":")
+                if len(r) > 1:
+                    cond = r[0]
+                    rule_eval = eval(cond, {'x': part.x, 'm': part.m, 'a': part.a, 's': part.s } )
+                    #print(cond,"for part", part, "is", t)
+                    if rule_eval:
+                        dest = r[1]
+                        break
+                else:
+                    dest = r[0]
+            if dest == 'A':
+                accepted.append(part)
+
+    #print("accepted",accepted)
+    rating = sum([part.x + part.m + part.a + part.s for part in accepted])
+    return rating
+        
+
+
 def day19_1(data):
+    #data = read_input(2023, "19_teste")    
+    result = 0  
+
+    Part = namedtuple("Part",['x','m','a','s'])
+    workflows = dict()
+    parts = []
+
+    i = data.index('')
+    workflows_data = data[:i]
+    parts_data = data[i+1:]
+    
+    for line in workflows_data:
+        wk = parse("{name}{{{rules}}}", line)
+        workflows[wk['name']] = wk['rules'].split(",")
+        
+    for line in parts_data:
+        wk = parse("{{x={x:d},m={m:d},a={a:d},s={s:d}}}", line)
+        parts.append(Part(wk['x'], wk['m'], wk['a'], wk['s'] ))
+
+    start = 'in'
+    result = start_workflows(workflows, parts, start)
+    
+
+
+    AssertExpectedResult(342650, result)
+    return result
+
+
+def day19_2(data):
     data = read_input(2023, "19_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+
+#region ##### Day 20 #####
+
+def day20_1(data):
+    data = read_input(2023, "20_teste")    
     result = 0  
 
     AssertExpectedResult(0, result)
     return result
 
 
-def day19_2(data):
-    data = read_input(2023, "19_teste")    
+def day20_2(data):
+    data = read_input(2023, "20_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
