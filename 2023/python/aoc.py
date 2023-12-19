@@ -3134,16 +3134,41 @@ def day19_1(data):
     start = 'in'
     result = start_workflows(workflows, parts, start)
     
-
-
     AssertExpectedResult(342650, result)
     return result
 
+from constraint import *
 
 def day19_2(data):
     data = read_input(2023, "19_teste")    
     result = 0    
              
+    solver = Solver()
+    lower_bound = 0
+    upper_bound = 4000
+    
+ 
+    #solver.add( And(x < 1416, And(s < 1351, a < 2006) ))
+    #solver.add(And(s < 1351, m > 2090))
+    #solver.add(And(s < 1351, x <= 2440))
+    #solver.add(And(x > 2662, And(s < 1351, a < 2006) ))
+    #solver.add(And(s < 2770, s > 3448))
+    #solver.add(And(m < 1801, m > 838))
+    
+    
+
+    problem = Problem()
+    problem.addVariables(['x', 's', 'a', 'm'], range(4000))
+    problem.addConstraint(lambda x: x < 1416, ('x'))
+    problem.addConstraint(lambda s: s < 1351, ('s'))
+    problem.addConstraint(lambda a: a < 2006, ('a'))
+    solutions = problem.getSolutions()
+
+    print(solutions)
+    
+
+    
+    
     AssertExpectedResult(0, result)
     return result
 
