@@ -3239,54 +3239,89 @@ def day19_2(data):
 #region ##### Day 20 #####
 
 
-def update_targer_modules(targets, pulse, flip_flops, conjunctions):
-    for mod in targets:
-        if mod in flip_flops:
-            t, _ = flip_flops[mod]
-            flip_flops[mod] = t, pulse
+def update_target_modules(module, targets, pulse, conjunctions):
+
+    for mod in targets:       
         if mod in conjunctions:
+            conjunctions[mod].update({module: pulse})            
             
+    return conjunctions          
 
 
 def process_modules(press_button_times, modules, flip_flops, conjunctions):
-    
-    states = {}
     
     low_pulses = 0
     high_pulses = 0
 
     for _ in range(press_button_times):
-        queue = ['button']
-        # False is low, True is high
-        high_pulse_type = False
+        queue = [('broadcaster', False)]
 
         while len(queue) > 0 :
             # process next module
-            mod = queue.pop()
-    
-            targets = modules[mod]
-            if mod == 'broadcaster':
-                queue = queue + targets
-
-            elif mod in flip_flops: 
-                turned_on, pulse = flip_flops[mod]
-
-                if not pulse: # if low pulse               
-                    flip_flops[mod] = not turned_on, pulse #switch
-                    if not turned_on:
-                        pulse = not pulse # send high pulse
-                    #updates targets
-                    update_targer_modules(targets, pulse)
-                        
-                    
+            mod, pulse = queue.pop(0)
             
-            elif mod in conjunctions:
-                con
+            if pulse:
+                high_pulses+=1
+            else:
+                low_pulses+=1
 
+            #print()
+            #pulse_type = 'High' if pulse else 'Low'    
+            #print("Processing module", mod,"with current state:", flip_flops, conjunctions)
+            
+            if mod in modules:
+                targets = modules[mod]
+                
+                #pulse_type = 'High' if pulse else 'Low'                
+                #print(mod,"received pulse",pulse_type)
+            
+                if mod == 'broadcaster':
+                    queue = queue + [(target, pulse) for target in targets]
+                    
+                    #print(mod,"--",pulse_type,"-->", targets)
+
+                elif mod in flip_flops: 
+                    turned_on = flip_flops[mod]                    
+                    
+                    if not pulse: # if low pulse               
+                        flip_flops[mod] = not turned_on #switch
+                        if not turned_on:
+                            pulse = not pulse # send high pulse
+                       
+                        #updates targets
+                        conjunctions = update_target_modules(mod, targets, pulse, conjunctions)       
+                        queue = queue + [(target, pulse) for target in targets]
+                        
+                        #pulse_type = 'High' if pulse else 'Low'
+                        #print(mod,"--", pulse_type,"-->", targets)
+                
+                elif mod in conjunctions:
+                    inputs = conjunctions[mod]
+                    
+                    #print("conjunction",mod,"has inputs state:", inputs)                    
+                    
+                    pulse = True 
+                    for k in inputs:
+                        p = inputs[k]
+                        pulse = pulse and p
+                    
+                    # it remembered high pulses for ALL inputs, change to Low
+                    pulse = not pulse
+                    
+                    conjunctions = update_target_modules(mod, targets, pulse, conjunctions)       
+                    queue = queue + [(target, pulse) for target in targets]
+                    
+                    #pulse_type = 'High' if pulse else 'Low'
+                    #print(mod,"--", pulse_type,"-->", targets)
+        #print()
+
+    print("low:", low_pulses)
+    print("high:", high_pulses)
+    return low_pulses*high_pulses
 
 
 def day20_1(data):
-    data = read_input(2023, "20_teste")    
+    #data = read_input(2023, "20_teste")    
     result = 0  
     modules = {'button': ['broadcaster']}
     flip_flops = {}
@@ -3301,28 +3336,30 @@ def day20_1(data):
             mod_type = module[0]
             module = module[1:]
             if mod_type == '%':
-                flip_flops[module] = False, False
+                # turned on 
+                flip_flops[module] = False
             elif mod_type == '&':   
-                conjunctions[module] = []
+                conjunctions[module] = dict()
 
         if module not in modules:
             modules[module] = []
-        modules[module] = targets.split(',')
+        modules[module] = [target.strip() for target in targets.split(',')]
     
     for k in modules.keys():
         target = modules[k]
         for c in conjunctions.keys():
             if c in target:
-                conjunctions[c].append((k, False))
+                conjunctions[c].update({k : False})
 
-    print(flip_flops)
-    print(conjunctions)
+    #print(flip_flops)
+    #print(conjunctions)
+    #print(modules)
     
-    press_button_times = 1
+    press_button_times = 1000
     result = process_modules(press_button_times, modules, flip_flops, conjunctions)
 
 
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(703315117, result)
     return result
 
 
