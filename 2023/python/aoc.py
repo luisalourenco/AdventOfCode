@@ -3157,7 +3157,7 @@ def start_workflows_v2(workflows, parts, start):
         if curr == 'A':
             accepted.append(len(xx)*len(mm)*len(aa)*len(ss))
             #print(accepted)
-            #print_xmas(curr,xx,mm,aa,ss) 
+            print_xmas(curr,xx,mm,aa,ss) 
             #print("acc",sum(accepted))
             return len(xx)*len(mm)*len(aa)*len(ss)
         elif curr == 'R':       
@@ -3238,9 +3238,89 @@ def day19_2(data):
 
 #region ##### Day 20 #####
 
+
+def update_targer_modules(targets, pulse, flip_flops, conjunctions):
+    for mod in targets:
+        if mod in flip_flops:
+            t, _ = flip_flops[mod]
+            flip_flops[mod] = t, pulse
+        if mod in conjunctions:
+            
+
+
+def process_modules(press_button_times, modules, flip_flops, conjunctions):
+    
+    states = {}
+    
+    low_pulses = 0
+    high_pulses = 0
+
+    for _ in range(press_button_times):
+        queue = ['button']
+        # False is low, True is high
+        high_pulse_type = False
+
+        while len(queue) > 0 :
+            # process next module
+            mod = queue.pop()
+    
+            targets = modules[mod]
+            if mod == 'broadcaster':
+                queue = queue + targets
+
+            elif mod in flip_flops: 
+                turned_on, pulse = flip_flops[mod]
+
+                if not pulse: # if low pulse               
+                    flip_flops[mod] = not turned_on, pulse #switch
+                    if not turned_on:
+                        pulse = not pulse # send high pulse
+                    #updates targets
+                    update_targer_modules(targets, pulse)
+                        
+                    
+            
+            elif mod in conjunctions:
+                con
+
+
+
 def day20_1(data):
     data = read_input(2023, "20_teste")    
     result = 0  
+    modules = {'button': ['broadcaster']}
+    flip_flops = {}
+    conjunctions = {}
+
+    for line in data:
+        mods = parse("{} -> {}", line)
+        module = mods[0]
+        targets = mods[1]
+
+        if module != 'broadcaster':
+            mod_type = module[0]
+            module = module[1:]
+            if mod_type == '%':
+                flip_flops[module] = False, False
+            elif mod_type == '&':   
+                conjunctions[module] = []
+
+        if module not in modules:
+            modules[module] = []
+        modules[module] = targets.split(',')
+    
+    for k in modules.keys():
+        target = modules[k]
+        for c in conjunctions.keys():
+            if c in target:
+                conjunctions[c].append((k, False))
+
+    print(flip_flops)
+    print(conjunctions)
+    
+    press_button_times = 1
+    result = process_modules(press_button_times, modules, flip_flops, conjunctions)
+
 
     AssertExpectedResult(0, result)
     return result
@@ -3248,6 +3328,25 @@ def day20_1(data):
 
 def day20_2(data):
     data = read_input(2023, "20_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 21 #####
+
+def day21_1(data):
+    data = read_input(2023, "21_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day21_2(data):
+    data = read_input(2023, "21_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
