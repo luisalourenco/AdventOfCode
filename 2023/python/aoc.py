@@ -3396,9 +3396,45 @@ def day20_2(data):
 
 #region ##### Day 21 #####
 
+def bfs2(graph, root, s, compute_distances = False):
+    path=[]
+    if compute_distances:
+        visited, queue = set(), deque([(root, 0)])
+    else:
+        visited, queue = set(), deque([root])
+    visited.add(root)
+
+    steps = 0
+    while queue:
+
+        # Dequeue a vertex from queue
+        if compute_distances:
+            (vertex, steps) = queue.popleft()
+        else:
+            vertex = queue.popleft() 
+
+        path.append((vertex, steps)) if compute_distances else path.append(vertex)
+        #print(str(vertex) + ' ', end='')
+
+        # If not visited, mark it as visited, and
+        # enqueue it
+        for neighbour in graph[vertex]:
+            if steps > s:
+                return path
+            #if neighbour not in visited:
+            visited.add(neighbour)
+            if compute_distances:
+                queue.append((neighbour, steps + 1))
+            else:
+                queue.append(neighbour)
+
+    return path
+
+
 # 7522 7259 high
+# 1045 low
 def day21_1(data):
-    #data = read_input(2023, "21_teste")    
+    data = read_input(2023, "21_teste")    
     result = 0  
 
     grid = buildMapGrid(data,'.', withPadding=False)
@@ -3414,15 +3450,20 @@ def day21_1(data):
                 start = (x,y)
                 break
 
-    p = bfs(graph,start,compute_distances=True)
+    
     steps = 64
-
+    p = bfs2(graph,start,steps,compute_distances=True)
+    #print(p)
+    
+    l = set()
     for coords, s in p:
-        print(coords,s)
-        if s < steps:
-            result+=1
-
-    print(p)
+        #print(coords,s)
+        if s == steps:
+            l.add(coords)
+            l.union(set(graph[coords]))
+    
+    result = len(l)
+    #print(p)
 
     AssertExpectedResult(0, result)
     return result
