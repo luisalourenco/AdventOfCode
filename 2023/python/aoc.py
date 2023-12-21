@@ -3396,9 +3396,33 @@ def day20_2(data):
 
 #region ##### Day 21 #####
 
+# 7522 7259 high
 def day21_1(data):
-    data = read_input(2023, "21_teste")    
+    #data = read_input(2023, "21_teste")    
     result = 0  
+
+    grid = buildMapGrid(data,'.', withPadding=False)
+    graph = buildGraphFromMap(grid, noPadding=True)
+
+    rows = len(grid)
+    columns = len(grid[0])
+    start = (0,0)
+    
+    for y in range(rows):
+        for x in range(columns):
+            if grid[y][x] == 'S':
+                start = (x,y)
+                break
+
+    p = bfs(graph,start,compute_distances=True)
+    steps = 64
+
+    for coords, s in p:
+        print(coords,s)
+        if s < steps:
+            result+=1
+
+    print(p)
 
     AssertExpectedResult(0, result)
     return result
@@ -3406,6 +3430,25 @@ def day21_1(data):
 
 def day21_2(data):
     data = read_input(2023, "21_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 22 #####
+
+def day22_1(data):
+    data = read_input(2023, "22_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day22_2(data):
+    data = read_input(2023, "22_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
