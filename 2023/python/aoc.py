@@ -3194,8 +3194,6 @@ def start_workflows_v2(workflows, parts, start):
                     process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
 
                 #process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
-
-
            
     result = process_workflows_rec(start, workflows, xx, mm, aa, ss, 0)
     print("result",result)
@@ -3248,12 +3246,13 @@ def update_target_modules(module, targets, pulse, conjunctions):
     return conjunctions          
 
 
-def process_modules(press_button_times, modules, flip_flops, conjunctions):
+def process_modules(press_button_times, modules, flip_flops, conjunctions, modules_needed = []):
     
     low_pulses = 0
     high_pulses = 0
-
-    for _ in range(press_button_times):
+    found = []
+    
+    for i in range(press_button_times):
         queue = [('broadcaster', False)]
 
         while len(queue) > 0 :
@@ -3294,6 +3293,10 @@ def process_modules(press_button_times, modules, flip_flops, conjunctions):
                         
                         #pulse_type = 'High' if pulse else 'Low'
                         #print(mod,"--", pulse_type,"-->", targets)
+                    if pulse and mod in modules_needed:
+                        modules_needed.remove(mod)
+                        found.append(i+1)
+                        
                 
                 elif mod in conjunctions:
                     inputs = conjunctions[mod]
@@ -3313,16 +3316,21 @@ def process_modules(press_button_times, modules, flip_flops, conjunctions):
                     
                     #pulse_type = 'High' if pulse else 'Low'
                     #print(mod,"--", pulse_type,"-->", targets)
+           
         #print()
 
     print("low:", low_pulses)
     print("high:", high_pulses)
+    print(modules_needed)
+    print(found)
+    r = 1
+    for f in found:
+     r = lcm(r,2)
+    print("lcm:",r)
     return low_pulses*high_pulses
 
 
-def day20_1(data):
-    #data = read_input(2023, "20_teste")    
-    result = 0  
+def parse_day20_data(data):
     modules = {'button': ['broadcaster']}
     flip_flops = {}
     conjunctions = {}
@@ -3350,6 +3358,13 @@ def day20_1(data):
         for c in conjunctions.keys():
             if c in target:
                 conjunctions[c].update({k : False})
+    
+    return modules, flip_flops, conjunctions
+
+def day20_1(data):
+    #data = read_input(2023, "20_teste")    
+    result = 0     
+    modules, flip_flops, conjunctions = parse_day20_data(data)
 
     #print(flip_flops)
     #print(conjunctions)
@@ -3364,8 +3379,15 @@ def day20_1(data):
 
 
 def day20_2(data):
-    data = read_input(2023, "20_teste")    
+    #data = read_input(2023, "20_teste")    
     result = 0    
+    
+    modules, flip_flops, conjunctions = parse_day20_data(data)
+
+    modules_needed = list(conjunctions['cs'].keys())
+    
+    press_button_times = 100000000
+    result = process_modules(press_button_times, modules, flip_flops, conjunctions, modules_needed)
              
     AssertExpectedResult(0, result)
     return result
