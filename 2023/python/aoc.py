@@ -3497,6 +3497,25 @@ def day22_2(data):
 
 #endregion
 
+#region ##### Day 23 #####
+
+def day23_1(data):
+    data = read_input(2023, "23_teste")    
+    result = 0  
+
+    AssertExpectedResult(0, result)
+    return result
+
+
+def day23_2(data):
+    data = read_input(2023, "23_teste")    
+    result = 0    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
 if __name__ == "__main__":
     # override timeout
     main(sys.argv, globals(), AOC_EDITION_YEAR, 28800)
