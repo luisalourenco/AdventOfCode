@@ -38,7 +38,7 @@ from parse import parse
 from parse import search
 from aocd import get_data
 from aocd import submit
-from shapely import Polygon, Point, contains_xy
+from shapely import *
 from itertools import combinations
 import networkx as nx
 
@@ -3499,16 +3499,240 @@ def day22_2(data):
 
 #region ##### Day 23 #####
 
+
+def build_graph_from_hike_map(map, part2=False):
+    graph = {}
+    sizeX = len(map[0])
+    sizeY = len(map)
+
+    for y in range(sizeY):
+        for x in range(sizeX):
+
+            east = (x+1, y)
+            west = (x-1, y)
+            north = (x, y-1)
+            south = (x, y+1)
+
+            heast = True
+            hwest = True 
+            hnorth = True
+            hsouth = True
+            empty_cells = ['.', '<', '>', '^', 'v']
+            
+            if not part2:
+                if map[y][x] == '<':
+                    heast = False 
+                    hnorth = False
+                    hsouth = False
+                elif map[y][x] == '>':
+                    hwest = False 
+                    hnorth = False
+                    hsouth = False
+                elif map[y][x] == '^':
+                    hwest = False 
+                    heast = False
+                    hsouth = False
+                elif map[y][x] == 'v':
+                    hwest = False 
+                    heast = False
+                    hnorth = False
+            
+            neighbours = []
+            if map[y][x] in empty_cells:
+                if 0 <= east[0] < sizeX and 0 <= east[1] < sizeY:
+                    if heast:
+                        if map[east[1]][east[0]] in empty_cells:
+                            neighbours.append(east)
+                
+                if 0 <= west[0] < sizeX and 0 <= west[1] < sizeY:                        
+                    if hwest:
+                        if map[west[1]][west[0]] in empty_cells:
+                            neighbours.append(west)
+                
+                if 0 <= north[0] < sizeX and 0 <= north[1] < sizeY: 
+                    if hnorth:
+                        if map[north[1]][north[0]] in empty_cells:
+                            neighbours.append(north)
+                
+                if 0 <= south[0] < sizeX and 0 <= south[1] < sizeY:
+                    if hsouth: 
+                        if map[south[1]][south[0]] in empty_cells:
+                            neighbours.append(south)
+            
+            graph[(x,y)] = neighbours
+    return graph
+
+def find_longest_path(graph, start, end, path=[]):
+        path = path + [start]
+        if start == end:
+            return path
+        if start not in graph:
+            return None
+        shortest = None
+        for node in graph[start]:
+            if node not in path:
+                newpath = find_longest_path(graph, node, end, path)
+                if newpath:
+                    if not shortest or len(newpath) > len(shortest):
+                        shortest = newpath
+        return shortest
+
+
 def day23_1(data):
     data = read_input(2023, "23_teste")    
+    result = 0  
+
+    hike_map = buildMapGrid(data, initValue='.', withPadding=False)
+    graph = build_graph_from_hike_map(hike_map)
+
+    for k in graph.keys():
+        print(k,"->", graph[k])
+
+    start = (1,0)
+    end = (len(hike_map[0])-2, len(hike_map)-1)
+
+    sys.setrecursionlimit(10000)
+    path = find_longest_path(graph, start, end)
+
+    result = len(path)-1
+
+    AssertExpectedResult(2230, result)
+    return result
+
+
+def DFSv3(G,v,seen=None,path=None):
+    if seen is None: seen = []
+    if path is None: path = [v]
+
+    seen.append(v)
+
+    paths = []
+    for t in G[v]:
+        if t not in seen:
+            t_path = path + [t]
+            paths.append(tuple(t_path))
+            paths.extend(DFSv3(G, t, seen[:], t_path))
+    return paths
+
+
+
+def day23_2(data):
+    #data = read_input(2023, "23_teste")    
+    result = 0   
+
+    hike_map = buildMapGrid(data, initValue='.', withPadding=False)
+    graph = build_graph_from_hike_map(hike_map, part2=True)
+
+    #for k in graph.keys():
+    #    print(k,"->", graph[k])
+
+
+    start = (1,0)
+    end = (len(hike_map[0])-2, len(hike_map)-1)
+
+    sys.setrecursionlimit(10000)
+    #path = find_longest_path(graph, start, end)
+    #result = len(path)-1 
+    
+    # Run DFS, compute metrics
+    all_paths = DFSv3(graph, start)
+    max_len   = max(len(p) for p in all_paths)
+    max_paths = [p for p in all_paths if len(p) == max_len]
+
+    
+    print("Longest Path Length:")
+    print(max_len)
+    
+             
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 24 #####
+
+#too low 7787
+# too high 11161
+def day24_1(data):
+    #data = read_input(2023, "24_teste")    
+    result = 0  
+    hailstones = []
+
+    for line in data:
+        hs = parse("{px}, {py}, {pz} @ {vx}, {vy}, {vz}", line)
+        hailstone = ( (int(hs['px'].strip()), int(hs['py'].strip()), int(hs['pz'].strip())), (int(hs['vx'].strip()), int(hs['vy'].strip()), int(hs['vz'].strip()) ) )
+        hailstones.append(hailstone)
+
+    bounds = (200000000000000, 400000000000000)
+    #bounds = (7, 27)
+    coords = [ Point(bounds[0], bounds[0]), Point(bounds[0],bounds[1]), Point(bounds[1],bounds[0]), Point(bounds[1],bounds[1])]
+    test_area = box(200000000000000, 200000000000000, 400000000000000, 400000000000000)
+    #test_area = Polygon(coords)
+    
+    time_forward = 200000000000000 + 400000000000000
+ 
+    pairs = list(itertools.combinations(hailstones, 2))
+    for h1, h2 in pairs:
+        pos1, vel1 = h1 
+        pos2, vel2 = h2
+        x1,y1,_ = pos1
+        x2,y2,_ = pos2
+        vx1,vy1,_ = vel1
+        vx2,vy2,_ = vel2
+
+        h1_start = (x1,y1)
+        h2_start = (x2,y2)
+ 
+        x1 += (vx1 * time_forward)
+        x2 += (vx2 * time_forward)
+        y1 += (vy1 * time_forward)
+        y2 += (vy2 * time_forward)
+
+        h1_end = (x1,y1)
+        h2_end = (x2,y2)
+
+        h1_line = LineString([h1_start, h1_end])
+        h2_line = LineString([h2_start, h2_end])
+    
+        intersection_point = h1_line.intersection(h2_line)
+        
+        if test_area.contains(intersection_point):
+            result += 1
+        
+
+
+    AssertExpectedResult(11098, result)
+    return result
+
+
+def day24_2(data):
+    data = read_input(2023, "24_teste")    
+    result = 0  
+    hailstones = []
+
+    for line in data:
+        hs = parse("{px}, {py}, {pz} @ {vx}, {vy}, {vz}", line)
+        hailstone = ( (int(hs['px'].strip()), int(hs['py'].strip()), int(hs['pz'].strip())), (int(hs['vx'].strip()), int(hs['vy'].strip()), int(hs['vz'].strip()) ) )
+        hailstones.append(hailstone)
+
+  
+    AssertExpectedResult(0, result)
+    return result
+
+#endregion
+
+#region ##### Day 25 #####
+
+def day25_1(data):
+    data = read_input(2023, "25_teste")    
     result = 0  
 
     AssertExpectedResult(0, result)
     return result
 
 
-def day23_2(data):
-    data = read_input(2023, "23_teste")    
+def day25_2(data):
+    data = read_input(2023, "25_teste")    
     result = 0    
              
     AssertExpectedResult(0, result)
