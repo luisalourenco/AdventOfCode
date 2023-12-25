@@ -41,6 +41,7 @@ from aocd import submit
 from shapely import *
 from itertools import combinations
 import networkx as nx
+import graphviz
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2023
@@ -56,7 +57,7 @@ DEBUG_MODE = False
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -3723,20 +3724,58 @@ def day24_2(data):
 
 #region ##### Day 25 #####
 
+
+
+# 519672 too low
+# 520406 too high
+# 520380
+# kzh -> rks , ddc -> blb, dgt-> tnz
 def day25_1(data):
-    data = read_input(2023, "25_teste")    
-    result = 0  
+    #data = read_input(2023, "25_teste")    
+     
+    components = dict()
 
-    AssertExpectedResult(0, result)
+    for line in data:
+        r = parse("{}: {}", line)
+        component = r[0].strip()
+        cps = [c.strip() for c  in r[1].split(' ')]
+
+        if component in components:
+            components[component] = components[component] + cps 
+        else:
+            components[component] = cps 
+        
+
+    dot = graphviz.Digraph('aoc', filename='aoc.gv',
+                     node_attr={'color': 'lightblue2', 'style': 'filled'})
+    dot.attr(size='6,6')
+    graph = nx.Graph()    
+
+    for key in components.keys():
+        graph.add_node(key)
+        for c in components[key]:
+            # kzh -> rks , ddc -> gqm, dgt-> tnz
+            graph.add_node(c)
+            #if (key != 'kzh' and c != 'rks') and (key != 'ddc' and c != 'gqm') and  (key != 'dgt' and c != 'tnz'):
+            graph.add_edge(key,c)
+            dot.edge(key, c)
+
+    #dot.view()
+
+    print(nx.number_connected_components(graph))
+
+    for u,v in nx.minimum_edge_cut(graph):
+        graph.remove_edge(u,v)
+        
+    print(nx.number_connected_components(graph))
+    
+    result = 1
+    for c in nx.connected_components(graph):
+        result *= len(c)
+
+    AssertExpectedResult(520380, result)
     return result
 
-
-def day25_2(data):
-    data = read_input(2023, "25_teste")    
-    result = 0    
-             
-    AssertExpectedResult(0, result)
-    return result
 
 #endregion
 

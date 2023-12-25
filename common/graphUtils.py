@@ -454,6 +454,60 @@ def dijsktra(graph, initial, end):
     path = path[::-1]
     return path
 
+
+from collections import defaultdict
+
+class Graph3:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = defaultdict(list)
+
+    def get_edges(self):
+        return self.graph
+    
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+
+    def dfs(self, u, visited, discovery_time, low, parent, time, articulation_points):
+        visited[u] = True
+        discovery_time[u] = time
+        low[u] = time
+        children = 0
+
+        for v in self.graph[u]:
+            if not visited[v]:
+                parent[v] = u
+                children += 1
+                self.dfs(v, visited, discovery_time, low, parent, time + 1, articulation_points)
+
+                low[u] = min(low[u], low[v])
+
+                if parent[u] == 0 and children > 1:
+                    articulation_points.add(u)
+                elif parent[u] != 0 and low[v] >= discovery_time[u]:
+                    articulation_points.add(u)
+            elif v != parent[u]:
+                low[u] = min(low[u], discovery_time[v])
+
+    def find_articulation_points(self):
+        visited = defaultdict(int)
+        discovery_time = defaultdict(int)
+        low = defaultdict(int)
+        parent = defaultdict(int)
+        time = 0
+        articulation_points = set()
+
+        for u in (self.V):
+            print(visited)
+            if not visited[u]:
+                print(u)
+                self.dfs(u, visited, discovery_time, low, parent, time, articulation_points)
+
+        return list(articulation_points)
+
+
+
 """
 g = Graph(5)
 g.add_edge(0, 1, 5)
