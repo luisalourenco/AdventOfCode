@@ -1820,11 +1820,22 @@ def find_unknown_springs(springs):
             unkowns.append(i)
     return unkowns
 
+#\.*\#{3}\.+\#{2}\.+\#{1}\.*
+def verify_condition_regex(replaced, condition):
+    pattern = '\\.*'
+    for n in condition:
+        pattern += '\\#{'+str(n)+'}\\.+'
+    pattern = pattern[:-1]+'*'
+    #print(pattern)
 
-def aux(replaced, condition):
-    
+    return re.match(pattern, replaced)
+
+
+def verify_condition(replaced, condition):
+    #condition = [int(c) for c in list(condition) if c != ',']
+    replaced = list(replaced)
     for cond in condition:
-            
+
         try:
             i = replaced.index('#')
         except ValueError:
@@ -1837,6 +1848,7 @@ def aux(replaced, condition):
             #print()
             return 0
         else:        
+
             #print(cond,"condition met!")
             replaced = replaced[i+cond:]
             #print("-->",replaced)
@@ -1853,32 +1865,42 @@ def aux(replaced, condition):
     #print()
     return 1
 
-#@hashable_lru
 #@lru_cache(maxsize=128)    
-@hashable_cache
-def check_condition_rec(springs, condition, counter, replaced):    
+#@hashable_cache
+def check_condition_rec(springs, condition, counter, replaced, cache):    
     #print("call with",springs, condition, counter)
-    
+      
     if len(springs) == 0:
-        return aux(replaced, condition)
+        if replaced in cache:
+            return cache[replaced]
+        else:
+            res = verify_condition(replaced, condition)            
+            cache[replaced] = res
+            return res
         
     elif springs[0] == '#':        
-        return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]])
+        return check_condition_rec(springs[1:], condition, counter, replaced + springs[0], cache)
         
     elif springs[0] == '.':       
-        return check_condition_rec(springs[1:], condition, counter, replaced + [springs[0]]) 
+        return check_condition_rec(springs[1:], condition, counter, replaced + springs[0], cache) 
        
     elif springs[0] == '?':
         #print("Replacing ?")        
-        return check_condition_rec(springs[1:], condition, counter, replaced + ['#']) + check_condition_rec(springs[1:], condition, counter, replaced + ['.'])
-    
+        return check_condition_rec(springs[1:], condition, counter, replaced + '#', cache) + check_condition_rec(springs[1:], condition, counter, replaced + '.', cache)
+
+def check_condition_main(s, c):   
+    return check_condition_rec(s, c, 0, '', cache)
+
 def check_condition_v2(line):
 
     data_split = line.split(" ")
+    
     s = list(data_split[0])
     c = ints(data_split[1].split(','))
+    #print(s)
+    #print(c)
 
-    res = check_condition_rec(s, c, 0, [])
+    res = check_condition_main(s, c)
     #print("call check_condition_v2",s, c, res)
     #print()
     return res
@@ -1914,33 +1936,48 @@ def naive_solution(records):
 def day12_1(data):
     #data = read_input(2023, "12_teste")    
     result = 0  
-    records = []
+    global cache
+    cache = defaultdict(int)
 
-    for line in data:
-        data_split = line.split(" ")
-        records.append((list(data_split[0]), ints(data_split[1].split(','))))
-    
-    #print(records)
-    #result = naive_solution(records)
-
-    #for (springs, condition) in records:
     for line in data:        
-        result += check_condition_v2(line)#springs, condition)
+        result += check_condition_v2(line)
         
     #print(size)
     AssertExpectedResult(7251, result)
     return result
+
+def check_condition_v3(line):
+    global cache
+    cache = defaultdict(int)
+
+    data_split = line.split(" ")
+
+    s =''
+    for _ in range(5):
+        s += data_split[0]+'?'
+    s = list(s[:-1])
+
+    c =''
+    for _ in range(5):
+        c += data_split[1]+','
+    c = ints(c[:-1].split(','))
+    
+    #print(s)
+    #print(c)
+
+    res = check_condition_main(s, c)
+    #print("call check_condition_v2",s, c, res)
+    #print()
+    return res
 
 def day12_2(data):
     data = read_input(2023, "12_teste")    
     result = 0    
     records = []
     
-    for line in data:
-        data_split = line.split(" ")
-        records.append((list(data_split[0]), ints(data_split[1].split(','))))
-        
     
+    #for line in data:        
+    #    result += check_condition_v3(line)
              
     AssertExpectedResult(0, result)
     return result
@@ -2723,18 +2760,7 @@ def get_dir(dir):
     elif dir == (0,1):
         return "down"
 
-def day17_1(data):
-    data = read_input(2023, "17_teste")    
-    result = 0  
-
-    rows = len(data)
-    columns = len(data[0])
-
-    #g = buildGraphFromMap(data, withWeights=True, noPadding=True)
-    start = (0,0)
-    end = (rows-1, columns-1)
-
-    grid = buildMapGrid(data,withPadding=False)
+def build_adjacency_list(rows, columns):
 
     # (1,0) right
     # (-1,0) left
@@ -2864,36 +2890,61 @@ def day17_1(data):
     
             visited.add( (coords, dir) )
 
+    return adjacency_list
+
+def day17_1(data):
+    data = read_input(2023, "17_teste")    
+    result = 0  
+
+    rows = len(data)
+    columns = len(data[0])
+
+    #g = buildGraphFromMap(data, withWeights=True, noPadding=True)
+    start = (0,0)
+    end = (rows-1, columns-1)
+
+    grid = buildMapGrid(data,withPadding=False)
+    adjacency_list = build_adjacency_list(rows, columns)
+
     print()
     print("Generated graph:")
-    graph = Graph()
+    graph = nx.Graph()
+    #graph = Graph()
     for k in adjacency_list.keys():
         print(k,":", adjacency_list[k])
         neighbours = adjacency_list[k]
+        nn = []
         for (n, d) in neighbours:            
-            graph.add_edge(k, (n, d), int(grid[n[1]][n[0]])  )
+            #graph.add_edge(k, (n, d), int(grid[n[1]][n[0]])  )
+            nn.append( (k, (n, d), int(grid[n[1]][n[0]]) ) )
+        graph.add_weighted_edges_from(nn)
 
 
     start = ((0, 0), 'down') 
     end1 = ((12, 12), 'down')
     end2 = ((12, 12), 'right')
-    path1 = dijsktra(graph, start, end1 )
-    path2 = dijsktra(graph, start, end2 )
+    #path1 = dijsktra(graph, start, end1 )
+    #path2 = dijsktra(graph, start, end2 )
+    path1 = nx.dijkstra_path(graph, start, end1)
+    path2 = nx.dijkstra_path(graph, start, end2)
+    
+    print((path1))
+    print(nx.dijkstra_path_length(graph, start, end2))
 
     print()
     print("Shortest path1 found:")
     result = 0
     for v, w in zip(path1[:-1],path1[1:]):
         print(v,"->",w)
-        result += graph.weights[v,w]
+    #    result += graph.weights[v,w]
 
     print()
     print(result)
     print("Shortest path2 found:")
     result = 0
-    for v, w in zip(path2[:-1],path2[1:]):
-        print(v,"->",w)
-        result += graph.weights[v,w]
+    #for v, w in zip(path2[:-1],path2[1:]):
+    #    print(v,"->",w)
+    #    result += graph.weights[v,w]
 
 
     AssertExpectedResult(0, result)
