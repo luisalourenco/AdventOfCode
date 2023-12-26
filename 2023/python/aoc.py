@@ -2973,10 +2973,12 @@ def get_neighbours(x, y, direction, length, rows, columns):
     lcoords, ldir = turn_left(x, y, direction, rows, columns)
     if lcoords:
         neighbours.append( (lcoords, ldir, 1) )
+    
     #turn right
     rcoords, rdir = turn_right(x, y, direction, rows, columns)
     if rcoords:
         neighbours.append( (rcoords, rdir, 1) )
+    
     #straigh if < 3
     if length <= 3:
         scoords, sdir = continue_straight(x, y, direction, rows, columns)
@@ -2989,46 +2991,52 @@ def dijkstra_atmost_steps(graph, start, target):
     rows = len(graph)
     columns = len(graph[0])  
     visited = set()
-    
+        
     right_coords = (1,0)
     down_coords = (0,1)
 
     queue = PriorityQueue()
+    # total heat loss, coordinates, direction, length in that direction
     queue.put( (0, start, right_coords, 0) )
     queue.put( (0, start, down_coords, 0) )
-
-    total_heat = 0
     
     while not queue.empty():
 
+        # get next lowest heat cost point
         (heat_cost, coords, direction, length) = queue.get()
         (x,y) = coords
         
-        print("Dequeue:", (heat_cost, coords, direction, length))
+        # check if we have already visited this pair of coordinates, direction
+        if (coords, direction) in visited:
+            continue
+        visited.add( (coords, direction) )
+        
+        #grid[y][x] = '#'
+        #print("Dequeue:", (heat_cost, coords, direction, length))
+        # if we reached our target then it must be the lowest heat cost
         if coords == target:
-            print("puff")
-            return total_heat
+            print("puff", coords, get_dir(direction), length, heat_cost)           
+            return heat_cost
         
-        # if the node is visited, skip
-        #if (coords, direction) in visited:
-        #    continue
-        #visited.add( (coords, direction) )
-        
+        # get neighbours points: turn left, turn right and go straight if possible
         neighbours = get_neighbours(x, y, direction, length, rows, columns)
+        
         for (n_coords, n_dir, n_length) in neighbours:
             (xx, yy) = n_coords
+            # get new heat cost for the neighbour point
             heat = heat_cost + int(graph[yy][xx])
             
-            print("Checking neighbour", n_coords, "with heat", heat, "heat_cost",heat_cost)
-            if heat < total_heat or total_heat == 0:
-                total_heat = heat
-                queue.put( (total_heat, n_coords, n_dir, n_length) )
+            #print("Checking neighbour", n_coords, "with heat", heat, "heat_cost",heat_cost)            
+            # add neighbour point with corresponding heat cost to priority queue
+            queue.put( (heat, n_coords, n_dir, n_length) )
     
-    return total_heat
+    return heat_cost
 
-
+# 654, 655 too low
+# 696 too high
+# 656, 670, 657
 def day17_1(data):
-    data = read_input(2023, "17_teste")    
+    #data = read_input(2023, "17_teste")    
     result = 0  
 
     rows = len(data)
