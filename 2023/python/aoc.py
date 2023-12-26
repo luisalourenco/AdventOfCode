@@ -42,6 +42,7 @@ from shapely import *
 from itertools import combinations
 import networkx as nx
 import graphviz
+from queue import PriorityQueue
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2023
@@ -2892,6 +2893,140 @@ def build_adjacency_list(rows, columns):
 
     return adjacency_list
 
+
+def turn_left(x, y, direction, rows, columns):
+    # (1,0) right
+    # (-1,0) left
+    # (0,-1) up
+    # (0,1) down
+    right_coords = (1,0)
+    left_coords = (-1,0)
+    up_coords = (0,-1)
+    down_coords = (0,1)
+    
+    right = (x+1, y) if x+1 <= columns-1 else None
+    left = (x-1, y) if x-1 >= 0 else None
+    up = (x, y-1) if y-1 >= 0 else None
+    down = (x, y+1) if y+1 <= rows-1 else None
+    
+    if direction == right_coords:
+        return up, up_coords
+    if direction == left_coords:
+        return down, down_coords
+    if direction == up_coords:
+        return left, left_coords
+    if direction == down_coords:
+        return right, right_coords
+    
+def turn_right(x, y, direction, rows, columns):
+    # (1,0) right
+    # (-1,0) left
+    # (0,-1) up
+    # (0,1) down
+    right_coords = (1,0)
+    left_coords = (-1,0)
+    up_coords = (0,-1)
+    down_coords = (0,1)
+    
+    right = (x+1, y) if x+1 <= columns-1 else None
+    left = (x-1, y) if x-1 >= 0 else None
+    up = (x, y-1) if y-1 >= 0 else None
+    down = (x, y+1) if y+1 <= rows-1 else None
+    
+    if direction == right_coords:
+        return down, down_coords
+    if direction == left_coords:
+        return up, up_coords
+    if direction == up_coords:
+        return right, right_coords
+    if direction == down_coords:
+        return left, left_coords    
+    
+def continue_straight(x, y, direction, rows, columns):
+    # (1,0) right
+    # (-1,0) left
+    # (0,-1) up
+    # (0,1) down
+    right_coords = (1,0)
+    left_coords = (-1,0)
+    up_coords = (0,-1)
+    down_coords = (0,1)
+    
+    right = (x+1, y) if x+1 <= columns-1 else None
+    left = (x-1, y) if x-1 >= 0 else None
+    up = (x, y-1) if y-1 >= 0 else None
+    down = (x, y+1) if y+1 <= rows-1 else None
+    
+    if direction == right_coords:
+        return right, direction
+    if direction == left_coords:
+        return left, direction
+    if direction == up_coords:
+        return up, direction
+    if direction == down_coords:
+        return down, direction
+
+def get_neighbours(x, y, direction, length, rows, columns):
+    neighbours = []
+    
+    #turn left
+    lcoords, ldir = turn_left(x, y, direction, rows, columns)
+    if lcoords:
+        neighbours.append( (lcoords, ldir, 1) )
+    #turn right
+    rcoords, rdir = turn_right(x, y, direction, rows, columns)
+    if rcoords:
+        neighbours.append( (rcoords, rdir, 1) )
+    #straigh if < 3
+    if length <= 3:
+        scoords, sdir = continue_straight(x, y, direction, rows, columns)
+        if scoords:
+            neighbours.append( (scoords, sdir, length+1) )
+    
+    return neighbours
+
+def dijkstra_atmost_steps(graph, start, target): 
+    rows = len(graph)
+    columns = len(graph[0])  
+    visited = set()
+    
+    right_coords = (1,0)
+    down_coords = (0,1)
+
+    queue = PriorityQueue()
+    queue.put( (0, start, right_coords, 0) )
+    queue.put( (0, start, down_coords, 0) )
+
+    total_heat = 0
+    
+    while not queue.empty():
+
+        (heat_cost, coords, direction, length) = queue.get()
+        (x,y) = coords
+        
+        print("Dequeue:", (heat_cost, coords, direction, length))
+        if coords == target:
+            print("puff")
+            return total_heat
+        
+        # if the node is visited, skip
+        #if (coords, direction) in visited:
+        #    continue
+        #visited.add( (coords, direction) )
+        
+        neighbours = get_neighbours(x, y, direction, length, rows, columns)
+        for (n_coords, n_dir, n_length) in neighbours:
+            (xx, yy) = n_coords
+            heat = heat_cost + int(graph[yy][xx])
+            
+            print("Checking neighbour", n_coords, "with heat", heat, "heat_cost",heat_cost)
+            if heat < total_heat or total_heat == 0:
+                total_heat = heat
+                queue.put( (total_heat, n_coords, n_dir, n_length) )
+    
+    return total_heat
+
+
 def day17_1(data):
     data = read_input(2023, "17_teste")    
     result = 0  
@@ -2904,47 +3039,9 @@ def day17_1(data):
     end = (rows-1, columns-1)
 
     grid = buildMapGrid(data,withPadding=False)
-    adjacency_list = build_adjacency_list(rows, columns)
-
-    print()
-    print("Generated graph:")
-    graph = nx.Graph()
-    #graph = Graph()
-    for k in adjacency_list.keys():
-        print(k,":", adjacency_list[k])
-        neighbours = adjacency_list[k]
-        nn = []
-        for (n, d) in neighbours:            
-            #graph.add_edge(k, (n, d), int(grid[n[1]][n[0]])  )
-            nn.append( (k, (n, d), int(grid[n[1]][n[0]]) ) )
-        graph.add_weighted_edges_from(nn)
-
-
-    start = ((0, 0), 'down') 
-    end1 = ((12, 12), 'down')
-    end2 = ((12, 12), 'right')
-    #path1 = dijsktra(graph, start, end1 )
-    #path2 = dijsktra(graph, start, end2 )
-    path1 = nx.dijkstra_path(graph, start, end1)
-    path2 = nx.dijkstra_path(graph, start, end2)
+    result = dijkstra_atmost_steps(grid, start, end)
     
-    print((path1))
-    print(nx.dijkstra_path_length(graph, start, end2))
-
-    print()
-    print("Shortest path1 found:")
-    result = 0
-    for v, w in zip(path1[:-1],path1[1:]):
-        print(v,"->",w)
-    #    result += graph.weights[v,w]
-
-    print()
-    print(result)
-    print("Shortest path2 found:")
-    result = 0
-    #for v, w in zip(path2[:-1],path2[1:]):
-    #    print(v,"->",w)
-    #    result += graph.weights[v,w]
+    #adjacency_list = build_adjacency_list(rows, columns)
 
 
     AssertExpectedResult(0, result)
