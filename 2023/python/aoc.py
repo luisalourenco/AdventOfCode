@@ -2966,28 +2966,33 @@ def continue_straight(x, y, direction, rows, columns):
     if direction == down_coords:
         return down, direction
 
-def get_neighbours(x, y, direction, length, rows, columns):
+def get_neighbours(x, y, direction, length, rows, columns, part2):
     neighbours = []
     
-    #turn left
-    lcoords, ldir = turn_left(x, y, direction, rows, columns)
-    if lcoords:
-        neighbours.append( (lcoords, ldir, 1) )
-    
-    #turn right
-    rcoords, rdir = turn_right(x, y, direction, rows, columns)
-    if rcoords:
-        neighbours.append( (rcoords, rdir, 1) )
-    
-    #straigh if < 3
-    if length <= 3:
+    if (part2 and length >= 4) or not part2:
+        #turn left
+        lcoords, ldir = turn_left(x, y, direction, rows, columns)
+        if lcoords:
+            neighbours.append( (lcoords, ldir, 1) )
+        
+        #turn right
+        rcoords, rdir = turn_right(x, y, direction, rows, columns)
+        if rcoords:
+            neighbours.append( (rcoords, rdir, 1) )
+        
+    #straight if < 3 for part1 or if < 10 for part2
+    if part2:
+        max_length = 10
+    else:
+        max_length = 3
+    if length < max_length:
         scoords, sdir = continue_straight(x, y, direction, rows, columns)
         if scoords:
             neighbours.append( (scoords, sdir, length+1) )
     
     return neighbours
 
-def dijkstra_atmost_steps(graph, start, target): 
+def dijkstra_atmost_steps(graph, start, target, part2=False): 
     rows = len(graph)
     columns = len(graph[0])  
     visited = set()
@@ -3007,9 +3012,9 @@ def dijkstra_atmost_steps(graph, start, target):
         (x,y) = coords
         
         # check if we have already visited this pair of coordinates, direction
-        if (coords, direction) in visited:
+        if (coords, direction, length) in visited:
             continue
-        visited.add( (coords, direction) )
+        visited.add( (coords, direction, length) )
         
         #grid[y][x] = '#'
         #print("Dequeue:", (heat_cost, coords, direction, length))
@@ -3019,9 +3024,10 @@ def dijkstra_atmost_steps(graph, start, target):
             return heat_cost
         
         # get neighbours points: turn left, turn right and go straight if possible
-        neighbours = get_neighbours(x, y, direction, length, rows, columns)
+        neighbours = get_neighbours(x, y, direction, length, rows, columns, part2)
         
         for (n_coords, n_dir, n_length) in neighbours:
+
             (xx, yy) = n_coords
             # get new heat cost for the neighbour point
             heat = heat_cost + int(graph[yy][xx])
@@ -3035,6 +3041,7 @@ def dijkstra_atmost_steps(graph, start, target):
 # 654, 655 too low
 # 696 too high
 # 656, 670, 657
+#Day 17, part 1: 686 (1.775 secs)
 def day17_1(data):
     #data = read_input(2023, "17_teste")    
     result = 0  
@@ -3042,7 +3049,6 @@ def day17_1(data):
     rows = len(data)
     columns = len(data[0])
 
-    #g = buildGraphFromMap(data, withWeights=True, noPadding=True)
     start = (0,0)
     end = (rows-1, columns-1)
 
@@ -3052,15 +3058,27 @@ def day17_1(data):
     #adjacency_list = build_adjacency_list(rows, columns)
 
 
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(686, result)
     return result
 
 
 def day17_2(data):
-    data = read_input(2023, "17_teste")    
-    result = 0    
-             
-    AssertExpectedResult(0, result)
+    #data = read_input(2023, "17_teste")    
+    result = 0  
+
+    rows = len(data)
+    columns = len(data[0])
+
+    start = (0,0)
+    end = (rows-1, columns-1)
+
+    grid = buildMapGrid(data,withPadding=False)
+    result = dijkstra_atmost_steps(grid, start, end, part2=True)
+    
+    #adjacency_list = build_adjacency_list(rows, columns)
+
+
+    AssertExpectedResult(686, result)
     return result
 
 #endregion
