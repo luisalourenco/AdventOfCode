@@ -3325,71 +3325,127 @@ def print_xmas(r,x,m,a,s, just_result = False):
     print("combinations:",r)
 
 
+def evaluate_workflow_condition(cond,xx,mm,aa,ss, negate_condition = False):
+    xxx = xx
+    mmm = mm 
+    aaa = aa 
+    sss = ss
+    
+    next_x = xxx
+    next_m = mmm 
+    next_a = aaa 
+    next_s = sss
+    neg_cond = cond
+    
+    #if negate_condition:
+    #print("negating condition",cond)
+    if '>' in cond:
+        neg_cond = neg_cond.replace('>','<=')
+    else:
+        neg_cond = neg_cond.replace('<','>=')
+    #print("condition negated to:",cond)
+    
+    print("Evaluating condition", cond)
+    if 'x' in cond:
+        xxx = [x for x in xx if eval(cond)]
+        next_x = [x for x in xx if eval(neg_cond)]
+        print("x changed?",len(xxx)!=len(next_x))
+    elif 'm' in cond:
+        mmm = [m for m in mm if eval(cond)]
+        next_m = [m for m in mm if eval(neg_cond)]
+        print("m changed?",len(mmm)!=len(next_m))
+    elif 'a' in cond:
+        aaa = [a for a in aa if eval(cond)]
+        next_a = [a for a in aa if eval(neg_cond)]
+        print("a changed?",len(aaa)!=len(next_a))
+    elif 's' in cond:
+        sss = [s for s in ss if eval(cond)]
+        next_s = [s for s in ss if eval(neg_cond)]
+        print("s changed?",len(sss)!=len(next_s)) 
+    
+    
+    return (xxx, next_x), (mmm, next_m), (aaa, next_a), (sss, next_s)
+
 def start_workflows_v2(workflows, parts, start):
     accepted = []
-    xx = list(range(1,4001))
-    mm = list(range(1,4001))
-    aa = list(range(1,4001))
-    ss = list(range(1,4001))
+    x = list(range(1,4001))
+    m = list(range(1,4001))
+    a = list(range(1,4001))
+    s = list(range(1,4001))
 
     def process_workflows_rec(curr, workflows, xx, mm, aa, ss, result):
+       
         print("Curr:", curr)
-        print_xmas(curr, xx, mm, aa, ss, just_result=True)
+        print_xmas(curr, xx, mm, aa, ss, just_result=False)
+        print()
         
         if curr == 'A':
             res = len(xx)*len(mm)*len(aa)*len(ss)
             accepted.append(res)
-            #print(accepted)
-            print_xmas(curr,xx,mm,aa,ss) 
-            print("acc",sum(accepted))
+            
+            total = "{:,}".format(sum(accepted))            
+            print_xmas(curr,xx,mm,aa,ss, just_result=True)           
+            print("total",total)
+            
             return res
         elif curr == 'R':       
             return 0
         else:
             rules = workflows[curr]
+            
             res = 0
+            xxx = xx
+            mmm = mm 
+            aaa = aa 
+            sss = ss
+                
             for rule in rules:
-                r = rule.split(":")
-
-                xxx = xx
-                mmm = mm 
-                aaa = aa 
-                sss = ss
+                r = rule.split(":")                
 
                 if len(r) > 1:
-                    cond = r[0]
-                    
-                    if 'x' in cond:
-                        xxx = [x for x in xx if eval(cond)]
-                    elif 'm' in cond:
-                        mmm = [m for m in mm if eval(cond)]
-                    elif 'a' in cond:
-                        aaa = [a for a in aa if eval(cond)]
-                    elif 's' in cond:
-                        sss = [s for s in ss if eval(cond)]
+                    cond = r[0]                   
+                                       
+                    (xxx, next_x), (mmm, next_m), (aaa, next_a), (sss, next_s) = evaluate_workflow_condition(cond, xx, mm, aa, ss)
                     
                     if xxx or mmm or aaa or sss:                
                         dest = r[1]       
-                        print("Processing rule",dest,"with condition",cond)                 
+                        print("Processing rule",curr,"->",dest,"with condition",cond)                 
                         print_xmas(dest,xxx,mmm,aaa,sss) 
                         print("---")
                         #res += len(xx)*len(mm)*len(aa)*len(ss)
                         res += process_workflows_rec(dest, workflows, xxx, mmm, aaa, sss, result)
-                    else:
-                        return  0                              
+                        
+                        #xxx, mmm, aaa, sss = evaluate_workflow_condition(cond, xx, mm, aa, ss, negate_condition=True)
+                        
+                        xxx = next_x
+                        mmm = next_m 
+                        aaa = next_a
+                        sss = next_s
+                        
+                        print("curr:", curr)
+                        print("x changed?",len(xxx)!=len(xx))
+                        print("m changed?",len(mmm)!=len(mm))
+                        print("a changed?",len(aaa)!=len(aa))
+                        print("s changed?",len(sss)!=len(ss))
+                        
+                        print_xmas(curr,xxx,mmm,aaa,sss)
+                        
+                    #else:
+                    #    return  0                              
                         
                 else:
                     dest = r[0]
-                    print("Processing rule",dest,"with no condition")                 
-                    print_xmas(dest,xx,mm,aa,ss) 
+                    print("Processing rule",curr,"->",dest,"with no condition")                 
+                    print_xmas(dest,xxx,mmm,aaa,sss) 
                     print("---")
                     #res = len(xx)*len(mm)*len(aa)*len(ss)
-                    res += process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
+                    res += process_workflows_rec(dest, workflows, xxx, mmm, aaa, sss, result)
 
             return res
                 #process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
            
-    result = process_workflows_rec(start, workflows, xx, mm, aa, ss, 0)
+    result = process_workflows_rec(start, workflows, x, m, a, s, 0)
+    result = "{:,}".format(result)
     print("result",result)
     
 
