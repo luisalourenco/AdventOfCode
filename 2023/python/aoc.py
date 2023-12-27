@@ -3312,13 +3312,17 @@ def day19_1(data):
     AssertExpectedResult(342650, result)
     return result
 
-def print_xmas(r,x,m,a,s):
-    print("rule:", r)
-    print("x:",len(x))
-    print("m:",len(m))
-    print("a:",len(a))
-    print("s:",len(s))
-    print("combinations:",len(x)*len(m)*len(a)*len(s))
+def print_xmas(r,x,m,a,s, just_result = False):
+    if not just_result:
+        print("rule:", r)
+        print("x:",len(x))
+        print("m:",len(m))
+        print("a:",len(a))
+        print("s:",len(s))
+    
+    res = len(x)*len(m)*len(a)*len(s)
+    r = "{:,}".format(res)
+    print("combinations:",r)
 
 
 def start_workflows_v2(workflows, parts, start):
@@ -3329,24 +3333,32 @@ def start_workflows_v2(workflows, parts, start):
     ss = list(range(1,4001))
 
     def process_workflows_rec(curr, workflows, xx, mm, aa, ss, result):
+        print("Curr:", curr)
+        print_xmas(curr, xx, mm, aa, ss, just_result=True)
+        
         if curr == 'A':
-            accepted.append(len(xx)*len(mm)*len(aa)*len(ss))
+            res = len(xx)*len(mm)*len(aa)*len(ss)
+            accepted.append(res)
             #print(accepted)
             print_xmas(curr,xx,mm,aa,ss) 
-            #print("acc",sum(accepted))
-            return len(xx)*len(mm)*len(aa)*len(ss)
+            print("acc",sum(accepted))
+            return res
         elif curr == 'R':       
             return 0
         else:
             rules = workflows[curr]
+            res = 0
             for rule in rules:
                 r = rule.split(":")
+
+                xxx = xx
+                mmm = mm 
+                aaa = aa 
+                sss = ss
+
                 if len(r) > 1:
                     cond = r[0]
-                    xxx = xx
-                    mmm = mm 
-                    aaa = aa 
-                    sss = ss
+                    
                     if 'x' in cond:
                         xxx = [x for x in xx if eval(cond)]
                     elif 'm' in cond:
@@ -3357,17 +3369,24 @@ def start_workflows_v2(workflows, parts, start):
                         sss = [s for s in ss if eval(cond)]
                     
                     if xxx or mmm or aaa or sss:                
-                        dest = r[1]                        
-                        #print_xmas(dest,xx,mm,aa,ss) 
-                        process_workflows_rec(dest, workflows, xxx, mmm, aaa, sss, result)
+                        dest = r[1]       
+                        print("Processing rule",dest,"with condition",cond)                 
+                        print_xmas(dest,xxx,mmm,aaa,sss) 
+                        print("---")
+                        #res += len(xx)*len(mm)*len(aa)*len(ss)
+                        res += process_workflows_rec(dest, workflows, xxx, mmm, aaa, sss, result)
                     else:
                         return  0                              
                         
                 else:
                     dest = r[0]
-                    #print_xmas(dest,xx,mm,aa,ss) 
-                    process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
+                    print("Processing rule",dest,"with no condition")                 
+                    print_xmas(dest,xx,mm,aa,ss) 
+                    print("---")
+                    #res = len(xx)*len(mm)*len(aa)*len(ss)
+                    res += process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
 
+            return res
                 #process_workflows_rec(dest, workflows, xx, mm, aa, ss, result)
            
     result = process_workflows_rec(start, workflows, xx, mm, aa, ss, 0)
@@ -3399,8 +3418,6 @@ def day19_2(data):
     start = 'in'
     result = start_workflows_v2(workflows, parts, start)
     
-    
-
     
     
     AssertExpectedResult(0, result)
