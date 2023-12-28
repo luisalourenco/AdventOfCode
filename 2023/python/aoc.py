@@ -3726,10 +3726,68 @@ def day21_2(data):
 
 #region ##### Day 22 #####
 
+def fall_bricks(bricks):
+    z_bricks = defaultdict(set)
+    
+    while not bricks.empty():
+        (z_index, p1, p2) = bricks.get()
+        brick_box = box(p1.x,p1.y,p2.x,p2.y)
+        if z_index == 1:            
+            #for y in range(p1.y, p2.y+1):
+            #    for x in range(p1.x, p2.x+1):
+            z_bricks[1].add(brick_box)
+        else: 
+            zz = z_index
+            bricks_below = z_bricks[zz]
+            while len(bricks_below) == 0:
+                zz-=1
+                bricks_below = z_bricks[zz]
+                
+                
+            same_level = True
+            
+            for brick_below in bricks_below:
+                if brick_box.intersects(brick_below):
+                    same_level = False
+                    break
+            
+            if same_level:
+                z_bricks[zz].add(brick_box)
+            else:
+                z_bricks[zz].add(brick_box)
+    return z_bricks
+            
+        
+
 def day22_1(data):
     data = read_input(2023, "22_teste")    
     result = 0  
 
+    Point = namedtuple('Point',['x','y','z'])
+    
+    
+    bricks = PriorityQueue()
+    for line in data:
+        point_range = parse('{min_x},{min_y},{min_z}~{max_x},{max_y},{max_z}', line)
+        min_x = int(point_range['min_x'])
+        min_y = int(point_range['min_y'])
+        min_z = int(point_range['min_z'])
+        max_x = int(point_range['max_x'])
+        max_y = int(point_range['max_y'])
+        max_z = int(point_range['max_z'])
+        
+        # order ascending by z coordinate usinf priority queue    
+        bricks.put( (min_z, Point(min_x, min_y, min_z), Point(max_x, max_y, max_z)  ) )
+    
+    # order ascending by z coordinate
+    #bricks.sort(key=lambda points: points[0].z)
+    
+    z_bricks = fall_bricks(bricks)
+    
+    for z in z_bricks.keys():   
+        print(z,"has bricks",z_bricks[z])
+    
+    
     AssertExpectedResult(0, result)
     return result
 
