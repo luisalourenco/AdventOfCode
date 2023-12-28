@@ -3810,10 +3810,13 @@ def build_graph_from_hike_map(map, part2=False):
 
 def find_longest_path(graph, start, end, path=[]):
         path = path + [start]
+
         if start == end:
             return path
+        
         if start not in graph:
             return None
+        
         shortest = None
         for node in graph[start]:
             if node not in path:
@@ -3821,6 +3824,10 @@ def find_longest_path(graph, start, end, path=[]):
                 if newpath:
                     if not shortest or len(newpath) > len(shortest):
                         shortest = newpath
+        
+        if start in path:
+            path.remove(start)
+
         return shortest
 
 
@@ -3877,17 +3884,17 @@ def day23_2(data):
     end = (len(hike_map[0])-2, len(hike_map)-1)
 
     sys.setrecursionlimit(10000)
-    #path = find_longest_path(graph, start, end)
-    #result = len(path)-1 
+    path = find_longest_path(graph, start, end)
+    result = len(path)-1 
     
     # Run DFS, compute metrics
-    all_paths = DFSv3(graph, start)
-    max_len   = max(len(p) for p in all_paths)
-    max_paths = [p for p in all_paths if len(p) == max_len]
+    #all_paths = DFSv3(graph, start)
+    #max_len   = max(len(p) for p in all_paths)
+    #max_paths = [p for p in all_paths if len(p) == max_len]
 
     
     print("Longest Path Length:")
-    print(max_len)
+    #print(max_len)
     
              
     AssertExpectedResult(0, result)
