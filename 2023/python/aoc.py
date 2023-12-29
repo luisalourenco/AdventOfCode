@@ -3728,14 +3728,17 @@ def day21_2(data):
 
 def fall_bricks(bricks):
     z_bricks = defaultdict(set)
+    brick_is_supported_by = defaultdict(set)
+    brick_supports = defaultdict(set)
     
     while not bricks.empty():
         (z_index, p1, p2) = bricks.get()
-        brick_box = box(p1.x,p1.y,p2.x,p2.y)
+        #brick_box = box(p1.x,p1.y,p2.x,p2.y)
+        brick = (p1,p2)
         if z_index == 1:            
             #for y in range(p1.y, p2.y+1):
             #    for x in range(p1.x, p2.x+1):
-            z_bricks[1].add(brick_box)
+            z_bricks[1].add(brick)
         else: 
             zz = z_index
             bricks_below = z_bricks[zz]
@@ -3746,16 +3749,23 @@ def fall_bricks(bricks):
                 
             same_level = True
             
-            for brick_below in bricks_below:
-                if brick_box.intersects(brick_below):
+            for (pb1, pb2) in bricks_below:
+                #if brick_box.intersects(brick_below):
+                #if brick (pb1, pb2) intersects p1,p2 then it supports it
+                #if not((p1.x > pb2.x and p2.x > pb2.x and p1.y > pb2.y and p2.y > pb2.y and p1.z > pb2.z and p2.z > pb2.z) or (p1.x < pb1.x and p2.x > pb1.x and p1.y < pb1.y and p2.y > pb1.y and p1.z < pb1.z and p2.z > pb1.z)):
+                
+                if not ( ((p1.x  <= pb1.x and pb1.x <= p2.x) or (pb1.x <= p1.x  and p1.x  <= p2.x)) and ((p1.y <= pb1.y and pb1.y <= p2.y) or (pb1.y <= p1.y and p1.y <= p2.y)) and ((p1.z <= pb1.z and pb1.z <= p2.z) or (pb1.z <= p1.z and p1.z <= p2.z)) ):
+                    brick_below = (pb1, pb2)
                     same_level = False
+                    brick_supports[brick_below].add(brick)
+                    brick_is_supported_by[brick].add(brick_below)
                     break
             
             if same_level:
-                z_bricks[zz].add(brick_box)
+                z_bricks[zz].add(brick)
             else:
-                z_bricks[zz].add(brick_box)
-    return z_bricks
+                z_bricks[z_index].add(brick)
+    return z_bricks, brick_supports, brick_is_supported_by
             
         
 
@@ -3782,11 +3792,17 @@ def day22_1(data):
     # order ascending by z coordinate
     #bricks.sort(key=lambda points: points[0].z)
     
-    z_bricks = fall_bricks(bricks)
+    z_bricks, brick_supports, brick_is_supported_by = fall_bricks(bricks)
     
     for z in z_bricks.keys():   
         print(z,"has bricks",z_bricks[z])
     
+    for k in brick_supports.keys():   
+        print(k,"supports",brick_supports[k])
+    
+    for k in brick_is_supported_by.keys():   
+        print(k,"is supported by",brick_is_supported_by[k])
+
     
     AssertExpectedResult(0, result)
     return result
