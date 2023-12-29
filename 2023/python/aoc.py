@@ -3726,57 +3726,142 @@ def day21_2(data):
 
 #region ##### Day 22 #####
 
+# taken from someone's solution, I was struggling with this math :'(
+def intersects(brick, test_brick):
+    _,(p_min,p_max) = brick
+    _,(o_min,o_max) = test_brick
+    
+    """Return if brick intersects with test_brick"""
+    if (p_max.x < o_min.x or
+        p_min.x > o_max.x):
+        return False        # doesn't intersect in x dimension
+    if (p_max.y < o_min.y or
+        p_min.y > o_max.y):
+        return False        # doesn't intersect in x dimension
+    return True
+
+
+def brick_falling_at_z(brick, highest_z, z_bricks, init_z):
+    l,(pmin,pmax) = brick
+    delta = pmax.z - pmin.z
+    for curr_z in range(init_z, init_z+delta+1):
+        #print("Brick", l,"fell on level", curr_z)
+        z_bricks[curr_z].add(brick)
+        if curr_z > highest_z:
+            highest_z = curr_z
+    
+    return z_bricks, highest_z
+
 def fall_bricks(bricks):
     z_bricks = defaultdict(set)
     brick_is_supported_by = defaultdict(set)
     brick_supports = defaultdict(set)
+    highest_z = 0
     
-    while not bricks.empty():
-        (z_index, p1, p2) = bricks.get()
-        #brick_box = box(p1.x,p1.y,p2.x,p2.y)
-        brick = (p1,p2)
-        if z_index == 1:            
-            #for y in range(p1.y, p2.y+1):
-            #    for x in range(p1.x, p2.x+1):
-            z_bricks[1].add(brick)
-        else: 
-            zz = z_index
-            bricks_below = z_bricks[zz]
-            while len(bricks_below) == 0:
-                zz-=1
-                bricks_below = z_bricks[zz]
-                
-                
-            same_level = True
-            
-            for (pb1, pb2) in bricks_below:
-                #if brick_box.intersects(brick_below):
-                #if brick (pb1, pb2) intersects p1,p2 then it supports it
-                #if not((p1.x > pb2.x and p2.x > pb2.x and p1.y > pb2.y and p2.y > pb2.y and p1.z > pb2.z and p2.z > pb2.z) or (p1.x < pb1.x and p2.x > pb1.x and p1.y < pb1.y and p2.y > pb1.y and p1.z < pb1.z and p2.z > pb1.z)):
-                
-                if not ( ((p1.x  <= pb1.x and pb1.x <= p2.x) or (pb1.x <= p1.x  and p1.x  <= p2.x)) and ((p1.y <= pb1.y and pb1.y <= p2.y) or (pb1.y <= p1.y and p1.y <= p2.y)) and ((p1.z <= pb1.z and pb1.z <= p2.z) or (pb1.z <= p1.z and p1.z <= p2.z)) ):
-                    brick_below = (pb1, pb2)
-                    same_level = False
-                    brick_supports[brick_below].add(brick)
-                    brick_is_supported_by[brick].add(brick_below)
-                    break
-            
-            if same_level:
-                z_bricks[zz].add(brick)
-            else:
-                z_bricks[z_index].add(brick)
-    return z_bricks, brick_supports, brick_is_supported_by
-            
-        
+    while len(bricks) > 0:
+        (z_index, l, pmin, pmax) = bricks.pop(0)
+        brick = l,(pmin,pmax)
 
+        if z_index == 1:            
+            z_bricks[1].add(brick)
+            highest_z = 1
+            z_bricks, highest_z = brick_falling_at_z(brick, highest_z, z_bricks, 1)     
+            #print("Brick", l,"fell on the ground")
+        else: 
+            
+            same_level = True
+            zz = z_index
+            keep_falling = True
+            
+            while keep_falling:
+                 
+                bricks_below = z_bricks[zz]
+                while len(bricks_below) == 0:
+                    zz-=1
+                    bricks_below = z_bricks[zz]
+                #print(l,"found bricks at level", zz)                    
+                same_level = True
+                
+                for ll, (omin, omax) in bricks_below:
+                    
+                    #print("Checking bricks below Brick",l,"for level",zz)               
+            
+                    brick_below = ll, (omin, omax)
+                    if intersects(brick, brick_below):                
+                        #print("Brick",ll,"intersects with brick",l)                    
+                        same_level = False
+                        brick_supports[brick_below].add(brick)
+                        brick_is_supported_by[brick].add(brick_below)
+                    #else:
+                        #print("Brick",ll,"DOES NOT intersect with brick",l)
+                
+                #if same_level is True it means it did not fall into a brick on this level, we need to keep falling
+                if same_level:
+                    keep_falling = True
+                    zz -= 1
+                else:
+                    keep_falling = False
+                
+                if not same_level or zz == 0:
+                    keep_falling = False
+
+            
+            init_z = -1
+            if same_level:
+                #print("Brick", l,"fell on level", zz)
+                init_z = zz
+            else:
+                #print("Brick", l,"fell on level", zz+1)
+                init_z = zz + 1
+            
+            z_bricks, highest_z = brick_falling_at_z(brick, highest_z, z_bricks, init_z)           
+      
+                    
+    return len(z_bricks[highest_z]), brick_supports, brick_is_supported_by
+            
+
+
+def check_bricks_to_desintegrate(init_count, brick_supports, brick_is_supported_by):
+    count = init_count
+    
+    for brick in brick_supports.keys():
+        
+        copy_supported_by = copy.deepcopy(brick_is_supported_by)        
+        bricks_supported = brick_supports[brick]
+        
+        can_desintegrate = True
+        for supported_brick in bricks_supported:
+            copy_supported_by[supported_brick].remove(brick)
+            
+            if len(copy_supported_by[supported_brick]) == 0:
+                can_desintegrate = False
+                break
+        if can_desintegrate:
+            #print("Brick", brick, "can be desintegrated")
+            count +=1
+                    
+    return count
+        
+def print_debug_bricks(brick_supports, brick_is_supported_by):
+    for k in brick_supports.keys():   
+        (l, _) = k
+        ll = brick_supports[k]
+        print(l,"supports", ll)
+    
+    for k in brick_is_supported_by.keys():  
+        (l, _) = k
+        ll = brick_is_supported_by[k] 
+        print(l,"is supported by",ll)    
+    
+import uuid
+# too low 113
+# too high 471 
 def day22_1(data):
     data = read_input(2023, "22_teste")    
     result = 0  
-
     Point = namedtuple('Point',['x','y','z'])
-    
-    
-    bricks = PriorityQueue()
+    bricks = []
+    i = 0
     for line in data:
         point_range = parse('{min_x},{min_y},{min_z}~{max_x},{max_y},{max_z}', line)
         min_x = int(point_range['min_x'])
@@ -3786,23 +3871,29 @@ def day22_1(data):
         max_y = int(point_range['max_y'])
         max_z = int(point_range['max_z'])
         
+        label = str(uuid.uuid4())
+        #label = chr(ord('A') + i)
+        #i+=1
+        
         # order ascending by z coordinate usinf priority queue    
-        bricks.put( (min_z, Point(min_x, min_y, min_z), Point(max_x, max_y, max_z)  ) )
+        bricks.append( (min_z, label, Point(min_x, min_y, min_z), Point(max_x, max_y, max_z)  ) )
     
     # order ascending by z coordinate
-    #bricks.sort(key=lambda points: points[0].z)
+    bricks.sort(key=lambda points: points[2].z)
     
-    z_bricks, brick_supports, brick_is_supported_by = fall_bricks(bricks)
+    copy_bricks = copy.deepcopy(bricks)
     
-    for z in z_bricks.keys():   
-        print(z,"has bricks",z_bricks[z])
+    init_count, brick_supports, brick_is_supported_by = fall_bricks(bricks)
+    result = check_bricks_to_desintegrate(0, brick_supports, brick_is_supported_by)    
     
-    for k in brick_supports.keys():   
-        print(k,"supports",brick_supports[k])
+    # count bricks that do not support another bricks (including the ones on top)
+    while len(copy_bricks) != 0:
+        (z_index, l, pmin, pmax) = copy_bricks.pop()
+        brick = l,(pmin,pmax)
+        if brick not in brick_supports.keys():
+            result +=1
     
-    for k in brick_is_supported_by.keys():   
-        print(k,"is supported by",brick_is_supported_by[k])
-
+    #print_debug_bricks(brick_supports, brick_is_supported_by)
     
     AssertExpectedResult(0, result)
     return result
