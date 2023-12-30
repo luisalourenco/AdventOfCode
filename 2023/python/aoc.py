@@ -3737,7 +3737,7 @@ def intersects(brick, test_brick):
         return False        # doesn't intersect in x dimension
     if (p_max.y < o_min.y or
         p_min.y > o_max.y):
-        return False        # doesn't intersect in x dimension
+        return False        # doesn't intersect in y dimension
     return True
 
 
@@ -3762,9 +3762,15 @@ def fall_bricks(bricks):
         (z_index, l, pmin, pmax) = bricks.pop(0)
         brick = l,(pmin,pmax)
 
+        # ensures we can count bricks that do not support another bricks (including the ones on top)
+        if brick not in brick_supports.keys():
+            brick_supports[brick] = set()
+
         if z_index == 1:            
             z_bricks[1].add(brick)
             highest_z = 1
+
+            # when a bricks lands, fill z_bricks with brick coordinates for all its z coordinate values
             z_bricks, highest_z = brick_falling_at_z(brick, highest_z, z_bricks, 1)     
             #print("Brick", l,"fell on the ground")
         else: 
@@ -3814,33 +3820,67 @@ def fall_bricks(bricks):
                 #print("Brick", l,"fell on level", zz+1)
                 init_z = zz + 1
             
-            z_bricks, highest_z = brick_falling_at_z(brick, highest_z, z_bricks, init_z)           
+            # when a bricks lands, fill z_bricks with brick coordinates for all its z coordinate values
+            z_bricks, highest_z = brick_falling_at_z(brick, highest_z, z_bricks, init_z+1)           
       
                     
-    return len(z_bricks[highest_z]), brick_supports, brick_is_supported_by
+    return brick_supports, brick_is_supported_by
             
 
 
-def check_bricks_to_desintegrate(init_count, brick_supports, brick_is_supported_by):
-    count = init_count
+def check_bricks_to_desintegrate(brick_supports, brick_is_supported_by):
+    count = 0
+    bricks_to_desintegrate = set()
     
-    for brick in brick_supports.keys():
-        
-        copy_supported_by = copy.deepcopy(brick_is_supported_by)        
-        bricks_supported = brick_supports[brick]
-        
+    for brick in brick_supports.keys():                
+        bricks_supported = brick_supports[brick]        
         can_desintegrate = True
+
         for supported_brick in bricks_supported:
-            copy_supported_by[supported_brick].remove(brick)
+            copy_supported_by = [b for b in brick_is_supported_by[supported_brick] if b != brick]
             
-            if len(copy_supported_by[supported_brick]) == 0:
-                can_desintegrate = False
-                break
+            if len(copy_supported_by) == 0:
+                can_desintegrate = False                
+                #break
+                
         if can_desintegrate:
             #print("Brick", brick, "can be desintegrated")
             count +=1
-                    
-    return count
+            bricks_to_desintegrate.add(brick)
+    
+    bricks_that_are_needed = [b for b in brick_supports.keys() if b not in bricks_to_desintegrate]
+    #print(len(bricks_that_are_needed))
+    
+    result_part2 = 0
+    for brick in bricks_that_are_needed:
+        l,(pmin,pmax) = brick
+        bricks_that_might_fall = dfs(brick_supports, brick)
+        bricks_that_might_fall = [b for b in bricks_that_might_fall if b != brick]
+
+        #for ll,_ in bricks_that_might_fall:
+            #print(l,"might make brick",ll,"fall")
+
+        #copy_bricks_that_will_fall = [b for b in bricks_that_will_fall]
+
+        bricks_that_will_fall = set()
+        for brick_might_fall in bricks_that_might_fall:
+
+            copy_supported_by = [b for b in brick_is_supported_by[brick_might_fall] if b != brick]
+            #copy_supported_by2 = [b for b in brick_is_supported_by[brick_might_fall] if b != brick]
+
+            will_fall = True
+            for  b in copy_supported_by:
+                if b not in bricks_that_might_fall:
+                    will_fall = False
+
+            #if len(copy_supported_by) == 0:
+            if will_fall:
+                bricks_that_will_fall.add(brick_might_fall)
+            
+        #print(l,"will make bricks",[l for l,_ in bricks_that_will_fall], "fall")
+        result_part2 += len(bricks_that_will_fall)
+
+    return count, result_part2
         
 def print_debug_bricks(brick_supports, brick_is_supported_by):
     for k in brick_supports.keys():   
@@ -3853,14 +3893,14 @@ def print_debug_bricks(brick_supports, brick_is_supported_by):
         ll = brick_is_supported_by[k] 
         print(l,"is supported by",ll)    
     
+
+
 import uuid
-# too low 113
-# too high 471 
-def day22_1(data):
-    data = read_input(2023, "22_teste")    
-    result = 0  
-    Point = namedtuple('Point',['x','y','z'])
+
+def read_bricks(data):
     bricks = []
+    Point = namedtuple('Point',['x','y','z'])
+    
     i = 0
     for line in data:
         point_range = parse('{min_x},{min_y},{min_z}~{max_x},{max_y},{max_z}', line)
@@ -3872,36 +3912,49 @@ def day22_1(data):
         max_z = int(point_range['max_z'])
         
         label = str(uuid.uuid4())
-        #label = chr(ord('A') + i)
-        #i+=1
+        label = chr(ord('A') + i)
+        i+=1
         
         # order ascending by z coordinate usinf priority queue    
         bricks.append( (min_z, label, Point(min_x, min_y, min_z), Point(max_x, max_y, max_z)  ) )
     
     # order ascending by z coordinate
     bricks.sort(key=lambda points: points[2].z)
-    
-    copy_bricks = copy.deepcopy(bricks)
-    
-    init_count, brick_supports, brick_is_supported_by = fall_bricks(bricks)
-    result = check_bricks_to_desintegrate(0, brick_supports, brick_is_supported_by)    
-    
-    # count bricks that do not support another bricks (including the ones on top)
-    while len(copy_bricks) != 0:
-        (z_index, l, pmin, pmax) = copy_bricks.pop()
-        brick = l,(pmin,pmax)
-        if brick not in brick_supports.keys():
-            result +=1
-    
+    return bricks
+
+
+# too low 113
+# too high 471 
+# 463 correct answer
+def day22_1(data):
+    #data = read_input(2023, "22_teste")    
+    result = 0  
+    bricks = []    
+    bricks = read_bricks(data)
+        
+    brick_supports, brick_is_supported_by = fall_bricks(bricks)
+    result, _ = check_bricks_to_desintegrate(brick_supports, brick_is_supported_by)    
+
     #print_debug_bricks(brick_supports, brick_is_supported_by)
     
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(463, result)
     return result
 
 
+#184, 82938 too low
+# 89727
 def day22_2(data):
-    data = read_input(2023, "22_teste")    
-    result = 0    
+    #data = read_input(2023, "22_teste")    
+    result = 0  
+    bricks = []    
+    bricks = read_bricks(data)
+        
+    brick_supports, brick_is_supported_by = fall_bricks(bricks)
+    _, result = check_bricks_to_desintegrate(brick_supports, brick_is_supported_by)
+
+    #print(bricks_that_are_needed)
+    
+    #print_debug_bricks(brick_supports, brick_is_supported_by)
              
     AssertExpectedResult(0, result)
     return result
