@@ -151,26 +151,27 @@ def day2_1(data):
         if is_safe_record(levels):
             result += 1
             
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(371, result)
     return result
 
 
 def day2_2(data):
-    data = read_input(2024, "02_teste")    
+    data = read_input(2024, "02")    
     result = 0
-    
 
     for line in data:
         levels = ints(line.split(' '))
-
         
         if is_safe_record(levels):
             result += 1
-    
-    #print(records)
-    
+        else:
+            for i in range(len(levels)):
+                n_levels = levels[0:i] + levels[i+1:len(levels)]
+                if is_safe_record(n_levels):
+                    result += 1
+                    break    
 
-    AssertExpectedResult(0, result)
+    AssertExpectedResult(426, result)
     return result
 
 
