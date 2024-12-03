@@ -36,6 +36,7 @@ import termcolor
 import random
 from parse import parse
 from parse import search
+from parse import findall
 from aocd import get_data
 from aocd import submit
 from shapely import *
@@ -179,9 +180,62 @@ def day2_2(data):
 
 #region ##### Day 3 #####
                 
+def day3_1(data):    
+    data = read_input(2024, "03")    
+    result = 0
+    
+    for line in data:
+        for r in findall("mul({:d},{:d})", line):
+            result += r.fixed[0] * r.fixed[1]
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
-#Day 3, part 1: 8401 (0.075 secs)
-#Day 3, part 2: 2641 (0.188 secs)
+# 106780429
+# 122793038 too high
+# 166434763 too high
+def day3_2(data):
+    data = read_input(2024, "03")    
+    result = 0
+
+    for line in data:
+        
+        start = [m.start() for m in re.finditer("don't()", line)]
+        end = [m.end() for m in re.finditer("don't()", line)]
+        donts = list(zip(start,end))
+        init = donts[0][0]        
+        
+        start = [m.start() for m in re.finditer("do()", line) if m.start() not in [i for i,j in donts] and m.start() > init]
+        end = [m.end() for m in re.finditer("do()", line) if m.start() not in [i for i,j in donts] and m.start() > init]
+        dos = list(zip(start,end)) + [(0,0)]        
+        #print("donts:", donts)
+        #print("dos:", dos)                
+        do_i, do_j = dos.pop()
+        
+        sums = []
+        sums.append((0, init))
+        
+        while dos:
+            i,j = dos.pop(0)
+            
+            donts = [(ii,jj) for ii, jj in donts if ii > i]
+            #print("i:",i)
+            #print("t:",donts)
+            if donts:
+                ii,jj = donts.pop(0)
+                sums.append((i,ii)) 
+                dos = [(di,dj) for di, dj in dos if di > ii] 
+            else:
+                sums.append((i, len(line)-1)) 
+                
+        #print(sums)  
+        for i,j in sums:
+            for r in findall("mul({:d},{:d})", line[i:j]):
+                result += r.fixed[0] * r.fixed[1]
+
+
+    AssertExpectedResult(106780429, result)
+    return result
 
 
 #endregion
