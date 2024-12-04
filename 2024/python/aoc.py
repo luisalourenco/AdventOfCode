@@ -44,6 +44,7 @@ from itertools import combinations
 import networkx as nx
 import graphviz
 from queue import PriorityQueue
+import regex as re
 
 # UPDATE THIS VARIABLE
 AOC_EDITION_YEAR = 2024
@@ -241,9 +242,74 @@ def day3_2(data):
 #endregion
 
 #region ##### Day 4 #####
-#Day 4, part 1: 26443 (0.096 secs)
-#Day 4, part 2: 6284877 (1.065 secs)
 
+def findXMAS(xmas, line):
+    return line.count(xmas)
+
+# taken from https://stackoverflow.com/questions/6313308/get-all-the-diagonals-in-a-matrix-list-of-lists-in-python
+def groups(data, func):
+    grouping = defaultdict(list)
+    for y in range(len(data)):
+        for x in range(len(data[y])):
+            grouping[func(x, y)].append(data[y][x])
+    
+    return list(map(grouping.get, sorted(grouping)))
+
+#1217 too low
+def day4_1(data):    
+    data = read_input(2024, "04")
+    result = 0
+    
+    #verticals = ['']* len(data[0])
+
+    #for line in data:
+    #    result += findXMAS("XMAS", line)
+    #    result += findXMAS("SAMX", line)
+        
+    #    for i in range(len(line)):
+    #       verticals[i] = verticals[i] + line[i]
+    
+    #for line in verticals:
+    #    result += findXMAS("XMAS", line)
+    #    result += findXMAS("SAMX", line)
+    
+    cols = groups(data, lambda x, y: x)
+    rows = groups(data, lambda x, y: y)
+    fdiag = groups(data, lambda x, y: x + y)
+    bdiag = groups(data, lambda x, y: x - y) 
+
+    all_data = []
+    for l in fdiag:
+        if len(l) >= 4:
+            all_data.append(''.join(l))
+    print(all_data)
+    
+    for l in bdiag:
+        if len(l) >= 4:
+            all_data.append(''.join(l))
+    
+    for l in rows:
+        if len(l) >= 4:
+            all_data.append(''.join(l))
+    
+    for l in cols:
+        if len(l) >= 4:
+            all_data.append(''.join(l))
+    
+    for line in all_data:
+        result += findXMAS("XMAS", line)
+        result += findXMAS("SAMX", line)
+    
+    AssertExpectedResult(2483, result)
+    return result
+
+def day4_2(data):    
+    data = read_input(2024, "04")    
+    result = 0
+        
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
 #endregion
 
