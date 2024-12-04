@@ -282,7 +282,6 @@ def day4_1(data):
     for l in fdiag:
         if len(l) >= 4:
             all_data.append(''.join(l))
-    print(all_data)
     
     for l in bdiag:
         if len(l) >= 4:
@@ -304,11 +303,18 @@ def day4_1(data):
     return result
 
 def day4_2(data):    
-    data = read_input(2024, "04")    
+    data = read_input(2024, "04")
     result = 0
-        
-       
-    AssertExpectedResult(196826776, result)
+    
+    for y in range(1, len(data)-1):
+        for x in range(1, len(data[y])-1):
+            if data[y][x] == 'A':
+                fdiag = data[y-1][x-1] + 'A' + data[y+1][x+1]
+                bdiag = data[y+1][x-1] + 'A' + data[y-1][x+1]
+                if (fdiag == 'MAS' or fdiag == 'SAM') and (bdiag == 'MAS' or bdiag == 'SAM'):
+                    result += 1
+    
+    AssertExpectedResult(2483, result)
     return result
 
 #endregion
