@@ -24,6 +24,7 @@ import numpy as np
 from functools import lru_cache, cache
 import operator
 from itertools import takewhile
+from itertools import permutations 
 import itertools, collections
 from turtle import Turtle, Screen, heading, left
 from math import exp, pi, remainder, sqrt
@@ -57,6 +58,7 @@ sys.path.insert(0, FILE_DIR + "/../../")
 
 DEBUG_MODE = False
 
+from functools import cmp_to_key
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
@@ -321,8 +323,87 @@ def day4_2(data):
 
 #region ##### Day 5 #####
 
-#Day 5, part 1: 240320250 (0.110 secs)
-#Day 5, part 2: 28580589 (0.003 secs)
+def is_in_correct_order(pages_to_print, page_orders):
+    printed_pages = set()
+    
+    for page in pages_to_print:
+        pages_needed = page_orders[page]
+        #print("pages needed to be printed before:", pages_needed)
+        for p in pages_needed:
+            # precedent page is in the list to be printed but has not been printed yet, order is not ok
+            #print("is",p,"in the update list?", p in pages_to_print)
+            #print("has",p,"not been printed yet?", not p in printed_pages)
+            if p in pages_to_print and not p in printed_pages:
+                return False
+        printed_pages.add(page)
+    return True
+
+def day5_1(data):    
+    data = read_input(2024, "05")
+    result = 0
+    printed_pages = set()
+    
+    parse_updates = False
+    page_orders = defaultdict(set)
+    
+    for line in data: 
+        if line == '':
+            parse_updates = True
+        else:
+            if parse_updates:
+                pages_to_print = ints(line.split(","))
+                
+                if is_in_correct_order(pages_to_print, page_orders):
+                    print("correct order:", pages_to_print)
+                    result += pages_to_print[int(len(pages_to_print)/2)]
+            else:
+                order_rule = parse("{}|{}", line)
+                page_orders[int(order_rule[1])].add(int(order_rule[0]))
+
+    AssertExpectedResult(6051, result)
+    return result
+
+
+def compare(x, y):
+    if y in page_orders[x]:
+        return -1
+    elif y not in page_orders[x]:
+        return 1
+    else:
+        return 0
+
+
+def day5_2(data):    
+    data = read_input(2024, "05")
+    result = 0
+    printed_pages = set()
+    
+    parse_updates = False
+    global page_orders 
+    page_orders = defaultdict(set)
+    
+    for line in data: 
+        if line == '':
+            parse_updates = True
+        else:
+            if parse_updates:
+                pages_to_print = ints(line.split(","))                
+                
+                sorted_pages = sorted(pages_to_print, key=cmp_to_key(compare), reverse=True)
+                
+                if not is_in_correct_order(pages_to_print, page_orders):
+                    #print("sorted order:", sorted_pages)
+                    
+                    if is_in_correct_order(sorted_pages, page_orders):
+                        #print("correct order:", sorted_pages)
+                        result += sorted_pages[int(len(sorted_pages)/2)]
+                        
+            else:
+                order_rule = parse("{}|{}", line)
+                page_orders[int(order_rule[1])].add(int(order_rule[0]))
+
+    AssertExpectedResult(5093, result)
+    return result
 
 
 #endregion
