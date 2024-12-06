@@ -410,61 +410,47 @@ def day5_2(data):
 
 #region ##### Day 6 #####
 
-def compare(d1, d2):
-    x,y = d1 
-    xx,yy = d2
-    
-    if x < xx or y < yy:
-        return -1
-    elif x > xx or y > yy:
-        return 1
-    else:
-        return 0
 
 def find_obstacle(guard_position, direction, obstacles_x, obstacles_y):
     x,y = guard_position
     
-    print("guard:", guard_position)
+    print("guard @", guard_position)
     #^
     if direction == (0, 1):
-        obstacle = list(obstacles_x[x])
-        obstacle.sort()
+        obstacle = obstacles_x[x]
         obstacle = [o for o in obstacle if o < y]
         
-        print("obstacle in ^:", obstacle)
-        if obstacle:
-            obstacle = (x, obstacle[0])
-        print("---:", obstacle)
-    # >
-    elif direction == (1, 0):
-        obstacle = list(obstacles_y[y])
-        obstacle.sort()
-        obstacle = [o for o in obstacle if o > x]
-        
-        print("obstacle in >:", obstacle)
-        if obstacle:
-            obstacle = (obstacle[0], y)
-        print("---:", obstacle)
-    # <
-    elif direction == (-1, 0):
-        obstacle = list(obstacles_y[y])
-        obstacle.sort()
-        obstacle = [o for o in obstacle if o < x]
-        print("obstacle in <:", obstacle)
-        if obstacle:
-            obstacle = (obstacle[-1], y)
-        print("---:", obstacle)
-    # v
-    elif direction == (0, -1):
-        obstacle = list(obstacles_x[x])
-        #sorted(obstacle, key=cmp_to_key(compare), reverse=True)
-        obstacle.sort()
-        obstacle = [o for o in obstacle if o > y]
-        print("obstacle in v:", obstacle)
+        print("obstacles found in direction UP ^", obstacle)
         if obstacle:
             obstacle = (x, obstacle[-1])
-        print("---:", obstacle)
+        print("obstacle @", obstacle)
+    # >
+    elif direction == (1, 0):
+        obstacle = obstacles_y[y]
+        obstacle = [o for o in obstacle if o > x]
+        
+        print("obstacles found in direction RIGHT ->", obstacle)
+        if obstacle:
+            obstacle = (obstacle[0], y)
+        print("obstacle @", obstacle)
+    # <
+    elif direction == (-1, 0):
+        obstacle = obstacles_y[y]
+        obstacle = [o for o in obstacle if o < x]
+        print("obstacles found in direction LEFT <-", obstacle)
+        if obstacle:
+            obstacle = (obstacle[-1], y)
+        print("obstacle @", obstacle)
+    # v
+    elif direction == (0, -1):
+        obstacle = obstacles_x[x]
+        obstacle = [o for o in obstacle if o > y]
+        print("obstacles found in direction DOWN v", obstacle)
+        if obstacle:
+            obstacle = (x, obstacle[0])
+        print("obstacle @", obstacle)
     
+    print()
     return obstacle
 
 def rotate_direction_clockwise(direction):
@@ -500,14 +486,14 @@ def get_new_guard_poosition(obstacle, direction):
 # too low 1956
 # 2640
 def day6_1(data):    
-    data = read_input(2024, "06_teste")    
+    data = read_input(2024, "06")    
     result = 0
     maxX = len(data[0])
     maxY = len(data)
     direction = None
     guard_position = None
-    obstacles_x = defaultdict(set)
-    obstacles_y = defaultdict(set)
+    obstacles_x = defaultdict(list)
+    obstacles_y = defaultdict(list)
     y = maxY - 1
     x = 0
     visited = set()
@@ -517,8 +503,10 @@ def day6_1(data):
             l = data[y][x]
             
             if l == '#':
-                obstacles_y[y].add(x)
-                obstacles_x[x].add(y)
+                obstacles_y[y].append(x)
+                obstacles_x[x].append(y)
+                obstacles_y[y].sort()
+                obstacles_x[x].sort()
             if l == '^':
                 direction = (0, 1)
                 guard_position = (x,y)
@@ -536,11 +524,9 @@ def day6_1(data):
                 guard_position = (x,y)
                 visited.add(guard_position)
     
-    print(obstacles_x)
-    print(obstacles_y)
-    
-    dx,dy = direction
-    
+    #print(obstacles_x)
+    #print(obstacles_y)
+        
     obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
 
     #while obstacle != []:
@@ -551,16 +537,16 @@ def day6_1(data):
         if obstacle == []:
             #up
             if direction == (0, 1):
-                y_pos = [y for y in range(minY, y)]
-                x_pos = [x for _ in range(minY, y)]
+                y_pos = [y for y in range(y)]
+                x_pos = [x for _ in range(y)]
             # >
             elif direction == (1, 0):
                 x_pos = [x for x in range(x+1, maxX)]
                 y_pos = [y for _ in range(x+1, maxX)]
             # <
             elif direction == (-1, 0):
-                x_pos = [x for x in range(minX, x)]
-                y_pos = [y for _ in range(minX, x)]
+                x_pos = [x for x in range(x)]
+                y_pos = [y for _ in range(x)]
             # v
             elif direction == (0, -1):
                 y_pos = [y for y in range(y+1, maxY)]
@@ -573,7 +559,6 @@ def day6_1(data):
             break
         
         
-        ox,oy = obstacle
         guard_position = get_new_guard_poosition(obstacle, direction)
         nx,ny = guard_position
         
@@ -600,8 +585,10 @@ def day6_1(data):
         
         direction = rotate_direction_clockwise(direction)
         
-        #print("guard:",guard_position)
-        #print("dir:",direction)
+        print("visiting", (nx,ny))
+        visited.add((nx,ny))
+        print("guard now @",guard_position)
+        print("dir:",direction)
         obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
     
     result = len(visited)
