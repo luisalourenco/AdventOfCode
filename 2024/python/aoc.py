@@ -410,8 +410,214 @@ def day5_2(data):
 
 #region ##### Day 6 #####
 
-#Day 6, part 1: 393120 (0.034 secs)
-#Day 6, part 2: 36872656 (3.633 secs)
+def compare(d1, d2):
+    x,y = d1 
+    xx,yy = d2
+    
+    if x < xx or y < yy:
+        return -1
+    elif x > xx or y > yy:
+        return 1
+    else:
+        return 0
+
+def find_obstacle(guard_position, direction, obstacles_x, obstacles_y):
+    x,y = guard_position
+    
+    print("guard:", guard_position)
+    #^
+    if direction == (0, 1):
+        obstacle = list(obstacles_x[x])
+        obstacle.sort()
+        obstacle = [o for o in obstacle if o < y]
+        
+        print("obstacle in ^:", obstacle)
+        if obstacle:
+            obstacle = (x, obstacle[0])
+        print("---:", obstacle)
+    # >
+    elif direction == (1, 0):
+        obstacle = list(obstacles_y[y])
+        obstacle.sort()
+        obstacle = [o for o in obstacle if o > x]
+        
+        print("obstacle in >:", obstacle)
+        if obstacle:
+            obstacle = (obstacle[0], y)
+        print("---:", obstacle)
+    # <
+    elif direction == (-1, 0):
+        obstacle = list(obstacles_y[y])
+        obstacle.sort()
+        obstacle = [o for o in obstacle if o < x]
+        print("obstacle in <:", obstacle)
+        if obstacle:
+            obstacle = (obstacle[-1], y)
+        print("---:", obstacle)
+    # v
+    elif direction == (0, -1):
+        obstacle = list(obstacles_x[x])
+        #sorted(obstacle, key=cmp_to_key(compare), reverse=True)
+        obstacle.sort()
+        obstacle = [o for o in obstacle if o > y]
+        print("obstacle in v:", obstacle)
+        if obstacle:
+            obstacle = (x, obstacle[-1])
+        print("---:", obstacle)
+    
+    return obstacle
+
+def rotate_direction_clockwise(direction):
+    #^
+    if direction == (0, 1):
+        return (1,0)
+    # >
+    elif direction == (1, 0):
+        return (0,-1)
+    # <
+    elif direction == (-1, 0):
+        return (0,1)
+    # v
+    elif direction == (0, -1):
+        return (-1,0)
+
+def get_new_guard_poosition(obstacle, direction):
+    x,y = obstacle
+    #^
+    if direction == (0, 1):
+        return (x, y+1)
+    # >
+    elif direction == (1, 0):
+        return (x-1,y)
+    # <
+    elif direction == (-1, 0):
+        return (x+1,y)
+    # v
+    elif direction == (0, -1):
+        return (x,y-1)
+
+# too low 1103
+# too low 1956
+# 2640
+def day6_1(data):    
+    data = read_input(2024, "06_teste")    
+    result = 0
+    maxX = len(data[0])
+    maxY = len(data)
+    direction = None
+    guard_position = None
+    obstacles_x = defaultdict(set)
+    obstacles_y = defaultdict(set)
+    y = maxY - 1
+    x = 0
+    visited = set()
+    
+    for y in range(maxY):
+        for x in range(maxX):
+            l = data[y][x]
+            
+            if l == '#':
+                obstacles_y[y].add(x)
+                obstacles_x[x].add(y)
+            if l == '^':
+                direction = (0, 1)
+                guard_position = (x,y)
+                visited.add(guard_position)
+            elif l == '>':
+                direction = (1, 0)
+                guard_position = (x,y)
+                visited.add(guard_position)
+            elif l == '<':
+                direction = (-1, 0)
+                guard_position = (x,y)
+                visited.add(guard_position)
+            elif l == 'v':
+                direction = (0, -1)
+                guard_position = (x,y)
+                visited.add(guard_position)
+    
+    print(obstacles_x)
+    print(obstacles_y)
+    
+    dx,dy = direction
+    
+    obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
+
+    #while obstacle != []:
+    for i in range(40000):
+        #print("#:",obstacle)
+        x,y = guard_position
+        
+        if obstacle == []:
+            #up
+            if direction == (0, 1):
+                y_pos = [y for y in range(minY, y)]
+                x_pos = [x for _ in range(minY, y)]
+            # >
+            elif direction == (1, 0):
+                x_pos = [x for x in range(x+1, maxX)]
+                y_pos = [y for _ in range(x+1, maxX)]
+            # <
+            elif direction == (-1, 0):
+                x_pos = [x for x in range(minX, x)]
+                y_pos = [y for _ in range(minX, x)]
+            # v
+            elif direction == (0, -1):
+                y_pos = [y for y in range(y+1, maxY)]
+                x_pos = [x for _ in range(y+1, maxY)]
+            
+            for xx in x_pos:
+                for yy in y_pos:
+                    print("visiting", (xx,yy))
+                    visited.add((xx,yy))
+            break
+        
+        
+        ox,oy = obstacle
+        guard_position = get_new_guard_poosition(obstacle, direction)
+        nx,ny = guard_position
+        
+        if x < nx:
+            x_pos = [x for x in range(x+1, nx+1)]
+        else:
+            x_pos = [x for x in range(nx+1, x+1)]
+        
+        if y < ny:
+            y_pos = [y for y in range(y+1, ny+1)]
+        else:
+            y_pos = [y for y in range(ny+1, y+1)]
+            
+        if nx == x:
+            x_pos = [x]
+        if ny == y:
+            y_pos = [y]
+            
+        #print("x_pos",x_pos, x, nx)
+        for x in x_pos:
+            for y in y_pos:
+                print("visiting", (x,y))
+                visited.add((x,y))
+        
+        direction = rotate_direction_clockwise(direction)
+        
+        #print("guard:",guard_position)
+        #print("dir:",direction)
+        obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
+    
+    result = len(visited)
+    #print(visited)
+    AssertExpectedResult(196826776, result)
+    return result
+
+def day6_2(data):    
+    data = read_input(2024, "06_teste")    
+    result = 0
+    
+    for line in data:
+        True
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
 #endregion
 
