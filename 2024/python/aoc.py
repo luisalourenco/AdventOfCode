@@ -414,43 +414,43 @@ def day5_2(data):
 def find_obstacle(guard_position, direction, obstacles_x, obstacles_y):
     x,y = guard_position
     
-    print("guard @", guard_position)
+    #print("guard @", guard_position)
     #^
     if direction == (0, 1):
         obstacle = obstacles_x[x]
         obstacle = [o for o in obstacle if o < y]
         
-        print("obstacles found in direction UP ^", obstacle)
+        #print("obstacles found in direction UP ^", obstacle)
         if obstacle:
             obstacle = (x, obstacle[-1])
-        print("obstacle @", obstacle)
+        #print("obstacle @", obstacle)
     # >
     elif direction == (1, 0):
         obstacle = obstacles_y[y]
         obstacle = [o for o in obstacle if o > x]
         
-        print("obstacles found in direction RIGHT ->", obstacle)
+        #print("obstacles found in direction RIGHT ->", obstacle)
         if obstacle:
             obstacle = (obstacle[0], y)
-        print("obstacle @", obstacle)
+        #print("obstacle @", obstacle)
     # <
     elif direction == (-1, 0):
         obstacle = obstacles_y[y]
         obstacle = [o for o in obstacle if o < x]
-        print("obstacles found in direction LEFT <-", obstacle)
+        #print("obstacles found in direction LEFT <-", obstacle)
         if obstacle:
             obstacle = (obstacle[-1], y)
-        print("obstacle @", obstacle)
+        #print("obstacle @", obstacle)
     # v
     elif direction == (0, -1):
         obstacle = obstacles_x[x]
         obstacle = [o for o in obstacle if o > y]
-        print("obstacles found in direction DOWN v", obstacle)
+        #print("obstacles found in direction DOWN v", obstacle)
         if obstacle:
             obstacle = (x, obstacle[0])
-        print("obstacle @", obstacle)
+        #print("obstacle @", obstacle)
     
-    print()
+    #print()
     return obstacle
 
 def rotate_direction_clockwise(direction):
@@ -523,15 +523,11 @@ def day6_1(data):
                 direction = (0, -1)
                 guard_position = (x,y)
                 visited.add(guard_position)
-    
-    #print(obstacles_x)
-    #print(obstacles_y)
         
     obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
 
     #while obstacle != []:
     for i in range(40000):
-        #print("#:",obstacle)
         x,y = guard_position
         
         if obstacle == []:
@@ -554,7 +550,7 @@ def day6_1(data):
             
             for xx in x_pos:
                 for yy in y_pos:
-                    print("visiting", (xx,yy))
+                    #print("visiting", (xx,yy))
                     visited.add((xx,yy))
             break
         
@@ -577,23 +573,22 @@ def day6_1(data):
         if ny == y:
             y_pos = [y]
             
-        #print("x_pos",x_pos, x, nx)
+        
         for x in x_pos:
             for y in y_pos:
-                print("visiting", (x,y))
+                #print("visiting", (x,y))
                 visited.add((x,y))
         
         direction = rotate_direction_clockwise(direction)
         
-        print("visiting", (nx,ny))
+        #print("visiting", (nx,ny))
         visited.add((nx,ny))
-        print("guard now @",guard_position)
-        print("dir:",direction)
+        #print("guard now @",guard_position)
+        #print("dir:",direction)
         obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
     
     result = len(visited)
-    #print(visited)
-    AssertExpectedResult(196826776, result)
+    AssertExpectedResult(5129, result)
     return result
 
 def day6_2(data):    
@@ -611,15 +606,202 @@ def day6_2(data):
 
 #region ##### Day 7 #####
 
-#Day 7, part 1: 251136060 (0.191 secs)
+def day7_1(data):    
+    data = read_input(2024, "07_teste")    
+    result = 0
+    
+    operations = ["+","*"]
+    for line in data:
+        equation = line.split(":")
+        test_value = int(equation[0])
+        values = equation[1].strip().split(" ")
+        ops = [p for p in itertools.product(operations, repeat=len(values))]
+        #print(ops)
+        leave_loop = False
+
+        while ops and not leave_loop:
+            operators = ops.pop()
+            operation = ''
+            i = 0
+            r = 0
+            op = ''
+
+            #print("testing operators", operators)
+            for v in values:
+                
+                if i == 0:
+                    operation = v
+                    #print("t0:",operation)
+                else:
+
+                    op = operators[i-1]
+                    operation = operation + op + v
+
+                    #print("t:",operation)
+                    r = eval(operation)
+                    operation = str(r)
+                    #print("partial op:", operation)
+                    
+                i+=1
+            
+            if r == test_value:
+                #print("TRUE:",operation)
+                result += test_value
+                leave_loop = True
+                break
+
+    AssertExpectedResult(5512534574980, result)
+    return result
+
+def day7_2(data):    
+    data = read_input(2024, "07")    
+    result = 0
+    
+    operations = ["+","*",'||']
+    for line in data:
+        equation = line.split(":")
+        test_value = int(equation[0])
+        values = equation[1].strip().split(" ")
+        ops = [p for p in itertools.product(operations, repeat=len(values))]
+        #print(ops)
+        leave_loop = False
+
+        while ops and not leave_loop:
+            operators = ops.pop()
+            operation = ''
+            i = 0
+            r = 0
+            op = ''
+
+            #print("testing operators", operators)
+            values.reverse()
+            for v in values:
+                
+                if i == 0:
+                    operation = v
+                    #print("t0:",operation)
+                else:
+
+                    op = operators[i-1]
+                    if op == '||':
+                        #print("concat", operation, v) 
+                        operation = operation + v   
+                        #print("concat res", operation) 
+                    else:
+                        operation = operation + op + v
+
+                        #print("t:",operation)
+                    r = eval(operation)
+                    operation = str(r)
+                    #print("partial op:", operation)
+                    
+                i+=1
+            
+            if r == test_value:
+                #print("TRUE:",operation)
+                result += test_value
+                leave_loop = True
+                break
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
 #endregion
 
 
 #region ##### Day 8 #####
 
-#Day 8, part 1: 16043 (0.042 secs)
-#Day 8, part 2: 15726453850399 (0.584 secs)
+#404 too high
+def day8_1(data):    
+    data = read_input(2024, "08")    
+    result = 0
+    maxX = len(data[0])
+    maxY = len(data)
+    antenas = defaultdict(list)
+
+    for y in range(maxY):
+        for x in range(maxX):
+            obj = data[y][x]
+            if obj != '.':
+                antenas[obj].append((x,y))
+    #print(antenas)
+    
+    antinodes = set()
+
+    for antena in antenas:
+        combinations = [p for p in itertools.product(antenas[antena], repeat=2) if p[0] != p[1]]
+
+        visited = set()
+        for a1, a2 in combinations:
+            if (a1,a2) not in visited:
+                combinations.remove((a2,a1))
+            visited.add((a1,a2))       
+
+        #print()
+        #print("antena", antena,"is in positions",combinations)
+        for a1, a2 in combinations:
+
+            tx,ty = a1 
+            txx,tyy = a2 
+            
+            if txx < tx:
+                x = txx
+                xx = tx
+                y = tyy
+                yy = ty
+            else:
+                x = tx 
+                xx = txx
+                y = ty
+                yy = tyy
+            
+            dx = abs(x-xx)
+            dy = abs(y-yy)
+
+            if x == xx:
+                na1 = (x-dx, y-dy)
+            elif y == yy:
+                na1 = (x-dx, y-dy)
+            elif y < yy:
+                na1 = (x-dx, y-dy)
+            else:
+                na1 = (x-dx, y+dy)
+
+            nx, ny = na1
+            if 0 <= nx < maxX and 0 <= ny < maxY:
+                antinodes.add(na1)
+
+            if x == xx:
+                na2 = (xx+dx, yy+dy)
+            if y == yy:
+                na2 = (xx-dx, yy-dy)
+            elif y < yy:
+                na2 = (xx+dx, yy+dy)
+            else:
+                na2 = (xx+dx, yy-dy)
+            nnx, nny = na2
+
+            if 0 <= nnx < maxX and 0 <= nny < maxY:
+                antinodes.add(na2)
+
+            #print((x,y), (xx,yy),"has dx,dy (",dx,dy,") - generates antinodes ->",na1,"and",na2)
+
+
+    #print("antinodes:",list(antinodes))
+    result = len(antinodes)    
+       
+    AssertExpectedResult(381, result)
+    return result
+
+def day8_2(data):    
+    data = read_input(2024, "08_teste")    
+    result = 0
+    
+    for line in data:
+        True
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
 #endregion
 
