@@ -793,14 +793,96 @@ def day8_1(data):
     AssertExpectedResult(381, result)
     return result
 
+#2498 too high
 def day8_2(data):    
     data = read_input(2024, "08_teste")    
     result = 0
+    maxX = len(data[0])
+    maxY = len(data)
+    antenas = []
+
+    for y in range(maxY):
+        for x in range(maxX):
+            obj = data[y][x]
+            if obj != '.':
+                antenas.append((x,y))
+    #print(antenas)
     
-    for line in data:
-        True
+    antinodes = set()
+
+    combinations = [p for p in itertools.product(antenas, repeat=2) if p[0] != p[1]]
+    
+    visited = set()
+    for a1, a2 in combinations:
+         if (a1,a2) not in visited:
+            combinations.remove((a2,a1))
+            visited.add((a1,a2))       
+
+    #print()
+    #print("antena", antena,"is in positions",combinations)
+    for a1, a2 in combinations:
+            antinodes.add(a1)
+            antinodes.add(a2)
+            tx,ty = a1 
+            txx,tyy = a2 
+            
+            if txx < tx:
+                x = txx
+                xx = tx
+                y = tyy
+                yy = ty
+            else:
+                x = tx 
+                xx = txx
+                y = ty
+                yy = tyy
+            
+            dx = abs(x-xx)
+            dy = abs(y-yy)
+
+            resonating = True
+            while resonating:
+
+                old_antinodes = len(antinodes)
+                if x == xx:
+                    na1 = (x-dx, y-dy)
+                elif y == yy:
+                    na1 = (x-dx, y-dy)
+                elif y < yy:
+                    na1 = (x-dx, y-dy)
+                else:
+                    na1 = (x-dx, y+dy)
+
+                nx, ny = na1
+                if 0 <= nx < maxX and 0 <= ny < maxY:
+                    antinodes.add(na1)
+                if x == xx:
+                    na2 = (xx+dx, yy+dy)
+                if y == yy:
+                    na2 = (xx-dx, yy-dy)
+                elif y < yy:
+                    na2 = (xx+dx, yy+dy)
+                else:
+                    na2 = (xx+dx, yy-dy)
+                nnx, nny = na2
+
+                if 0 <= nnx < maxX and 0 <= nny < maxY:
+                    antinodes.add(na2)
+
+                x = nx 
+                y = ny 
+                xx = nnx
+                yy = nny
+                if old_antinodes == len(antinodes):
+                    resonating = False
+
+            #print((x,y), (xx,yy),"has dx,dy (",dx,dy,") - generates antinodes ->",na1,"and",na2)
+
+
+    #print("antinodes:",list(antinodes))
+    result = len(antinodes)    
        
-    AssertExpectedResult(196826776, result)
+    AssertExpectedResult(381, result)
     return result
 
 #endregion
