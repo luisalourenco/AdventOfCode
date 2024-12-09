@@ -889,8 +889,118 @@ def day8_2(data):
 
 #region ##### Day 9 #####
 
-#Day 9, part 1: 1681758908 (0.037 secs)
-#Day 9, part 2: 803 (0.005 secs)
+def find_last_fileblock(filesystem, last_fileblock):
+    #last_fileblock = len(filesystem)-1
+    while last_fileblock != 0:
+        if filesystem[last_fileblock] == '.':
+            last_fileblock-=1
+        else:
+            return last_fileblock
+    return last_fileblock
+
+def defrag_filesystem(filesystem, last_fileblock, free_space):
+    
+    #print("before:", filesystem)
+    for i in range(len(filesystem)):        
+        if ''.join(filesystem)[:-free_space].count('.') == 0:
+            break
+        
+        if filesystem[i] == '.':
+            filesystem[i] = filesystem[last_fileblock]
+            #print("switching", filesystem[last_fileblock], "to pos", i)
+            filesystem[last_fileblock] = '.'
+            #print("freeing space at", last_fileblock)
+            last_fileblock = find_last_fileblock(filesystem, last_fileblock)
+            #print("last_file_block found at ",last_fileblock)
+            #print("interaction:", filesystem)
+            
+    #print()
+    #print("after:", filesystem)
+    return filesystem
+
+def day9_1(data):    
+    data = read_input(2024, "09_teste")    
+    result = 0
+    size = 0
+    
+    input_data = str(data[0])
+    filesystem = []
+    curr_id = 0
+    
+    file_blocks = defaultdict()
+    free_space = []
+    is_free_space = False
+    
+    last_fileblock = 0
+    idx = 0
+    for i in range(len(input_data)):
+        val = int(input_data[i])
+        size += int(val)
+        
+        if is_free_space:
+            for j in range(val):
+                filesystem.append('.')
+                idx+=1
+        else:
+            file_blocks[curr_id] = val
+            for j in range(val):
+                filesystem.append(str(curr_id)) 
+                idx +=1
+            last_fileblock = idx-1               
+            curr_id +=1
+        is_free_space = not is_free_space
+    
+    #filesystem.reverse()
+    free_space = sum([1 for b in filesystem if b == '.'])
+    
+    filesystem = defrag_filesystem(filesystem, last_fileblock, free_space)
+    for i in range(len(filesystem)):
+        if filesystem[i] == '.':
+            break
+        result += i*int(filesystem[i])
+    
+    AssertExpectedResult(6241633730082, result)
+    return result
+
+def day9_2(data):    
+    data = read_input(2024, "09_teste")    
+    result = 0
+    size = 0
+    
+    input_data = str(data[0])
+    filesystem = []
+    curr_id = 0
+    
+    is_free_space = False
+    
+    last_fileblock = 0
+    idx = 0
+    for i in range(len(input_data)):
+        val = int(input_data[i])
+        size += int(val)
+        
+        if is_free_space:
+            for j in range(val):
+                filesystem.append('.')
+                idx+=1
+        else:
+            for j in range(val):
+                filesystem.append(str(curr_id)) 
+                idx +=1
+            last_fileblock = idx-1               
+            curr_id +=1
+        is_free_space = not is_free_space
+    
+    free_space = sum([1 for b in filesystem if b == '.'])
+    
+    filesystem = defrag_filesystem(filesystem, last_fileblock, free_space)
+    for i in range(len(filesystem)):
+        if filesystem[i] == '.':
+            break
+        result += i*int(filesystem[i])
+    
+    AssertExpectedResult(6241633730082, result)
+    return result
 
 #endregion
 
