@@ -962,6 +962,45 @@ def day9_1(data):
     AssertExpectedResult(6241633730082, result)
     return result
 
+def defrag_filesystemv2(filesystem, last_fileblock, free_space):
+    
+    free_space.reverse()
+    curr_file = filesystem[last_fileblock]
+    curr_file_size = 0
+    k = last_fileblock
+    #print("before:", filesystem)
+    for i in range(len(filesystem)):        
+        if not free_space:
+            break
+        
+        
+        if filesystem[k] == '.' or filesystem[k] != curr_file:
+            init, size = free_space.pop()
+            print("moving file", curr_file,"of size", curr_file_size,"to position", init)
+            
+            if curr_file_size <= size:
+                for j in range(curr_file_size):
+                    filesystem[init+j] = curr_file
+                    print("moved file", curr_file,"to position", init+j)
+                    print(filesystem)
+                    filesystem[last_fileblock] = '.'            
+                    last_fileblock -=1
+            else:
+                print("cannot move file",curr_file,"of size", curr_file_size,"to position", init)
+                
+            last_fileblock = find_last_fileblock(filesystem, last_fileblock)
+            curr_file = filesystem[last_fileblock]
+            k = last_fileblock
+            curr_file_size = 0
+        else:
+            curr_file_size += 1
+            k -=1
+            
+            
+    #print()
+    #print("after:", filesystem)
+    return filesystem
+
 def day9_2(data):    
     data = read_input(2024, "09_teste")    
     result = 0
@@ -972,7 +1011,7 @@ def day9_2(data):
     curr_id = 0
     
     is_free_space = False
-    
+    free_space_list = []
     last_fileblock = 0
     idx = 0
     for i in range(len(input_data)):
@@ -980,6 +1019,8 @@ def day9_2(data):
         size += int(val)
         
         if is_free_space:
+            if val > 0:
+                free_space_list.append((idx, val))
             for j in range(val):
                 filesystem.append('.')
                 idx+=1
@@ -993,7 +1034,10 @@ def day9_2(data):
     
     free_space = sum([1 for b in filesystem if b == '.'])
     
-    filesystem = defrag_filesystem(filesystem, last_fileblock, free_space)
+    print(free_space_list)
+    
+    filesystem = defrag_filesystemv2(filesystem, last_fileblock, free_space_list)
+    
     for i in range(len(filesystem)):
         if filesystem[i] == '.':
             break
@@ -1005,9 +1049,26 @@ def day9_2(data):
 #endregion
 
 #region ##### Day 10 #####
-   
-#Day 10, part 1: 6979 (0.104 secs)
-#Day 10, part 2: 443 (55.916 secs)
+
+def day10_1(data):    
+    data = read_input(2024, "10_teste")    
+    result = 0
+    
+    for line in data:
+        True
+       
+    AssertExpectedResult(196826776, result)
+    return result 
+
+def day10_2(data):    
+    data = read_input(2024, "10_teste")    
+    result = 0
+    
+    for line in data:
+        True
+       
+    AssertExpectedResult(196826776, result)
+    return result
 
 #endregion
 
