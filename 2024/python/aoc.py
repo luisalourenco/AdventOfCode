@@ -1050,25 +1050,92 @@ def day9_2(data):
 
 #region ##### Day 10 #####
 
+def is_connected(map, p, n):
+    x,y = p
+    xx,yy = n
+    if int(map[yy][xx]) - int(map[y][x]) == 1:
+        return True
+    else:
+        return False
+
 def day10_1(data):    
-    data = read_input(2024, "10_teste")    
+    data = read_input(2024, "10")    
     result = 0
+    trailheads = []
+    ends = []
     
-    for line in data:
-        True
-       
-    AssertExpectedResult(196826776, result)
+    graph = buildGraphFromMap_v2(data, '.', is_connected)
+    #for k in graph:
+    #    print("k:", k, "has neighbours", graph[k])
+        
+    rows = len(data)
+    columns = len(data[0])
+
+    for y in range(rows):          
+        for x in range(columns):
+            if data[y][x] == '0':
+                trailheads.append((x,y))
+            elif data[y][x] == '9':
+                ends.append((x,y))
+    
+    for trailhead in trailheads:
+        score = 0
+        for end  in ends:
+            p = find_path(graph, trailhead, end)
+            if p:
+                score+=1
+            #2,0 -> 5,4
+            #print("path from",trailhead,"to",end,":",p)
+        #print("score:", score)
+        result+=score
+    
+    AssertExpectedResult(587, result)
     return result 
 
+def find_all_paths(graph, start, end, path=[]):
+        path = path + [start]
+        if start == end:
+            return [path]
+        if start not in graph:
+            return []
+        paths = []
+        for node in graph[start]:
+            if node not in path:
+                newpaths = find_all_paths(graph, node, end, path)
+                for newpath in newpaths:
+                    paths.append(newpath)
+        return paths 
+
 def day10_2(data):    
-    data = read_input(2024, "10_teste")    
+    data = read_input(2024, "10")    
     result = 0
+    trailheads = []
+    ends = []
     
-    for line in data:
-        True
-       
-    AssertExpectedResult(196826776, result)
-    return result
+    graph = buildGraphFromMap_v2(data, '.', is_connected)
+    #for k in graph:
+    #    print("k:", k, "has neighbours", graph[k])
+        
+    rows = len(data)
+    columns = len(data[0])
+
+    for y in range(rows):          
+        for x in range(columns):
+            if data[y][x] == '0':
+                trailheads.append((x,y))
+            elif data[y][x] == '9':
+                ends.append((x,y))
+    
+    for trailhead in trailheads:
+        score = 0
+        for end  in ends:
+            p = find_all_paths(graph, trailhead, end)
+            if p:
+                score+=len(p)
+        result+=score
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
