@@ -1142,12 +1142,71 @@ def day10_2(data):
 
 #region ##### Day 11 #####
 
-#Day 11, part 1: 9724940 (0.135 secs)
-#Day 11, part 2: 569052586852 (0.030 secs)
+def blink(stones):
+    new_stones = []
+    
+    for stone in stones:
+        stone_size = len(stone)
+        if int(stone) == 0:
+            new_stones.append('1')
+        elif stone_size%2 == 0:
+            mid = int(stone_size / 2)
+            new_stones.append(str(int(stone[:mid])))
+            new_stones.append(str(int(stone[mid:])))
+        else:
+            new_stones.append(str(int(stone)*2024))
+    
+    
+    return new_stones
+
+def day11_1(data):    
+    data = read_input(2024, "11")    
+    result = 0    
+    
+    stones = data[0].split(' ')
+    print(stones)
+    
+    blinks = 25
+    for _ in range(blinks):
+        stones = blink(stones)
+        #print(stones)
+    result = len(stones)
+    AssertExpectedResult(220999, result)
+    return result 
+
+
+def day11_2(data):    
+    data = read_input(2024, "11")    
+    result = 0    
+    
+    stones = data[0].split(' ')
+    #print(stones)
+    
+    blinks = 25
+    for i in range(blinks):
+        stones = blink(stones)
+        print("iteration",i,":",stones)
+    result = len(stones)
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
 #region ##### Day 12 #####
+
+def day12_1(data):    
+    data = read_input(2024, "12_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day12_2(data):    
+    data = read_input(2024, "12_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
