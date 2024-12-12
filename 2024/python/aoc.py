@@ -1194,9 +1194,78 @@ def day11_2(data):
 
 #region ##### Day 12 #####
 
+def get_perimeter(p, plots, sizeX, sizeY):
+    
+    x, y = p
+    neighbours = 0
+    perimeter = 4        
+
+    east = (x+1, y)
+    west = (x-1, y)
+    north = (x, y-1)
+    south = (x, y+1)
+        
+    if 0 <= east[0] < sizeX and 0 <= east[1] < sizeY:
+        if east in plots:
+            neighbours +=1
+    
+    if 0 <= west[0] < sizeX and 0 <= west[1] < sizeY:                        
+        if west in plots:
+            neighbours +=1
+    
+    if 0 <= north[0] < sizeX and 0 <= north[1] < sizeY: 
+        if north in plots:
+            neighbours +=1
+    
+    if 0 <= south[0] < sizeX and 0 <= south[1] < sizeY: 
+        if south in plots:
+            neighbours +=1       
+    
+    return perimeter - neighbours   
+
 def day12_1(data):    
     data = read_input(2024, "12_teste")    
     result = 0    
+    
+    garden_plots = defaultdict()
+    
+    rows = len(data)
+    columns = len(data[0])
+
+    for y in range(rows):          
+        for x in range(columns):
+            plant = data[y][x]
+            if plant not in garden_plots:
+                garden_plots[plant] = (1, 4, [(x,y)])
+            else:
+                area, perimeter, plots = garden_plots[plant]
+                plots.append((x,y))
+                garden_plots[plant] = (area+1, perimeter+4, plots)
+
+    final_garden = defaultdict()
+    for garden in garden_plots:
+        area, _, plots = garden_plots[garden]
+        perimeter = 0
+        for p in plots:
+            res = get_perimeter(p, plots, columns, rows)
+            
+            if res == 4:
+                #print("-",p)
+                r = random.random()
+                final_garden[garden+str(r)] = (1, 4, plots)
+                perimeter = 0
+            else:   
+                perimeter += res     
+                final_garden[garden] = (area, perimeter, plots)
+    
+    for a,p,_ in final_garden.values():
+        result += a*p
+    
+    
+    for garden in final_garden:
+        a, p, pp = final_garden[garden]
+        print(garden,":", a, p, pp)
+    
     
     AssertExpectedResult(587, result)
     return result 
