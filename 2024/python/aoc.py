@@ -1282,9 +1282,107 @@ def day12_2(data):
 
 #region ##### Day 13 #####
 
-#Day 13, part 1: 34918 (0.119 secs)
-#Day 13, part 2: 33054 (6.659 secs)
+from z3 import *
 
+def day13_1(data):    
+    data = read_input(2024, "13")    
+    result = 0    
+    
+    machines = []
+    id = 0
+    for line in data:
+        res = parse("Button {}: X+{}, Y+{}", line)
+        #print(res)
+        if not res:
+            res = parse("Prize: X={}, Y={}", line)
+            if res:
+                #print(res[0], res[1])
+                machines[id].append((res[0], res[1]))
+                id+=1
+        else:
+            b = res[0]
+            ax = res[1]
+            ay = res[2]
+            #print(b, ax, ay)
+            if b == 'A':
+                machines.append([(ax,ay)])
+            else:
+                machines[id].append((ax,ay))
+                        
+    for ba, bb, p in machines:
+        solver = Solver()
+
+        a = Int('A')
+        b = Int('B')
+        
+        solver.add(p[0] == (a*ba[0] + b*bb[0]), p[1] == (a*ba[1] + b*bb[1]))
+        
+        try:    
+            solver.check()
+            model = solver.model()
+            #print(model)
+            button_a = model[a].as_long()
+            button_b = model[b].as_long()
+            #print("-",button_a)
+            result += button_a * 3 + button_b
+    
+        except:
+            True
+            #print("No model found!")
+    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day13_2(data):    
+    data = read_input(2024, "13")    
+    result = 0    
+    
+    machines = []
+    id = 0
+    for line in data:
+        res = parse("Button {}: X+{}, Y+{}", line)
+        #print(res)
+        if not res:
+            res = parse("Prize: X={}, Y={}", line)
+            if res:
+                machines[id].append(('1'+res[0].zfill(13), '1'+res[1].zfill(13)))
+                #print('1'+res[0].zfill(13))
+                id+=1
+        else:
+            b = res[0]
+            ax = res[1]
+            ay = res[2]
+            #print(b, ax, ay)
+            if b == 'A':
+                machines.append([(ax,ay)])
+            else:
+                machines[id].append((ax,ay))
+                        
+    for ba, bb, p in machines:
+        solver = Solver()
+
+        a = Int('A')
+        b = Int('B')
+        
+        solver.add(p[0] == (a*ba[0] + b*bb[0]), p[1] == (a*ba[1] + b*bb[1]))
+        
+        try:    
+            solver.check()
+            model = solver.model()
+            #print(model)
+            button_a = model[a].as_long()
+            button_b = model[b].as_long()
+            #print("-",button_a)
+            result += button_a * 3 + button_b
+    
+        except:
+            True
+            #print("No model found!")
+    
+    
+    AssertExpectedResult(587, result)
+    return result  
 #endregion
 
 #region ##### Day 14 #####
