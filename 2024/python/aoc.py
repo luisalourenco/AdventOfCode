@@ -1251,7 +1251,7 @@ def day12_1(data):
             
             if res == 4:
                 #print("-",p)
-                r = random.random()
+                r = random.randint(1,100)
                 final_garden[garden+str(r)] = (1, 4, plots)
                 perimeter = 0
             else:   
@@ -1386,6 +1386,116 @@ def day13_2(data):
 #endregion
 
 #region ##### Day 14 #####
+
+def simulate_robots(robots, time, width, tall):
+    new_robots = []
+
+    min_safety = sys.maxsize
+    for i in range(time):
+        new_robots = []
+        for pos, vel in robots:
+            x,y = pos
+            vx, vy = vel 
+            new_x = (x+vx)%width
+            new_y = (y+vy)%tall
+            new_pos = (new_x, new_y)
+            new_robots.append( (new_pos, vel) )
+
+        robots = new_robots
+        val = compute_safety_factor(robots, width, tall)
+        if val < min_safety:
+            min_safety = val
+            #print(min_safety, "for time", i)
+            #print_robots(robots, width, tall)
+
+
+    return new_robots
+
+
+def compute_safety_factor(robots, width, tall):
+    q1 = 0
+    q2 = 0
+    q3 = 0
+    q4 = 0
+
+    for p, _ in robots:
+        x,y = p
+        if x < int(width/2) and y < int(tall/2):
+            q1 +=1
+        if x > int(width/2) and y > int(tall/2):
+            q2 +=1
+        if x < int(width/2) and y > int(tall/2):
+            q3 +=1
+        if x > int(width/2) and y < int(tall/2):
+            q4 +=1
+
+    #print(q1,q2,q3,q4)
+    return q1 * q2 * q3 * q4
+
+# 94154500 too low
+# 157090752 too low
+def day14_1(data): 
+    data = read_input(2024, "14")    
+    width = 101
+    tall = 103
+    time = 100
+
+    robots = []
+    for line in data:
+        vals = parse("p={},{} v={},{}", line)
+        x = int(vals[0])
+        y = int(vals[1])
+        vx = int(vals[2])
+        vy = int(vals[3])
+        robots.append(((x,y), (vx,vy)))
+
+    robots = simulate_robots(robots, time, width, tall)
+    result = compute_safety_factor(robots, width, tall)
+
+
+    AssertExpectedResult(587, result)
+    return result 
+
+def print_robots(robots, width, tall):
+    map = [ [ ('.') for i in range(width) ] for j in range(tall) ]    
+    for p, _ in robots:
+        x,y = p
+        map[y][x] = '#'
+
+    for y in range(tall):
+        for x in range(width):
+            print(map[y][x], end="")
+        print()
+
+
+#304 too low
+# 6667 too low
+def day14_2(data): 
+    data = read_input(2024, "14")    
+    width = 101
+    tall = 103
+
+    time = 6668
+
+    robots = []
+    print("part2")
+    for line in data:
+        vals = parse("p={},{} v={},{}", line)
+        x = int(vals[0])
+        y = int(vals[1])
+        vx = int(vals[2])
+        vy = int(vals[3])
+        robots.append(((x,y), (vx,vy)))
+
+    robots = simulate_robots(robots, time, width, tall)
+    
+    print_robots(robots, width, tall)
+
+    result = compute_safety_factor(robots, width, tall)
+
+
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
