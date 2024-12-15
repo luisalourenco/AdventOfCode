@@ -1502,10 +1502,115 @@ def day14_2(data):
 
 #region ##### Day 15 #####
 
+def find_robot_position(map):
+    rows = len(map)
+    columns = len(map[0])
+    for y in range(rows) :
+        for x in range(columns):
+            if map[y][x] == '@':
+                return (x,y)
+
+def get_delta(move):
+    if move == '^':
+        dx = 0
+        dy = -1
+    elif move == 'v':
+        dx = 0
+        dy = 1
+    elif move == '<':
+        dx = -1
+        dy = 0
+    elif move == '>':
+        dx = 1
+        dy = 0
+    return dx, dy
+
+def execute_moves(map, robot, moves):
+    
+    #printMap(map, "initial map")
+    for move in moves:
+        rx, ry = robot
+        dx, dy = get_delta(move)
+
+        # free square, robot moves
+        if map[ry + dy][rx + dx] == '.':
+            robot =  (rx+dx, ry+dy)
+            map[ry + dy][rx + dx] = '@'
+            map[ry][rx] = '.'
+        # found box, try to push it
+        elif map[ry + dy][rx + dx] == 'O':
+            
+            if abs(dy) > 0:
+                limit = len(map)-dy
+            elif abs(dx) > 0:
+                limit = len(map[0])-dx
+            # if no wall is found, it can push and move
+            for i in range(2, limit):
+                if map[ry + i*dy][rx + i*dx] == '#':
+                    break
+
+                if map[ry + i*dy][rx + i*dx] == '.':
+                    robot =  (rx+dx, ry+dy)
+                    map[ry + dy][rx + dx] = '@'
+                    map[ry][rx] = '.'
+                    map[ry + i*dy][rx + i*dx] = 'O'
+                    break
+        #msgToPrint = "robot moved: "+ move
+        #printMap(map, msg=msgToPrint)
+    return map
+
+def get_result(map):
+    rows = len(map)
+    columns = len(map[0])
+    result = 0
+    for y in range(rows):          
+        for x in range(columns):
+            if map[y][x] == 'O':
+                result += ((100*y)+x)
+    return result
+    
+
+def day15_1(data):    
+    data = read_input(2024, "15")    
+    result = 0    
+
+    moves = data.pop()
+    data.pop()
+    map = buildMapGrid(data, initValue='.', withPadding = False)
+    
+    robot = find_robot_position(map)
+
+    map = execute_moves(map, robot, moves)
+    
+    result = get_result(map)   
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day15_2(data):    
+    data = read_input(2024, "15_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
 #region ##### Day 16 #####
+
+def day16_1(data):    
+    data = read_input(2024, "16_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day16_2(data):    
+    data = read_input(2024, "16_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
