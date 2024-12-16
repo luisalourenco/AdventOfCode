@@ -62,7 +62,7 @@ from functools import cmp_to_key
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3, find_shortest_path2
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -1682,14 +1682,49 @@ def day15_2(data):
 def is_connectedv2(map, p, n):
     x,y = p
     xx,yy = n
-    if map[yy][xx] == '.':
+    if map[yy][xx] in ('.','S','E'):
         return True
     else:
         return False
 
 
+def compute_score(start, path):
+    score = 0
+    i,j = start
+    y_axis = False
+    x_axis = False
+    forward = 0
+    rotate = 0
+
+    for x,y in path:
+        #print(x,y)
+        if (x == i and y != j):
+            if not y_axis:
+                y_axis = True
+                x_axis = False
+                score += 1001
+                rotate +=1
+            else:
+                score+= 1
+                forward+=1
+        elif (x != i and y == j):
+            if not x_axis:
+                x_axis = True
+                y_axis = False
+                score += 1001
+                rotate +=1
+            else:
+                score+= 1
+                forward+=1
+        i = x
+        j = y
+    return score, forward, rotate
+
+
+
+# too high 109404
 def day16_1(data):    
-    data = read_input(2024, "16_teste")    
+    data = read_input(2024, "16")    
     result = 0    
     
     graph = buildGraphFromMap_v2(data, '#', is_connectedv2)
@@ -1698,8 +1733,22 @@ def day16_1(data):
     end = find_starting_point(data, "E")
     print(start,end)
     
-    p = find_all_paths(graph, start, end)
-    print(p)
+    #paths = find_all_paths(graph, start, end)
+    p = find_shortest_path(graph, start, end)
+    #print(p)
+    result, f, r = compute_score(start, p)
+
+    #result = compute_score(start, paths)
+    #print(paths)
+    '''
+    min_path = sys.maxsize
+    for p in paths:
+        result, f, r = compute_score(start, p)
+        if result < min_path:
+            min_path = result
+    result = min_path
+    '''
+    #printGraph(graph)
     
     AssertExpectedResult(587, result)
     return result 
