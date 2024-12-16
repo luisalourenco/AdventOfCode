@@ -61,8 +61,8 @@ DEBUG_MODE = False
 from functools import cmp_to_key
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
-from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3, find_shortest_path2
+from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid, buildGraphFromMap_v3
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3, dijkstra_shortest_path
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -1724,19 +1724,20 @@ def compute_score(start, path):
 
 # too high 109404
 def day16_1(data):    
-    data = read_input(2024, "16")    
+    data = read_input(2024, "16_teste")    
     result = 0    
     
-    graph = buildGraphFromMap_v2(data, '#', is_connectedv2)
+    graph = buildGraphFromMap_v3(data, '#', is_connectedv2)
     #printGraph(graph)
     start = find_starting_point(data, "S")
     end = find_starting_point(data, "E")
     print(start,end)
     
     #paths = find_all_paths(graph, start, end)
-    p = find_shortest_path(graph, start, end)
-    #print(p)
-    result, f, r = compute_score(start, p)
+    #p = find_shortest_path(graph, start, end)
+    shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+    print(shortest_distance)
+    result, f, r = compute_score(start, path)
 
     #result = compute_score(start, paths)
     #print(paths)

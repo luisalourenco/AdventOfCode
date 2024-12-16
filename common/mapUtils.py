@@ -5,6 +5,42 @@ import sys
 import os
 import copy
 
+
+# might need some tweaks depending on the map
+def buildGraphFromMap_v3(map, emptyCell, is_connected):
+    graph = {}
+    sizeX = len(map[0])
+    sizeY = len(map)
+
+    for y in range(sizeY):
+        for x in range(sizeX):
+
+            east = (x+1, y)
+            west = (x-1, y)
+            north = (x, y-1)
+            south = (x, y+1)
+            
+            neighbours = []
+            if map[y][x] != emptyCell:
+                if 0 <= east[0] < sizeX and 0 <= east[1] < sizeY:
+                    if map[east[1]][east[0]] != emptyCell and is_connected(map, (x,y), east):
+                        neighbours.append((east, 1))
+                
+                if 0 <= west[0] < sizeX and 0 <= west[1] < sizeY:                        
+                    if map[west[1]][west[0]] != emptyCell and is_connected(map, (x,y), west):
+                        neighbours.append((west, 1))
+                
+                if 0 <= north[0] < sizeX and 0 <= north[1] < sizeY: 
+                    if map[north[1]][north[0]] != emptyCell and is_connected(map, (x,y), north):
+                        neighbours.append((north, 1))
+                
+                if 0 <= south[0] < sizeX and 0 <= south[1] < sizeY: 
+                    if map[south[1]][south[0]] != emptyCell and is_connected(map, (x,y), south):
+                        neighbours.append((south, 1))
+            
+            graph[(x,y)] = neighbours
+    return graph
+
 # might need some tweaks depending on the map
 def buildGraphFromMap_v2(map, emptyCell, is_connected):
     graph = {}

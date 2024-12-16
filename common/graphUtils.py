@@ -98,6 +98,66 @@ gdict = { "a" : set(["b","c"]),
                 "e" : set(["a"])
                 }
 
+import heapq
+
+def dijkstra_shortest_path(graph, start, end):
+    """
+    Finds the shortest path in a graph using Dijkstra's algorithm.
+
+    Args:
+        graph (dict): The adjacency list of the graph.
+                     Example: {'A': {'B': 1, 'C': 4}, 'B': {'A': 1, 'C': 2, 'D': 6}, ...}
+        start (str): The starting node.
+        end (str): The destination node.
+
+    Returns:
+        tuple: (shortest_distance, path)
+    """
+    # Priority queue to store (distance, node)
+    pq = [(0, start)]
+    # Distances dictionary to store the shortest known distance to each node
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    # Predecessor dictionary to reconstruct the shortest path
+    predecessors = {node: None for node in graph}
+    visited = set()
+
+    while pq:
+        current_distance, current_node = heapq.heappop(pq)
+
+        if current_node in visited:
+            continue
+        visited.add(current_node)
+
+        # If the end node is reached, no need to process further
+        if current_node == end:
+            break
+
+        # Explore neighbors
+        for neighbor, weight in graph[current_node]:
+            # weight is 1
+            distance = current_distance + weight
+            # If a shorter path to the neighbor is found
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                predecessors[neighbor] = current_node
+                heapq.heappush(pq, (distance, neighbor))
+
+    # Reconstruct the shortest path
+    path = []
+    current = end
+    while current is not None:
+        path.append(current)
+        current = predecessors[current]
+    path.reverse()
+
+    # If the distance to the end node is still infinity, no path was found
+    if distances[end] == float('inf'):
+        return (float('inf'), None)
+
+    return distances[end], path
+
+
 def printGraph(graph):
     for k in graph:
         nodes = graph.get(k)
