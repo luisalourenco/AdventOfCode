@@ -1679,9 +1679,27 @@ def day15_2(data):
 
 #region ##### Day 16 #####
 
+def is_connectedv2(map, p, n):
+    x,y = p
+    xx,yy = n
+    if map[yy][xx] == '.':
+        return True
+    else:
+        return False
+
+
 def day16_1(data):    
     data = read_input(2024, "16_teste")    
     result = 0    
+    
+    graph = buildGraphFromMap_v2(data, '#', is_connectedv2)
+    #printGraph(graph)
+    start = find_starting_point(data, "S")
+    end = find_starting_point(data, "E")
+    print(start,end)
+    
+    p = find_all_paths(graph, start, end)
+    print(p)
     
     AssertExpectedResult(587, result)
     return result 
