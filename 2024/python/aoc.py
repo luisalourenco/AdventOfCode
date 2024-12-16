@@ -1505,8 +1505,10 @@ def day14_2(data):
 def find_robot_position(map):
     rows = len(map)
     columns = len(map[0])
+    print(rows, columns)
     for y in range(rows) :
         for x in range(columns):
+            print(map[y][x])
             if map[y][x] == '@':
                 return (x,y)
 
@@ -1525,7 +1527,7 @@ def get_delta(move):
         dy = 0
     return dx, dy
 
-def execute_moves(map, robot, moves):
+def execute_moves(map, robot, moves, part2 = False):
     
     #printMap(map, "initial map")
     for move in moves:
@@ -1554,9 +1556,8 @@ def execute_moves(map, robot, moves):
                     map[ry + dy][rx + dx] = '@'
                     map[ry][rx] = '.'
                     map[ry + i*dy][rx + i*dx] = 'O'
+
                     break
-        #msgToPrint = "robot moved: "+ move
-        #printMap(map, msg=msgToPrint)
     return map
 
 def get_result(map):
@@ -1587,9 +1588,89 @@ def day15_1(data):
     AssertExpectedResult(587, result)
     return result 
 
+def buildPart2Map(data):
+    data = copy.deepcopy(data)
+
+    rows = len(data)
+    columns = len(data[0])
+
+    map = [ [ ('.') for i in range(columns*2) ] for j in range(rows) ]    
+    
+    i = 0
+    for y in range(rows):
+        for x in range(columns):
+            tile =  data[y][x]
+            if tile == 'O':
+                map[y][i] = '['
+                map[y][i+1] = ']'
+            elif tile == '@':
+                map[y][i] = '@'
+                map[y][i+1] = '.'
+            else:
+                map[y][i] = tile
+                map[y][i+1] = tile
+            i+=2
+        i = 0
+    return map
+
+def execute_movesv2(map, robot, moves):
+    
+    #printMap(map, "initial map")
+    for move in moves:
+        rx, ry = robot
+        dx, dy = get_delta(move)
+
+        # free square, robot moves
+        if map[ry + dy][rx + dx] == '.':
+            robot =  (rx+dx, ry+dy)
+            map[ry + dy][rx + dx] = '@'
+            map[ry][rx] = '.'
+        # found box, try to push it
+        elif map[ry + dy][rx + dx] in ['[',']']:
+            
+            if abs(dy) > 0:
+                limit = len(map)-dy
+            elif abs(dx) > 0:
+                limit = len(map[0])-dx
+            # if no wall is found, it can push and move
+            for i in range(2, limit):
+                if map[ry + i*dy][rx + i*dx] == '#':
+                    break
+
+                if map[ry + i*dy][rx + i*dx] == '.':
+                    robot =  (rx+dx, ry+dy)
+                    map[ry + dy][rx + dx] = '@'
+                    map[ry][rx] = '.'
+                   
+                    switch = False
+                    for j in range(2,i+1):
+                        print("j",j, switch)
+                        if switch:
+                            map[ry + i*dy][rx + i*dx]= '['    
+                        else:
+                            map[ry + i*dy][rx + i*dx] = ']'
+                        switch = not switch
+                        #map[ry + (i+1)*dy][rx + (i+1)*dx] = ']'
+                    break
+        
+        msgToPrint = "robot moved: "+ move
+        printMap(map, msg=msgToPrint)
+    return map
+
 def day15_2(data):    
     data = read_input(2024, "15_teste")    
-    result = 0    
+    result = 0   
+
+
+    moves = data.pop()
+    data.pop()
+    map = buildPart2Map(data)
+    robot = find_robot_position(map)
+    printMap(map)
+    map = execute_movesv2(map, robot, moves)
+    
+    #result = get_result(map)   
+
     
     AssertExpectedResult(587, result)
     return result 
