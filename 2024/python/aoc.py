@@ -1765,7 +1765,140 @@ def day16_2(data):
 
 #region ##### Day 17 #####
 
-#Day 17, part 1: 686 (1.775 secs)
+def combo_operand(operand, registers):
+    if 0 <= operand <= 3:
+        return operand
+    elif operand == 4:
+        return registers[0]
+    elif operand == 5:
+        return registers[1]
+    elif operand == 6:
+        return registers[2]
+
+def execute_program(registers, program):
+    instruction_pointer = 0
+    output = ''
+    loops = 0
+    while instruction_pointer < len(program):
+        opcode = program[instruction_pointer]
+        operand = program[instruction_pointer+1]
+        #print("op:", opcode,"operand:", operand)
+        #print("pc:",instruction_pointer)
+                
+        # adv  A = int (A / 2**combo(operand))
+        if opcode == 0:
+            registers[0] = int (registers[0] / (2**combo_operand(operand, registers)))
+            instruction_pointer += 2            
+        
+        # bxl  B = B bitwise XOR lit operand (a ^ b)
+        elif opcode == 1:
+            registers[1] = registers[1] ^ operand
+            instruction_pointer += 2
+            
+        # bst  B = combo operand modulo 8
+        elif opcode == 2:
+            registers[1] = combo_operand(operand, registers) % 8
+            instruction_pointer += 2
+        
+        # jnz  if A == 0 : nop else instruction_pointer = A
+        elif opcode == 3:
+
+            if registers[0] != 0:
+                instruction_pointer = operand
+            else:
+                instruction_pointer += 2
+        
+        # bxc  B = B bitwise XOR C
+        elif opcode == 4:
+            registers[1] = registers[1] ^ registers[2]
+            instruction_pointer += 2
+            
+        # out output combo operand % 8
+        elif opcode == 5:
+            output += str(combo_operand(operand, registers) % 8) + ','
+            instruction_pointer += 2
+            loops +=1
+            
+        # bdv B = int (A / 2**combo(operand))
+        elif opcode == 6:
+            registers[1] = int (registers[0] / (2**combo_operand(operand, registers)))
+            instruction_pointer += 2  
+            
+        # cdv C = int (A / 2**combo(operand))
+        elif opcode == 7:
+            registers[2] = int (registers[0] / (2**combo_operand(operand, registers)))
+            instruction_pointer += 2  
+        #if loops == 16:
+            #break
+    
+    #print("looped", loops)       
+    return output
+        
+    
+    
+def day17_1(data):    
+    data = read_input(2024, "17")    
+    result = 0    
+    
+    registers = []
+    registers.append( int(parse("Register A: {}", data[0])[0]) )
+    registers.append( int(parse("Register B: {}", data[1])[0]) )
+    registers.append( int(parse("Register C: {}", data[2])[0]) )
+    program = ints(parse("Program: {}", data[4])[0].split(","))
+
+    result = execute_program(registers, program)
+    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day17_2(data):    
+    data = read_input(2024, "17")    
+    result = 0    
+    
+    registers = []
+    registers.append( int(parse("Register A: {}", data[0])[0]) )
+    registers.append( int(parse("Register B: {}", data[1])[0]) )
+    registers.append( int(parse("Register C: {}", data[2])[0]) )
+    program = ints(parse("Program: {}", data[4])[0].split(","))
+
+    
+    exp = ','.join(map(str,program)) +','
+    print("expects:", exp)
+    
+    for _ in range(10000):
+            A = random.randint(1000000000000,99999999999999)
+            registers[0] = A
+            #registers[0] = 123456789000000
+            result = execute_program(registers, program)
+            #print(len(result), len(exp))
+            if result == exp:
+                print("FOUND:", A)
+            
+    
+    ''' 
+    2,4,
+    1,5,
+    7,5,
+    0,3,
+    1,6,
+    4,3,
+    5,5,
+    3,0
+    
+    bst B = A%8
+    bxl B = B ^ 5
+    cdv C = A / 2**B
+    adv A = A / 8
+    bxl B = B ^ 6
+    bxc B = B ^ C
+    out  output += B%8
+    jnz if A != 0 then program_counter = 0 (init) -> while A != 0 repeat all
+    
+    '''
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
