@@ -1905,6 +1905,67 @@ def day17_2(data):
 #region ##### Day 18 #####
 
 
+def day18_1(data):    
+    data = read_input(2024, "18")    
+    result = 0
+    bytes_to_fall = []
+    
+    for line in data:
+        v = line.split(',')
+        bytes_to_fall.append((int(v[0]), int(v[1])))
+    
+    fall = 1024
+    rows = 71
+    columns = 71
+
+    memory_grid = [ [ ('.') for i in range(columns) ] for j in range(rows) ]    
+    for i in range(fall):
+        x,y = bytes_to_fall[i]
+        memory_grid[y][x] = "#"
+    
+    graph = buildGraphFromMap_v3(memory_grid, '#', is_connectedv2)
+    
+    start = (0,0)
+    end = (70,70)
+
+    shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+    result = shortest_distance
+      
+    AssertExpectedResult(356, result)
+    return result
+
+def day18_2(data):    
+    data = read_input(2024, "18")    
+    result = 0
+    bytes_to_fall = []
+    
+    for line in data:
+        v = line.split(',')
+        bytes_to_fall.append((int(v[0]), int(v[1])))
+    
+    fall = 3450
+    rows = 71
+    columns = 71
+
+    memory_grid = [ [ ('.') for i in range(columns) ] for j in range(rows) ]    
+    for i in range(fall):
+        x,y = bytes_to_fall[i]
+        memory_grid[y][x] = "#"
+        if i > 1024:
+            graph = buildGraphFromMap_v3(memory_grid, '#', is_connectedv2)
+        
+            start = (0,0)
+            end = (70,70)
+        
+            shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+            if not path:
+                result = shortest_distance
+                result = x,y
+                break
+        
+    AssertExpectedResult("22,33", result)
+    return result
+
 #endregion
 
 
