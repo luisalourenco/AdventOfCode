@@ -124,6 +124,8 @@ def dijkstra_shortest_path(graph, start, end):
 
     while pq:
         current_distance, current_node = heapq.heappop(pq)
+        if not current_node:
+            break
 
         if current_node in visited:
             continue
@@ -152,7 +154,7 @@ def dijkstra_shortest_path(graph, start, end):
     path.reverse()
 
     # If the distance to the end node is still infinity, no path was found
-    if distances[end] == float('inf'):
+    if not end or distances[end] == float('inf'):
         return (float('inf'), None)
 
     return distances[end], path

@@ -1971,12 +1971,175 @@ def day18_2(data):
 
 #region ##### Day 19 #####
 
+def match_string(string, target, index):
+    lens = len(string)
+    lent = len(target)
+    
+    if(index + lens > lent):
+        return False
+    
+    for i in range(index,index+lens):
+        if(string[i-index] != target[i]):
+            return False
+    
+    if(target[index+lens] == " " or target[index+lens] == "."):
+        return True
+    else:
+        return False
+
+    
+def solve(arr,target,index,dp):
+    
+    n = len(arr)
+    ln = len(target)
+    
+    if(index == ln):
+        return True
+    elif(index > ln):
+        return False
+    
+    if(dp[index] != None):
+        return dp[index]
+    
+    result = False
+    for em in arr:
+        if(match_string(em,target,index)):
+            result = result or solve(arr,target,index+len(em)+1,dp)
+    dp[index] = result
+    return dp[index]
+    
+
+def day19_1(data):    
+    data = read_input(2024, "19_teste")    
+    result = 0    
+    
+    towels = [towel.strip() for towel in data[0].split(",")]
+    towels_size = defaultdict(list)
+    max_size = 0
+    for towel in towels:
+        towels_size[len(towel)].append(towel)
+        if len(towel) > max_size:
+            max_size = len(towel)
+    
+    print(towels)
+        
+    for pattern in data[2:]:
+        dp = [None for i in range(len(pattern))]
+        answer = solve(towels,pattern,0,dp)
+        print(pattern, answer)
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day19_2(data):    
+    data = read_input(2024, "19_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
 
 #region ##### Day 20 #####
 
+def find_walls(map):
+    rows = len(map)
+    columns = len(map[0])
+    walls = []
+    for y in range(rows):          
+        for x in range(columns):
+            if map[y][x] == '#' and y != 0 and y != rows-1 and x != 0 and x != columns-1:
+                walls.append((x,y))
+    return walls
+
+def is_cheating_move(og_map, c1, c2, start, end, visited):
+    map = copy.deepcopy(og_map)
+    x,y = c1
+    xx,yy = c2
+    map[y][x] = '.'
+    map[yy][xx] = '.'    
+    
+    graph = buildGraphFromMap_v3(map, '#', is_connectedv2)
+    
+    #printGraph(graph)  
+    shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+    #path = find_shortest_path(graph, start, end)
+    
+    p = str(path)
+    print(str(c2) in visited)
+    if path and str(c2) in p:
+     #   shortest_distance = len(p)
+        
+        print(visited)
+        #print(str(c2) in p)
+        visited.add(p)
+        return True, shortest_distance, visited
+    else:
+        return False, -1, visited
+
+
+
+def day20_1(data):    
+    data = read_input(2024, "20_teste")    
+    result = 0
+    
+    map = buildMapGrid(data, initValue='.', withPadding = False)    
+    walls = find_walls(map)
+    
+    sizeX = len(map[0])
+    sizeY = len(map)
+    cheatings_moves = defaultdict(set)
+    
+    
+    graph = buildGraphFromMap_v3(map, '#', is_connectedv2)
+    start = find_starting_point(map, "S")
+    end = find_starting_point(map, "E")      
+    shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+    print(shortest_distance)
+    
+    visited = set()
+    for x,y in path:     
+    #for x,y in walls:
+        east = (x+1, y)
+        west = (x-1, y)
+        north = (x, y-1)
+        south = (x, y+1)
+        
+        if 0 < east[0] < sizeX-1 and 0 < east[1] < sizeY and map[east[1]][east[0]] == '#':
+            res, dist, visited = is_cheating_move(map, (x,y), (east[0], east[1]), start, end, visited)
+            if res and dist < shortest_distance:
+                cheatings_moves[dist].add( ((x,y), (east[0]+1, east[1]) ) )
+        
+        if 0 < west[0] < sizeX and 0 <= west[1] < sizeY and map[west[1]][west[0]] == '#':                        
+            res, dist, visited = is_cheating_move(map, (x,y), (west[0], west[1]), start, end, visited)
+            if res and dist < shortest_distance:
+                cheatings_moves[dist].add( ((x,y), (west[0]-1, west[1]) ) )
+        
+        if 0 < north[0] < sizeX and 0 <= north[1] < sizeY and map[north[1]][north[0]] == '#': 
+            res, dist, visited = is_cheating_move(map, (x,y), (north[0], north[1]), start, end, visited)
+            if res and dist < shortest_distance:
+                cheatings_moves[dist].add( ( (x,y),(north[0], north[1]-1) ) )
+        
+        if 0 < south[0] < sizeX and 0 <= south[1] < sizeY and map[south[1]][south[0]] == '#': 
+            res, dist, visited = is_cheating_move(map, (x,y), (south[0], south[1]), start, end, visited)
+            if res and dist < shortest_distance:
+                cheatings_moves[dist].add( ( (x,y),(south[0], south[1]+1) ) )
+        
+    
+    for k, v in sorted(cheatings_moves.items(), reverse = True):    
+    #for k in cheatings_moves.keys().sort():
+       print("There are",len(v),"cheats that save", shortest_distance - k,"picoseconds.")
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day20_2(data):    
+    data = read_input(2024, "20_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
