@@ -1740,8 +1740,14 @@ def day16_1(data):
     #paths = find_all_paths(graph, start, end)
     #p = find_shortest_path(graph, start, end)
     shortest_distance, path = dijkstra_shortest_path(graph, start, end)
+    
     print(shortest_distance)
+    print(path)
+    print(len(path))
+    
+    
     result, f, r = compute_score(start, path)
+    print(f,r)
 
     #result = compute_score(start, paths)
     #print(paths)
