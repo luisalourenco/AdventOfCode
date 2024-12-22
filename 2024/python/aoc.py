@@ -486,7 +486,7 @@ def get_new_guard_poosition(obstacle, direction):
 # too low 1956
 # 2640
 def day6_1(data):    
-    data = read_input(2024, "06")    
+    data = read_input(2024, "06_teste")    
     result = 0
     maxX = len(data[0])
     maxY = len(data)
@@ -526,6 +526,7 @@ def day6_1(data):
         
     obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
 
+    path = []
     #while obstacle != []:
     for i in range(40000):
         x,y = guard_position
@@ -551,6 +552,7 @@ def day6_1(data):
             for xx in x_pos:
                 for yy in y_pos:
                     #print("visiting", (xx,yy))
+                    path.append((xx,yy))
                     visited.add((xx,yy))
             break
         
@@ -577,6 +579,7 @@ def day6_1(data):
         for x in x_pos:
             for y in y_pos:
                 #print("visiting", (x,y))
+                path.append((x,y))
                 visited.add((x,y))
         
         direction = rotate_direction_clockwise(direction)
@@ -587,6 +590,7 @@ def day6_1(data):
         #print("dir:",direction)
         obstacle = find_obstacle(guard_position, direction, obstacles_x, obstacles_y)
     
+    #print(path)
     result = len(visited)
     AssertExpectedResult(5129, result)
     return result
@@ -654,7 +658,7 @@ def day7_1(data):
     return result
 
 def day7_2(data):    
-    data = read_input(2024, "07")    
+    data = read_input(2024, "07_teste")    
     result = 0
     
     operations = ["+","*",'||']
@@ -2145,10 +2149,120 @@ def day20_2(data):
 
 #region ##### Day 21 #####
 
+def day21_1(data):    
+    data = read_input(2024, "21_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day21_2(data):    
+    data = read_input(2024, "21_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+
 
 #endregion
 
 #region ##### Day 22 #####
+
+def mix_secret_number(secret, n):
+    return secret ^ n
+
+def prune_secret_number(secret):
+    return secret % 16777216
+
+def next_secret_number(secret):
+    n1 = secret * 64
+    n1 = mix_secret_number(secret, n1)
+    n1 = prune_secret_number(n1)
+    secret = n1
+
+    n2 = int(secret/32)
+    n2 = mix_secret_number(secret, n2)
+    n2 = prune_secret_number(n2)
+    secret = n2
+
+    n3 = secret * 2048
+    n3 = mix_secret_number(secret, n3)
+    n3 = prune_secret_number(n3)
+    secret = n3
+    return secret
+
+
+def day22_1(data):    
+    data = read_input(2024, "22")    
+    result = 0
+    times = 2000
+    secrets = []
+
+    for line in data:
+        secrets.append(int(line))
+    
+    for secret in secrets:
+        for _ in range(times):
+            secret = next_secret_number(secret)
+        #print(secret)
+        result += secret
+
+       
+    AssertExpectedResult(18261820068, result)
+    return result
+
+
+# 1687 low
+# 1639 low
+def day22_2(data):    
+    data = read_input(2024, "22")    
+    result = 0
+    times = 2000
+    secrets = []
+
+    for line in data:
+        secrets.append(int(line))
+    
+    res = defaultdict(list)
+    buyer = 0
+    for secret in secrets:
+        buyer +=1
+        diff = int(str(secret)[-1])
+        key = []
+        for _ in range(times):
+            secret = next_secret_number(secret)
+            price = int(str(secret)[-1])
+            key.append(price-diff)            
+            
+            if len(key) == 4:
+                val = ",".join(str(x) for x in key)
+                l = [(x,y) for x,y in res[val] if x != buyer]
+                buyer_price = [(x,y) for x,y in res[val] if x == buyer]
+               
+                if buyer_price:
+                    _, p = buyer_price[0]
+                    l.append((buyer,p))
+                else:
+                    l.append((buyer,price))
+                res[val] = l
+
+                key = key[1:]
+
+            diff = price
+        #print(secret)
+
+    
+    for results in res.values():
+        res_bananas = 0
+        for _, bananas in results:
+            res_bananas += bananas
+        
+        if res_bananas > result:
+            result = res_bananas
+
+    AssertExpectedResult(2044, result)
+    return result
 
 #endregion
 
