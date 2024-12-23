@@ -62,7 +62,7 @@ from functools import cmp_to_key
 from common.mathUtils import *
 from common.utils import *# read_input, main, clear, AssertExpectedResult, ints, printGridsASCII  # NOQA: E402
 from common.mapUtils import printMap, buildMapGrid, buildGraphFromMap, buildGraphFromMap_v2, find_starting_point, build_empty_grid, buildGraphFromMap_v3
-from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3, dijkstra_shortest_path
+from common.graphUtils import dijsktra, printGraph, find_all_paths, find_path, find_shortest_path, find_shortest_pathOptimal, bfs, dfs, Graph, hashable_lru, BFS_SP, hash_list, hashable_cache, Graph3, dijkstra_shortest_path, find_cliques, bron_kerbosch
 from common.aocVM import *
 from lark import Lark, Transformer, v_args, UnexpectedCharacters, UnexpectedToken
 from pyformlang.cfg import Production, Variable, Terminal, CFG, Epsilon
@@ -2274,14 +2274,91 @@ def day22_2(data):
 
 #region ##### Day 23 #####
 
+def day23_1(data):    
+    data = read_input(2024, "23_teste")    
+    result = 0
+    
+    historian_pcs = set()
+    total_pcs = set()
+    network_map = defaultdict(list)
+    network_map2 = defaultdict(list)
+    for line in data:
+        pc = parse("{:w}-{:w}", line)
+        network_map[pc[0]].append(pc[1])
+        network_map[pc[1]].append(pc[0])
+        total_pcs.add(pc[0])
+        total_pcs.add(pc[1])
+        
+        if pc[0][0] == 't':
+            historian_pcs.add(pc[0])
+        if pc[1][0] == 't':
+            historian_pcs.add(pc[1])
+    
+    #print(total_pcs)
+    combinations = [p for p in itertools.product(total_pcs, repeat=3) if p[0] != p[1] and p[0] != p[2] and p[1] != p[2] and (p[0][0] == 't' or p[1][0] == 't' or p[2][0] == 't')]
+    aux = set()
+    for x,y,z in combinations:
+        l = [x,y,z]
+        l.sort()
+        #print(l)
+        s = ','.join(l)
+        aux.add(s)
+    
+    for l in aux:
+        l = l.split(',')
+        if l[1] in network_map[l[0]] and l[2] in network_map[l[0]] and l[1] in network_map[l[2]]:
+            result += 1
+    
+    AssertExpectedResult(587, result)
+    return result 
+
+def day23_2(data):    
+    data = read_input(2024, "23")    
+    result = 0
+    
+    network_map = defaultdict(set)
+    for line in data:
+        pc = parse("{:w}-{:w}", line)
+        network_map[pc[0]].add(pc[1])
+        network_map[pc[1]].add(pc[0])
+    
+    bron_kerbosch(set(), set(network_map.keys()), set(), network_map)
+    # the result was taken from the prints done in bron_kerbosch
+    result = ['fo', 'au', 'nt', 'im', 'qz', 'so', 'cm', 'be', 'rr', 'hh', 'am', 'ha', 'os']
+    result.sort()
+    
+    
+    AssertExpectedResult(587, result)
+    return result 
+
 #endregion
 
 #region ##### Day 24 #####
+
+def day24_1(data):    
+    data = read_input(2024, "24_teste")    
+    result = 0
+  
+    AssertExpectedResult(587, result)
+    return result 
+
+def day24_2(data):    
+    data = read_input(2024, "24_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 
 #region ##### Day 25 #####
 
+def day25_1(data):    
+    data = read_input(2024, "25_teste")    
+    result = 0    
+    
+    AssertExpectedResult(587, result)
+    return result 
 
 #endregion
 

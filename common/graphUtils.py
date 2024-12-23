@@ -11,6 +11,44 @@ import json
 import six
 from collections.abc import Iterable
 
+# Python code
+from collections import defaultdict
+
+
+def bron_kerbosch(r, p, x, graph):
+    if not p and not x:
+        print(r)
+        return 
+
+    for v in p.copy():
+        bron_kerbosch(r | {v}, p & graph[v], x & graph[v], graph)
+        p.remove(v)
+        x.add(v)
+
+
+def find_cliques(graph):
+	cliques = []
+	visited = set()
+
+	def dfs(node, clique):
+		visited.add(node)
+		clique.add(node)
+
+		for neighbor in graph[node]:
+			if neighbor not in visited:
+				dfs(neighbor, clique)
+
+	for node in graph:
+		if node not in visited:
+			clique = set()
+			dfs(node, clique)
+			if len(clique) > 1:
+				cliques.append(clique)
+
+	return cliques
+
+
+
 # taken from https://gist.github.com/harel/9ced5ed51b97a084dec71b9595565a71
 Serialized = namedtuple('Serialized', 'json')
 
