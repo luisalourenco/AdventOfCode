@@ -2335,9 +2335,56 @@ def day23_2(data):
 
 #region ##### Day 24 #####
 
+def process_gates(wires, gates):
+    
+    while gates:
+        gate = gates.pop(0)
+        operator, operand1, operand2, output = gate
+        try:
+            if operator == 'AND':
+                wires[output] = wires[operand1] and wires[operand2]
+            elif operator == 'OR':
+                wires[output] = wires[operand1] or wires[operand2]
+            elif operator == 'XOR':
+                if (wires[operand1] and not wires[operand2]) or (not wires[operand1] and wires[operand2]):
+                    wires[output] = 1
+                else:
+                    wires[output] = 0
+        except KeyError:
+            gates.append(gate)
+    
+    return wires
+
 def day24_1(data):    
-    data = read_input(2024, "24_teste")    
+    data = read_input(2024, "24")    
     result = 0
+    wires = {}
+    gates = []
+    parse_gates = False
+    
+    for line in data:
+        if parse_gates:
+            vals = parse("{:w} {:w} {:w} -> {:w}", line)
+            # (AND, op1, op2, out)
+            gates.append((vals[1], vals[0], vals[2], vals[3] ))
+        else:
+            vals = parse("{:w}: {:d}", line)
+            if vals:
+                wires[vals[0]] = vals[1]
+            else:
+                parse_gates = True  
+    
+  
+    wires = process_gates(wires, gates)
+    
+    wires = {k: v for k, v in sorted(list(wires.items()), reverse = True)}
+    #for k in wires.keys():
+    #    print(k,":", wires[k])
+    
+    z_wires = [wires[z] for z in wires.keys() if z[0] == 'z']
+    binary = ''.join(map(str,z_wires))
+    #print(binary)
+    result = int(binary, 2)
   
     AssertExpectedResult(587, result)
     return result 
