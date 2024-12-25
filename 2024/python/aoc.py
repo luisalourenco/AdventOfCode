@@ -2401,10 +2401,54 @@ def day24_2(data):
 #region ##### Day 25 #####
 
 def day25_1(data):    
-    data = read_input(2024, "25_teste")    
-    result = 0    
+    data = read_input(2024, "25")    
+    result = 0
+
+    columns = len(data[0])
+
+    keys = []
+    locks = []
+    start = True
+    is_lock = False 
+    aux = [-1] * columns
+    height = 0
+    for line in data:
+        
+        if start:
+            height = 0
+            if line[0] == '#':
+                is_lock = True
+            else:
+                is_lock = False
+        for i in range(len(line)):
+            if line[i] == '#':
+                aux[i] += 1
+
+        if len(line) == 0:
+            start = True
+            if is_lock:
+                locks.append(aux)
+            else:
+                keys.append(aux)
+            aux = [-1] * columns
+        else:
+            start = False
+            height += 1
     
-    AssertExpectedResult(587, result)
+    height -= 2
+
+    for lock in locks:
+        for key in keys:
+            no_fit = False
+            for i in range(columns):
+                if lock[i] + key[i] > height:
+                    no_fit = True
+                    break
+            if not no_fit:
+                result += 1
+    
+
+    AssertExpectedResult(2885, result)
     return result 
 
 #endregion
