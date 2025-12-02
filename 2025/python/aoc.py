@@ -31,9 +31,9 @@ from math import exp, pi, remainder, sqrt
 from collections import namedtuple
 from collections import Counter
 from collections import defaultdict
-from numpy.lib.arraypad import pad
-from termcolor import colored
-import termcolor
+#from numpy.lib.arraypad import pad
+#from termcolor import colored
+#import termcolor
 import random
 from parse import parse
 from parse import search
@@ -126,15 +126,44 @@ def day1_2(data):
 
 
 def day2_1(data):    
-    data = read_input(2025, "02_teste") 
+    data = read_input(2025, "02") 
     result = 0     
-    invalid_ids = []
     line = data[0].split(",")
     for l in line:
-        [low, high] = l.split("-")
-        
+        [low, high] = ints(l.split("-"))
+        for n in range(low, high+1):
+            num = str(n)
+            if len(num) % 2 == 0 and num[:len(num) // 2] == num[len(num) // 2:]:
+                result += n
 
-    AssertExpectedResult(962, result)
+    AssertExpectedResult(52316131093, result)
+    return result
+
+def day2_2(data):    
+    data = read_input(2025, "02_teste") 
+    result = 0     
+    line = data[0].split(",")
+    for l in line:
+        [low, high] = ints(l.split("-"))
+        print("checking [",low,high,"]")
+        for n in range(low, high+1):
+            num = str(n)
+            if len(num) % 2 == 0 and num[:len(num) // 2] == num[len(num) // 2:]:
+                result += n
+            
+            end_p = len(num) // 2
+            
+            for i in range(0,len(num)):                
+                
+                check_num = (num[i:])
+                p = num.find(check_num)
+                print("checking",check_num,"in",num,"found:",p)
+                
+                if check_num != '' and p != -1:
+                    result += int(num)
+
+
+    AssertExpectedResult(52316131093, result)
     return result
 
 
