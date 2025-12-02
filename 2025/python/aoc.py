@@ -140,30 +140,35 @@ def day2_1(data):
     return result
 
 def day2_2(data):    
-    data = read_input(2025, "02_teste") 
+    data = read_input(2025, "02") 
     result = 0     
     line = data[0].split(",")
     for l in line:
         [low, high] = ints(l.split("-"))
-        print("checking [",low,high,"]")
+
+        #print("checking [",low,high,"]")
+
         for n in range(low, high+1):
             num = str(n)
-            if len(num) % 2 == 0 and num[:len(num) // 2] == num[len(num) // 2:]:
-                result += n
-            
-            end_p = len(num) // 2
-            
-            for i in range(0,len(num)):                
-                
-                check_num = (num[i:])
-                p = num.find(check_num)
-                print("checking",check_num,"in",num,"found:",p)
-                
-                if check_num != '' and p != -1:
-                    result += int(num)
+            #print("check", num)
 
+            nn = ''
+            for i in num:
+                nn += i
+                if len(nn) == len(num):
+                    break
+                #print("testing",nn)
+                
+                invalid_num = nn *  len(num)
+                invalid_num = invalid_num[:len(num)]
+                
+                #print("generated:",invalid_num, "is invalid?", invalid_num == num and (int(invalid_num)/int(nn)) % 1 == 0)
+                
+                if invalid_num == num and (int(invalid_num)/int(nn)) % 1 == 0:
+                    result += n
+                    break
 
-    AssertExpectedResult(52316131093, result)
+    AssertExpectedResult(69564213293, result)
     return result
 
 
