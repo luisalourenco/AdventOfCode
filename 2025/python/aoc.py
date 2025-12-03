@@ -172,16 +172,37 @@ def day2_2(data):
     return result
 
 def day3_1(data):    
-    data = read_input(2025, "03_teste") 
+    data = read_input(2025, "03") 
     result = 0     
     for line in data:
-        perm = permutations(line,2)
+        perm = combinations(line,2)
         max_jolt = 0
         for i in perm:
             joltage = (int(''.join(i)))
             if joltage > max_jolt:
                 max_jolt = joltage
-        print(max_jolt)
+        #print(max_jolt)
+        result += max_jolt
+        
+            
+    AssertExpectedResult(17034, result)
+    return result
+
+
+def day3_2(data):    
+    data = read_input(2025, "03") 
+    result = 0     
+    for line in data:
+        perm = combinations(line,12)
+        max_jolt = 0
+        
+        '''
+        for i in perm:
+            joltage = (int(''.join(i)))
+            if joltage > max_jolt:
+                max_jolt = joltage
+        '''
+        #print(max_jolt)
         result += max_jolt
         
             
