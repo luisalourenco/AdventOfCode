@@ -171,6 +171,23 @@ def day2_2(data):
     AssertExpectedResult(69564213293, result)
     return result
 
+def day3_1(data):    
+    data = read_input(2025, "03_teste") 
+    result = 0     
+    for line in data:
+        perm = permutations(line,2)
+        max_jolt = 0
+        for i in perm:
+            joltage = (int(''.join(i)))
+            if joltage > max_jolt:
+                max_jolt = joltage
+        print(max_jolt)
+        result += max_jolt
+        
+            
+    AssertExpectedResult(5782, result)
+    return result
+
 
 if __name__ == "__main__":
     # override timeout
