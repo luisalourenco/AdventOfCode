@@ -190,10 +190,39 @@ def day3_1(data):
 
 
 def day3_2(data):    
-    data = read_input(2025, "03") 
+    data = read_input(2025, "03_teste") 
     result = 0     
     for line in data:
-        perm = combinations(line,12)
+        print("checking", line)
+        res = ''
+        enabled_positions = set()
+        
+        for i in range(len(line)):
+            aux = len(res)
+            print("checking digit", line[i])
+            
+            for j in range(i, len(line)):
+                #print(i,j)
+                #print("checking", line[i], "with", line[j])
+                if int(int(line[i] < line[j])) and j not in enabled_positions:
+                    res += line[j]  
+                    enabled_positions.add(j)
+                    print("digit", line[j], "is greater")                 
+                    break
+            
+            # digit to check is bigger than all the rest
+            if aux == len(res) and i not in enabled_positions:
+                enabled_positions.add(i)
+                print("all digits are smaller")                 
+                res += line[i]
+            elif j not in enabled_positions:
+                res += line[j]
+                enabled_positions.add(j)
+                print("default")                 
+            if len(res) == 12:
+                break
+        print("res:",res)
+
         max_jolt = 0
         
         '''
@@ -208,6 +237,65 @@ def day3_2(data):
             
     AssertExpectedResult(5782, result)
     return result
+
+def remove_rolls_of_paper(map):
+    map = copy.deepcopy(map)
+    result = 0
+    rows = len(map)
+    columns = len(map[0])
+    for y in range(rows):          
+        for x in range(columns):            
+            #print("testing:",x,y)
+            if map[y][x] == '@':
+                rolls = 0
+                if map[y-1][x] == '@':
+                    rolls+=1
+                if map[y+1][x] == '@':
+                    rolls+=1
+                if map[y-1][x-1] == '@':
+                    rolls+=1
+                if map[y-1][x+1] == '@':
+                    rolls+=1
+                if map[y+1][x-1] == '@':
+                    rolls+=1
+                if map[y+1][x+1] == '@':
+                    rolls+=1
+                if map[y][x-1] == '@':
+                    rolls+=1
+                if map[y][x+1] == '@':
+                    rolls+=1
+                
+                if rolls < 4:
+                    result+=1
+                    map[y][x] = 'x'
+                    #print("roll removed at",x,y)
+    
+    return result, map
+
+def day4_1(data):    
+    data = read_input(2025, "04") 
+    result = 0     
+    map = buildMapGrid(data)
+
+    result, _ = remove_rolls_of_paper(map)
+            
+    AssertExpectedResult(1489, result)
+    return result
+
+
+def day4_2(data):    
+    data = read_input(2025, "04") 
+    total_rolls = 0     
+    map = buildMapGrid(data)
+
+    while True:
+        result, map = remove_rolls_of_paper(map)
+        total_rolls += result
+        if result == 0:
+            break
+            
+    AssertExpectedResult(1489, total_rolls)
+    return total_rolls
 
 
 if __name__ == "__main__":
