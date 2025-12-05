@@ -298,6 +298,76 @@ def day4_2(data):
     return total_rolls
 
 
+def day5_1(data):    
+    data = read_input(2025, "05") 
+    result = 0     
+    available_ingredients = []
+    fresh = []
+
+    for line in data:
+        range_ig = parse("{:d}-{:d}", line)
+        
+
+        if range_ig == None:
+            if line != '':
+                available_ingredients.append(int(line))
+        else:
+           fresh.append((range_ig[0], range_ig[1]))
+    
+    for ig in available_ingredients:
+        for low, high in fresh:
+            if low <= ig <= high:
+                result+= 1
+                break
+
+    AssertExpectedResult(789, result)
+    return result
+
+def day5_2(data):    
+    data = read_input(2025, "05_teste") 
+    result = 0     
+    available_ingredients = []
+    fresh = []
+
+    for line in data:
+        range_ig = parse("{:d}-{:d}", line)        
+
+        if range_ig == None:
+            break
+        else:
+           fresh.append((range_ig[0], range_ig[1]))
+    
+    '''
+    l < lo and lo <= h --> lo = l
+    lo < l < ho and lo < h < ho --> remove [l,h]
+    l < ho and ho < h --> ho = h    
+    '''
+
+    new_fresh = []
+    fresh_o = copy.deepcopy(fresh)
+    for low, high in fresh:
+        for low_o, high_o in fresh_o:
+            print("checking:", low,high,"with", low_o,high_o)
+            if low <= low_o and low_o <= high:
+                new_fresh.append((low, high_o))
+                break
+            elif low <= high_o and high_o <= high:
+                print("pong")
+                new_fresh.append((low_o, high))
+                break
+            #elif not (low_o <= low <= high_o and low_o <= high <= high_o):
+            #    print("hmm")
+            #    new_fresh.append((low, high))
+            #    break
+    
+    print(new_fresh)
+
+    AssertExpectedResult(1489, result)
+    return result
+
+
+
+
 if __name__ == "__main__":
     # override timeout
     main(sys.argv, globals(), AOC_EDITION_YEAR, 28800)
