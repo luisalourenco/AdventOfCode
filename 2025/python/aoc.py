@@ -324,7 +324,7 @@ def day5_1(data):
     return result
 
 def day5_2(data):    
-    data = read_input(2025, "05_teste") 
+    data = read_input(2025, "05") 
     result = 0     
     available_ingredients = []
     fresh = []
@@ -342,25 +342,64 @@ def day5_2(data):
     lo < l < ho and lo < h < ho --> remove [l,h]
     l < ho and ho < h --> ho = h    
     '''
-
-    new_fresh = []
-    fresh_o = copy.deepcopy(fresh)
-    for low, high in fresh:
-        for low_o, high_o in fresh_o:
-            print("checking:", low,high,"with", low_o,high_o)
-            if low <= low_o and low_o <= high:
-                new_fresh.append((low, high_o))
-                break
-            elif low <= high_o and high_o <= high:
-                print("pong")
-                new_fresh.append((low_o, high))
-                break
-            #elif not (low_o <= low <= high_o and low_o <= high <= high_o):
-            #    print("hmm")
-            #    new_fresh.append((low, high))
-            #    break
     
-    print(new_fresh)
+    for i in range(1000):
+        new_fresh = []
+        fresh_o = copy.deepcopy(fresh)
+        to_remove = []
+
+        while len(fresh) > 0:
+            low, high = fresh.pop(0)
+            
+            for low_o, high_o in fresh_o:
+                if low == low_o and high == high_o:
+                    continue
+             
+                #print("checking:", low,high,"with", low_o,high_o)
+
+                if low <= low_o and low_o <= high:
+                    if (low, high_o) not in new_fresh:
+                        #print("merged left to:",(low, high_o))
+                        new_fresh.append((low, high_o)) 
+                    if (low, high) not in new_fresh:               
+                        to_remove.append((low, high))
+                    if (low_o, high_o) not in new_fresh:
+                        to_remove.append((low_o, high_o))
+                    break
+                elif low <= high_o and high_o <= high:
+                    if (low_o, high) not in new_fresh:
+                        #print("merged right to:",(low_o, high))
+                        new_fresh.append((low_o, high))
+                    if (low, high) not in new_fresh:
+                        to_remove.append((low, high))
+                    if (low_o, high_o) not in new_fresh:
+                        to_remove.append((low_o, high_o))
+                    break
+                elif low >= low_o and high <= high_o:
+                    #print("contained in:",(low_o, high_o))
+                    to_remove.append((low, high))
+                    
+                    break
+
+            new_fresh.append((low, high))
+            for i in to_remove:
+                if i in new_fresh:
+                    new_fresh.remove(i)
+
+            #print("res:",new_fresh)
+            #print("to_remove:",to_remove)
+            #print()
+        fresh = list(set(new_fresh))
+
+    
+            
+    print(fresh)
+    for l,h in fresh:
+        result+= (h-l+1)
+
+    # 221057730900912 low
+    # 219892874544636 low
+    # 308518728212455 wrong (low)
 
     AssertExpectedResult(1489, result)
     return result
