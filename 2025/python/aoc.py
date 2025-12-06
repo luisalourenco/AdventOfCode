@@ -324,31 +324,34 @@ def day5_1(data):
     return result
 
 def day5_2(data):    
-    data = read_input(2025, "05") 
+    data = read_input(2025, "05_d") 
     result = 0     
-    available_ingredients = []
     fresh = []
 
     for line in data:
-        range_ig = parse("{:d}-{:d}", line)        
+        range_ig = parse("{:d}-{:d}", line)      
 
         if range_ig == None:
             break
         else:
            fresh.append((range_ig[0], range_ig[1]))
-    
+
+    #fresh.sort(key=lambda tup: tup[0]) 
     '''
     l < lo and lo <= h --> lo = l
     lo < l < ho and lo < h < ho --> remove [l,h]
     l < ho and ho < h --> ho = h    
     '''
     
-    for i in range(1000):
+    for i in range(4):
+        print(fresh)
         new_fresh = []
         fresh_o = copy.deepcopy(fresh)
         to_remove = []
 
-        while len(fresh) > 0:
+        #while len(fresh) > 0:
+        for i in range(len(fresh)):
+            print(i,":",fresh)
             low, high = fresh.pop(0)
             
             for low_o, high_o in fresh_o:
@@ -385,12 +388,11 @@ def day5_2(data):
             for i in to_remove:
                 if i in new_fresh:
                     new_fresh.remove(i)
-
+            
             #print("res:",new_fresh)
             #print("to_remove:",to_remove)
             #print()
         fresh = list(set(new_fresh))
-
     
             
     print(fresh)
@@ -404,7 +406,86 @@ def day5_2(data):
     AssertExpectedResult(1489, result)
     return result
 
+def day6_1(data):    
+    data = read_input(2025, "06") 
+    result = 0     
 
+    results = defaultdict()
+
+    for line in data:
+        aux = line.strip().split(' ')
+        i = 0
+        for n in aux:
+            
+            if i not in results:
+                results[i] = []
+
+            if n != '':
+                if n != '*' and n != '+':
+                    #print(n)
+                    results[i].append(int(n))
+                    #results.append(int(n))
+                else:
+                    results[i].append(n)
+                i +=1
+    
+    for key in results:
+        r = results[key]
+        op = r[len(r)-1]
+        if op == '+':
+            for n in r:
+                if n != '+':
+                    result += n
+        else:
+            aux = 1
+            for n in r:
+                if n != '*':
+                    aux *= n
+            result += aux
+            
+    #print(results)
+    AssertExpectedResult(4951502530386, result)
+    return result
+
+def day6_2(data):    
+    data = read_input(2025, "06_teste") 
+    result = 0     
+
+    results = defaultdict()
+
+    for line in data:
+        aux = line.strip().split(' ')
+        i = 0
+        for n in aux:
+            
+            if i not in results:
+                results[i] = []
+
+            if n != '':
+                if n != '*' and n != '+':
+                    #print(n)
+                    results[i].append(int(n))
+                else:
+                    results[i].append(n)
+                i +=1
+    
+    for key in results:
+        r = results[key]
+        op = r[len(r)-1]
+        if op == '+':
+            for n in r:
+                if n != '+':
+                    result += n
+        else:
+            aux = 1
+            for n in r:
+                if n != '*':
+                    aux *= n
+            result += aux
+            
+    print(results)
+    AssertExpectedResult(4951502530386, result)
+    return result
 
 
 if __name__ == "__main__":
