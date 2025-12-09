@@ -487,6 +487,24 @@ def day6_2(data):
     AssertExpectedResult(4951502530386, result)
     return result
 
+def day9_1(data):    
+    data = read_input(2025, "09") 
+    result = 0
+    red_tiles = []
+
+    for line in data:
+        x,y = line.split(",")
+        red_tiles.append((int(x),int(y)))
+
+    for x,y in red_tiles:
+        for x2,y2 in red_tiles:
+            area = (abs(x-x2)+1) * (abs(y-y2)+1)
+            if area > result:
+                result = area
+            
+    AssertExpectedResult(1489, result)
+    return result
+
 
 if __name__ == "__main__":
     # override timeout
