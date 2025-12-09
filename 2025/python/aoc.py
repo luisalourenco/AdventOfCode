@@ -448,42 +448,82 @@ def day6_1(data):
     return result
 
 def day6_2(data):    
-    data = read_input(2025, "06_teste") 
+    data = read_input(2025, "06") 
     result = 0     
-
-    results = defaultdict()
-
-    for line in data:
-        aux = line.strip().split(' ')
-        i = 0
-        for n in aux:
-            
-            if i not in results:
-                results[i] = []
-
-            if n != '':
-                if n != '*' and n != '+':
-                    #print(n)
-                    results[i].append(int(n))
-                else:
-                    results[i].append(n)
-                i +=1
     
-    for key in results:
-        r = results[key]
-        op = r[len(r)-1]
-        if op == '+':
-            for n in r:
-                if n != '+':
-                    result += n
-        else:
-            aux = 1
-            for n in r:
-                if n != '*':
-                    aux *= n
-            result += aux
+    sums = []    
+    rows = len(data)   
+    cols = len(data[0])
+    #print(rows,cols)
+    
+    for line in data:
+        sums.append(list(line))
+
+    #print(sums)
+    #tlist = list(zip(*sums))
+
+    tlist = list(map(list, itertools.zip_longest(*sums, fillvalue=None)))
+    
+    op = ''
+    num = ''
+    res = 0
+
+    
+    #print(tlist)
+    #print()
+    for ll in tlist:
+        empty = 0
+
+        #print("ll",ll)
+        for l in ll:
+            #print("l",l)
+
+            if l == '*':
+                #print("l == *")
+                op = '*'
+                res = 1
+                #print("num final *:",num)
+                res *= int(num)
+                num = ''
+                empty = 0
             
-    print(results)
+            elif l == '+':
+                #print("l == +")
+                op = '+'
+                res = 0
+                #print("num final +:",num)
+                res += int(num)
+                num = ''
+                empty = 0
+            
+            elif empty == rows-1:
+                #print("num final op",num,op)
+                if num != '':
+                    if op == '*':
+                        res *= int(num)
+                    elif op == '+':
+                        res += int(num)
+                else:
+                    result += res
+                    #print("problem result:",res)
+                    res = 0
+                    op = ''                              
+                num = ''
+                empty = 0
+                break
+            elif l != ' ':
+                num += l
+                empty +=1
+            elif l == ' ':                
+                empty +=1
+                #print("l == '  '",empty)
+    if op != '':
+        result += res
+        #print("problem result2:",res)
+        res = 0
+        op = '' 
+      
+            
     AssertExpectedResult(4951502530386, result)
     return result
 
