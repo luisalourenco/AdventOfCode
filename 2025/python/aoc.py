@@ -524,7 +524,16 @@ def day6_2(data):
         op = '' 
       
             
-    AssertExpectedResult(4951502530386, result)
+    AssertExpectedResult(8486156119946, result)
+    return result
+
+def day7_1(data):    
+    data = read_input(2025, "07_teste") 
+    result = 0
+    map = buildMapGrid(data, withPadding=False)
+    
+            
+    AssertExpectedResult(1489, result)
     return result
 
 def day9_1(data):    
