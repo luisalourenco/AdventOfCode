@@ -531,7 +531,7 @@ def day7_1(data):
     data = read_input(2025, "07_teste") 
     result = 0
     map = buildMapGrid(data, withPadding=False)
-    
+
             
     AssertExpectedResult(1489, result)
     return result
@@ -552,6 +552,101 @@ def day9_1(data):
                 result = area
             
     AssertExpectedResult(1489, result)
+    return result
+
+def day11_1(data):    
+    data = read_input(2025, "11") 
+    result = 0
+    graph = defaultdict()
+    for line in data:
+        n = line.split(":")
+        graph[n[0]] = []
+        for node in n[1].strip().split(" "):
+            graph[n[0]].append(node)
+
+    #print(graph)
+    paths  = find_all_paths(graph, 'you','out')
+    result = len(paths)
+
+            
+    AssertExpectedResult(699, result)
+    return result
+
+def count_all_paths(graph, src, dst):
+    """
+    Return the number of distinct simple paths from ``src`` to ``dst`` in a
+    graph expressed as an adjacency‑list dictionary.
+
+    Parameters
+    ----------
+    graph : dict
+        {node: [neighbour1, neighbour2, ...]}
+    src   : hashable
+        Start vertex.
+    dst   : hashable
+        Target vertex.
+
+    Returns
+    -------
+    int
+        Number of different simple paths from ``src`` to ``dst``.
+    """
+    # Use an explicit stack to avoid recursion limits on large graphs.
+    # Each stack element is a tuple (current_node, visited_set).
+    stack = [(src, {src})]          # start with src marked as visited
+    path_count = 0
+
+    while stack:
+        node, visited = stack.pop()
+
+        if len(visited) > 10000:
+            continue
+        
+
+        # Destination reached → one more valid path
+        if node == dst:
+            path_count += 1
+            continue
+
+        # Explore neighbours that have not been visited yet
+        for nbr in graph.get(node, []):
+            if nbr not in visited:               # keep the path simple
+                # Create a new visited set for the next branch.
+                # Using ``visited | {nbr}`` creates a fresh set without
+                # mutating the current one (important for correctness).
+                stack.append((nbr, visited | {nbr}))
+
+    return path_count
+
+
+
+
+def day11_2(data):    
+    data = read_input(2025, "11") 
+    result = 0
+    graph = defaultdict()
+    for line in data:
+        n = line.split(":")
+        graph[n[0]] = []
+        for node in n[1].strip().split(" "):
+            graph[n[0]].append(node)
+
+    #print(graph)
+    #paths  = find_all_paths(graph, 'svr','out')
+    paths1  = find_all_paths(graph, 'svr','fft')
+    #paths2  = count_all_paths(graph, 'fft','dac')
+   # paths3  = find_all_paths(graph, 'dac','out')
+    
+    print("svr -> fft",len(paths1))
+    #print("fft -> dac",len(paths2))
+    #print("dac -> out",len(paths3))
+    #result = len(paths)
+
+    print(paths1)
+    #print(paths3)
+
+            
+    AssertExpectedResult(699, result)
     return result
 
 
