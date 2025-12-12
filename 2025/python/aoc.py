@@ -620,7 +620,6 @@ def count_all_paths(graph, src, dst):
 
 
 
-
 def day11_2(data):    
     data = read_input(2025, "11") 
     result = 0
@@ -648,6 +647,41 @@ def day11_2(data):
             
     AssertExpectedResult(699, result)
     return result
+
+
+def day12_1(data):    
+    data = read_input(2025, "12") 
+    result = 0
+    shapes = []
+    count = 0
+    for line in data:
+        if line != '':
+            l = line.split(":")
+            if len(l) == 2:
+                if l[1] != '':
+                    #print("l",l)
+                    ll = ints(l[0].split("x"))
+                    area = ll[0]*ll[1]
+                    presents = ints(l[1].strip().split(" "))
+                    total = 0
+                    for i in range(len(presents)):
+                        total += shapes[i]*presents[i]
+                    #print(l,total, area)
+                    if total <= area:
+                        result+=1
+
+            else:
+                count += l[0].count("#")
+        else:
+            shapes.append(count)
+            count = 0
+
+
+    #print(shapes)
+
+    AssertExpectedResult(699, result)
+    return result
+       
 
 
 if __name__ == "__main__":
