@@ -558,6 +558,45 @@ def day7_1(data):
     result = len(splits)
     #1725 high
     #212 low
+    AssertExpectedResult(1613, result)
+    return result
+
+def day7_2(data):    
+    data = read_input(2025, "07") 
+    result = 0
+    map = buildMapGrid(data, withPadding=False)
+    beams = []
+    rows = len(map)
+    columns = len(map[0])
+    splits = set()
+    #printMap(map)
+
+    for x in range(columns):          
+        if map[0][x] == 'S':
+            beams.append((x,1))
+            break
+    
+    while len(beams) > 0:
+        x,y = beams.pop()
+        #print("testing:",x,y,map[y][x])
+        if map[y][x] == '^':
+            if (x,y) not in splits:
+                splits.add((x,y))
+                #print("split at",x,y,map[y][x])
+                beams.append((x-1,y))
+                beams.append((x+1,y))
+        else:
+            if y < rows-1:
+                beams.append((x,y+1))
+            
+    results = []
+    for i in range(rows):
+        #[f(x) if x is not None else '' for x in xs]
+        results.append(sum([1 if y == i else 0 for (x,y) in splits])*2)
+
+    print(sum(results))
+
+    #3226 too low
     AssertExpectedResult(1489, result)
     return result
 
