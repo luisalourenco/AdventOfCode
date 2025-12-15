@@ -528,14 +528,14 @@ def day6_2(data):
     return result
 
 def day7_1(data):    
-    data = read_input(2025, "07_t") 
+    data = read_input(2025, "07") 
     result = 0
     map = buildMapGrid(data, withPadding=False)
     beams = []
     rows = len(map)
     columns = len(map[0])
     splits = set()
-    printMap(map)
+    #printMap(map)
 
     for x in range(columns):          
         if map[0][x] == 'S':
@@ -545,13 +545,15 @@ def day7_1(data):
     while len(beams) > 0:
         x,y = beams.pop()
         #print("testing:",x,y,map[y][x])
-        if map[y][x] == '^' and (x,y) not in splits:
-            splits.add((x,y))
-            #print("split at",x,y,map[y][x])
-            beams.append((x-1,y))
-            beams.append((x+1,y))
-        elif y < rows-1:
-            beams.append((x,y+1))
+        if map[y][x] == '^':
+            if (x,y) not in splits:
+                splits.add((x,y))
+                #print("split at",x,y,map[y][x])
+                beams.append((x-1,y))
+                beams.append((x+1,y))
+        else:
+            if y < rows-1:
+                beams.append((x,y+1))
             
     result = len(splits)
     #1725 high
